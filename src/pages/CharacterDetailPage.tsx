@@ -10,6 +10,15 @@ import type { CharacterRecord, PublicCharacterRecord, SpecializedSkill } from '.
 import { WORLD_IMAGES } from '../constants/world'
 import { buildCocofoliaCharacter, serializeCocofoliaCharacter } from '../lib/ccfolia'
 
+const STAT_SHORT_LABELS: Record<keyof typeof STAT_LABELS, string> = {
+  vitality: 'VIT',
+  strength: 'STR',
+  mental: 'POW',
+  speed: 'DEX',
+  education: 'EDU',
+  luck: 'LUK',
+}
+
 export function CharacterDetailPage({ publicView = false }: { publicView?: boolean }) {
   const { id } = useParams()
   const { user } = useAuth()
@@ -81,7 +90,7 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
     </section>
 
     <div className="detail-grid">
-      <section className="detail-card"><CardHeading icon="spark" title="能力値"/><div className="detail-stats"><div className="detail-stat-head"><span>能力値</span><span>初期値</span><span>追加値</span><span>合計</span></div>{(Object.keys(STAT_LABELS) as Array<keyof typeof STAT_LABELS>).map((statId) => <div className="detail-stat-row" key={statId}><span>{STAT_LABELS[statId]}</span><b>{data.stats[statId]}</b><b>{data.statBonuses?.[statId] ?? 0}</b><b>{totalStatValue(data.stats, data.statBonuses, statId)}</b></div>)}</div></section>
+      <section className="detail-card detail-card-wide detail-stats-card"><div className="detail-stat-strip">{(Object.keys(STAT_LABELS) as Array<keyof typeof STAT_LABELS>).map((statId) => <div className="detail-stat-block" key={statId}><span>{STAT_SHORT_LABELS[statId]}</span><strong>{totalStatValue(data.stats, data.statBonuses, statId)}</strong></div>)}</div></section>
 
       <section className="detail-card detail-card-wide"><CardHeading icon="book" title="技能一覧"/><div className="skill-detail-table-wrap"><table className="skill-table skill-detail-table"><thead><tr><th>区分</th><th>技能名</th><th>技能値</th></tr></thead><tbody>{COMMON_SKILLS.map((skill) => <tr key={skill.id}><td><span className="skill-category-chip">通常</span></td><td><b className="skill-name">{skill.label}</b></td><td><b className="detail-skill-value">{data.skills.common[skill.id]}</b></td></tr>)}{SPECIALIZED_SKILLS.flatMap((group) => data.skills[group.id].map((skill: SpecializedSkill) => <tr key={skill.id}><td><span className="skill-category-chip">{group.label}</span></td><td><b className="skill-name">{skill.specialty || '専門未設定'}</b></td><td><b className="detail-skill-value">{skill.value}</b></td></tr>))}{data.skills.custom.map((skill) => <tr key={skill.id}><td><span className="skill-category-chip">カスタム</span></td><td><b className="skill-name">{skill.name || '技能名未設定'}</b></td><td><b className="detail-skill-value">{skill.value}</b></td></tr>)}</tbody></table>{SPECIALIZED_SKILLS.every((group) => data.skills[group.id].length === 0) && data.skills.custom.length === 0 && <p className="skill-empty">追加技能は未登録</p>}</div></section>
 

@@ -37,8 +37,8 @@ button { cursor: pointer; }
 .brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 500; letter-spacing: .12em; font-size: 14px; }
 .brand-mark { width: 25px; height: 25px; display: grid; place-items: center; color: #17191a; background: var(--accent); font: 600 15px var(--mono); }
 .topbar-right, .detail-actions, .resource-pills, .form-actions { display: flex; align-items: center; gap: 14px; }
-.user-email, .save-state, .updated-at, .eyebrow, .section-number, .card-index, .list-count, .sidebar-label { font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; font-size: 10px; color: var(--text-tertiary); }
-.user-email { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-name, .save-state, .updated-at, .eyebrow, .section-number, .card-index, .list-count, .sidebar-label { font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; font-size: 10px; color: var(--text-tertiary); }
+.user-name { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .button { border: 1px solid transparent; border-radius: 3px; min-height: 40px; padding: 0 15px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-size: 12px; font-weight: 600; transition: background .16s, border-color .16s, color .16s; }
 .button:hover { transform: none; }
 .button:disabled { opacity: .45; cursor: not-allowed; }
@@ -129,12 +129,19 @@ h1, h2, h3, p { margin: 0; }.eyebrow { display: block; color: var(--accent); fon
 .skill-detail-table th:nth-child(3) { width: 90px; text-align: right; }
 .skill-detail-table td:last-child { text-align: right; }
 .detail-skill-value { color: var(--accent); font: 14px var(--mono); }
+.detail-stats-card { padding-top: 14px; padding-bottom: 10px; }
+.detail-stat-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 24px; }
+.detail-stat-block { min-width: 0; border-bottom: 2px solid rgba(245, 239, 226, .82); padding: 5px 0 11px; }
+.detail-stat-block span { color: var(--text); font: 500 12px var(--mono); letter-spacing: .08em; }
+.detail-stat-block strong { display: block; margin-top: 8px; color: var(--text); font: 700 34px/1 var(--mono); }
 
 @media (max-width: 760px) {
   .stat-row { grid-template-columns: minmax(75px, 1fr) 112px 74px 45px; gap: 8px; }
   .stat-stepper { grid-template-columns: 25px 34px 25px; gap: 3px; }
   .stat-bonus-cell input { width: 62px; }
   .detail-stat-head, .detail-stat-row { grid-template-columns: 1fr 55px 55px 50px; gap: 6px; }
+  .detail-stat-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px 14px; }
+  .detail-stat-block strong { font-size: 27px; }
 }
 
 /* Old-world travel journal atmosphere */

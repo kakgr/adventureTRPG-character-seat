@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { Icon } from './Icons'
+import { getDisplayName } from '../lib/userDisplay'
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { user, signOut } = useAuth()
@@ -14,7 +15,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <Link to="/characters" className="brand"><span className="brand-mark">A</span><span>adventureTRPG</span></Link>
       <div className="topbar-right">
         {!isEditor && <Link className="button button-primary button-small" to="/characters/new"><Icon name="plus" /> 新しいシート</Link>}
-        <span className="user-email">{user?.email}</span>
+        <span className="user-name">{getDisplayName(user?.user_metadata)}</span>
         <button className="icon-button" onClick={() => void handleSignOut()} title="ログアウト"><Icon name="logout" /></button>
       </div>
     </header>
