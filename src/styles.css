@@ -76,6 +76,7 @@ h1, h2, h3, p { margin: 0; }.eyebrow { display: block; color: var(--accent); fon
 
 /* Vivid sheet controls */
 .button-primary { box-shadow: 0 0 22px rgba(255, 79, 216, .18); }
+.auth-art:after { content: none; }
 .button-primary:hover { background: #ff7ae2; }
 .button-dark:hover { background: var(--accent-cyan); color: #11151b; }
 .brand-mark { color: #18151d; background: linear-gradient(135deg, var(--accent), var(--accent-cyan)); box-shadow: 0 0 20px rgba(56, 232, 255, .18); }
@@ -99,8 +100,8 @@ h1, h2, h3, p { margin: 0; }.eyebrow { display: block; color: var(--accent); fon
 .skill-table th { padding: 12px 14px; background: rgba(56, 232, 255, .06); color: var(--text-tertiary); text-align: left; font: 9px var(--mono); letter-spacing: .08em; }
 .skill-table th:nth-child(1) { width: 92px; }
 .skill-table th:nth-child(2) { width: 22%; }
-.skill-table th:nth-child(3) { width: auto; }
-.skill-table th:nth-child(4) { width: 120px; }
+.skill-table th:nth-child(3) { width: 120px; }
+.skill-table th:nth-child(4) { width: 70px; }
 .skill-table th:nth-child(5) { width: 70px; }
 .skill-table td { padding: 10px 14px; border-top: 1px solid var(--border); vertical-align: middle; }
 .skill-table tbody tr:hover { background: rgba(255, 79, 216, .045); }
@@ -123,8 +124,8 @@ h1, h2, h3, p { margin: 0; }.eyebrow { display: block; color: var(--accent); fon
 .detail-stat-row b:last-child { color: var(--accent-lime); }
 .skill-detail-table { min-width: 660px; }
 .skill-detail-table th:nth-child(1) { width: 100px; }
-.skill-detail-table th:nth-child(2) { width: 25%; }
-.skill-detail-table th:nth-child(4) { width: 90px; text-align: right; }
+.skill-detail-table th:nth-child(2) { width: auto; }
+.skill-detail-table th:nth-child(3) { width: 90px; text-align: right; }
 .skill-detail-table td:last-child { text-align: right; }
 .detail-skill-value { color: var(--accent); font: 14px var(--mono); }
 
