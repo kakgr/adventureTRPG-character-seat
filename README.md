@@ -72,6 +72,21 @@ http://127.0.0.1:5174/login
 
 本番公開時は、本番ドメインの `/login` もSupabaseのRedirect URLsへ追加してください。DiscordのClient Secretはブラウザ側の `.env.local` やソースコードに書かず、Supabase Dashboardにだけ入力します。
 
+## GitHub Pagesで公開する場合
+
+1. GitHubリポジトリの `Settings > Pages` を開き、Sourceを `GitHub Actions` にする
+2. `Settings > Secrets and variables > Actions > New repository secret` から、次の2つを登録する
+
+```text
+VITE_SUPABASE_URL
+VITE_SUPABASE_PUBLISHABLE_KEY
+```
+
+3. `main` ブランチへpushすると `.github/workflows/deploy.yml` がビルドと公開を実行する
+4. 公開URL（通常は `https://kakgr.github.io/adventureTRPG-character-seat/`）をSupabase Authentication > URL ConfigurationのSite URLとRedirect URLsへ追加する
+
+`.env.local` はGitHubへ登録せず、GitHub ActionsのSecretsに値を設定してください。プロジェクトリポジトリのパスに対応したViteのbase設定と、GitHub PagesでのSPAルート再読み込み対策はワークフローに含まれています。
+
 ## DB構造
 
 `public.characters` に以下を保存します。
