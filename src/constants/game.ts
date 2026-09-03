@@ -16,6 +16,14 @@ export const STAT_LABELS: Record<StatId, string> = {
   mental: '精神力',
 }
 
+export const STAT_DESCRIPTIONS: Record<StatId, string> = {
+  vitality: '生命力や体の丈夫さ',
+  strength: '腕力や近接攻撃の強さ',
+  magic: '魔術を扱う力や魔力の総量',
+  speed: '移動速度や反応の速さ',
+  mental: '意志の強さや精神の安定',
+}
+
 export const COMMON_SKILLS: Array<{ id: CommonSkillId; label: string; hint: string }> = [
   { id: 'athletics', label: '運動', hint: '走る・跳ぶ' },
   { id: 'martialArts', label: '格闘', hint: '殴る・組み合う' },

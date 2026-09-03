@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { COMMON_SKILLS, DEFAULT_DATA, SPECIALIZED_SKILLS } from './game'
+import { COMMON_SKILLS, DEFAULT_DATA, SPECIALIZED_SKILLS, STAT_DESCRIPTIONS, STAT_LABELS } from './game'
 
 describe('skill catalog', () => {
   it('includes evasion as a common skill with a short usage hint', () => {
@@ -13,5 +13,10 @@ describe('skill catalog', () => {
       { id: 'magic', label: '魔術' },
     ]))
     expect(DEFAULT_DATA.skills.magic).toEqual([])
+  })
+
+  it('defines an explanation for every displayed ability', () => {
+    expect(Object.keys(STAT_DESCRIPTIONS)).toEqual(Object.keys(STAT_LABELS))
+    expect(STAT_DESCRIPTIONS.vitality).toContain('生命力')
   })
 })
