@@ -1,4 +1,4 @@
-export type StatId = 'vitality' | 'strength' | 'mental' | 'speed' | 'education' | 'luck'
+export type StatId = 'vitality' | 'strength' | 'magic' | 'speed' | 'mental'
 
 export type CommonSkillId =
   | 'athletics'
@@ -28,10 +28,9 @@ export interface Profile {
 export interface Stats {
   vitality: number
   strength: number
-  mental: number
+  magic: number
   speed: number
-  education: number
-  luck: number
+  mental: number
 }
 
 export type StatBonuses = Partial<Record<StatId, number>>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { characterService } from '../lib/characters'
-import { calculateHp, calculateMp, totalStatValue } from '../lib/characterRules'
+import { calculateDamageBonus, calculateHp, calculateMp, calculateSanity, totalStatValue } from '../lib/characterRules'
 import { COMMON_SKILLS, SPECIALIZED_SKILLS, STAT_LABELS } from '../constants/game'
 import { useAuth } from '../hooks/useAuth'
 import { Icon } from '../components/Icons'
@@ -13,10 +13,9 @@ import { buildCocofoliaCharacter, serializeCocofoliaCharacter } from '../lib/ccf
 const STAT_SHORT_LABELS: Record<keyof typeof STAT_LABELS, string> = {
   vitality: 'VIT',
   strength: 'STR',
-  mental: 'POW',
+  magic: 'POW',
   speed: 'DEX',
-  education: 'EDU',
-  luck: 'LUK',
+  mental: 'MND',
 }
 
 export function CharacterDetailPage({ publicView = false }: { publicView?: boolean }) {
@@ -86,7 +85,7 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
     <section className="detail-hero">
       <div className="detail-portrait">{character.portrait_url ? <img src={character.portrait_url} alt="" /> : <span>✦</span>}</div>
       <div className="detail-identity"><h1>{character.name || '名前未設定'}</h1>{data.profile.reading && <p className="reading">{data.profile.reading}</p>}<p className="hero-summary">{data.profile.summary}</p><div className="tag-row">{data.tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}</div></div>
-      <div className="hero-resources"><div><span>HP</span><strong>{calculateHp(data.stats, data.statBonuses)}</strong></div><div><span>MP</span><strong>{calculateMp(data.stats, data.statBonuses)}</strong></div></div>
+      <div className="hero-resources"><div><span>HP</span><strong>{calculateHp(data.stats, data.statBonuses)}</strong></div><div><span>MP</span><strong>{calculateMp(data.stats, data.statBonuses)}</strong></div><div><span>正気度</span><strong>{calculateSanity(data.stats, data.statBonuses)}</strong></div><div><span>DB</span><strong>{calculateDamageBonus(data.stats, data.statBonuses)}</strong></div></div>
     </section>
 
     <div className="detail-grid">

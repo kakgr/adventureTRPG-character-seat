@@ -18,7 +18,7 @@ const character = (): CharacterRecord => ({
       summary: '静かな観察者',
       description: '古代遺跡を巡る。',
     },
-    stats: { vitality: 4, strength: 5, mental: 6, speed: 3, education: 7, luck: 2 },
+    stats: { vitality: 4, strength: 5, magic: 6, speed: 3, mental: 2 },
     statBonuses: { vitality: 1, speed: 2 },
     skills: {
       ...DEFAULT_DATA.skills,
@@ -45,10 +45,13 @@ describe('CCFOLIA character export', () => {
     expect(result.data.status).toEqual([
       { label: 'HP', value: 15, max: 15 },
       { label: 'MP', value: 18, max: 18 },
+      { label: '正気度', value: 6, max: 6 },
     ])
     expect(result.data.params).toEqual(expect.arrayContaining([
       { label: '体力', value: '5' },
       { label: '速力', value: '5' },
+      { label: '魔力', value: '6' },
+      { label: 'ダメージボーナス', value: '1' },
       { label: '探索', value: '65' },
       { label: '短剣', value: '55' },
       { label: '古代文字', value: '80' },

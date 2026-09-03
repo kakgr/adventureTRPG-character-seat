@@ -1,4 +1,4 @@
-import { calculateHp, calculateMp, totalStatValue } from './characterRules'
+import { calculateDamageBonus, calculateHp, calculateMp, calculateSanity, totalStatValue } from './characterRules'
 import { COMMON_SKILLS, SPECIALIZED_SKILLS, STAT_LABELS } from '../constants/game'
 import type { CharacterRecord, SpecializedSkill, SpecializedSkillId, StatId } from '../types/character'
 
@@ -119,6 +119,7 @@ export function buildCocofoliaCharacter(character: CharacterRecord, externalUrl 
   const { data } = character
   const hp = calculateHp(data.stats, data.statBonuses)
   const mp = calculateMp(data.stats, data.statBonuses)
+  const sanity = calculateSanity(data.stats, data.statBonuses)
 
   return {
     kind: 'character',
@@ -132,8 +133,9 @@ export function buildCocofoliaCharacter(character: CharacterRecord, externalUrl 
       status: [
         { label: 'HP', value: hp, max: hp },
         { label: 'MP', value: mp, max: mp },
+        { label: '正気度', value: sanity, max: sanity },
       ],
-      params: buildParams(character),
+      params: [...buildParams(character), { label: 'ダメージボーナス', value: String(calculateDamageBonus(data.stats, data.statBonuses)) }],
     },
   }
 }

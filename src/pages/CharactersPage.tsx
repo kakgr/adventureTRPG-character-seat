@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { characterService } from '../lib/characters'
-import { calculateHp, calculateMp } from '../lib/characterRules'
+import { calculateHp, calculateMp, calculateSanity } from '../lib/characterRules'
 import { useAuth } from '../hooks/useAuth'
 import { Icon } from '../components/Icons'
 import { StatusMessage } from '../components/StatusMessage'
@@ -34,5 +34,5 @@ export function CharactersPage() {
 }
 
 function CharacterList({ characters }: { characters: CharacterRecord[] }) {
-  return <div className="character-list"><div className="character-list-head"><span>キャラクター</span><span>プロフィール</span><span>タグ</span><span>HP / MP</span><span>更新</span></div>{characters.map((character) => <Link to={`/characters/${character.id}`} className="character-list-row" key={character.id}><div className="list-character"><div className="list-portrait">{character.portrait_url ? <img src={character.portrait_url} alt="" /> : <span>✦</span>}</div><div><h2>{character.name || '名前未設定'}</h2>{character.data.profile.reading && <p>{character.data.profile.reading}</p>}</div></div><p className="list-profile">{character.data.profile.summary || character.data.profile.occupation}</p><div className="list-tags">{character.data.tags.slice(0, 2).map((tag) => <span className="tag" key={tag}>{tag}</span>)}{character.data.tags.length > 2 && <span className="tag tag-muted">+{character.data.tags.length - 2}</span>}</div><div className="list-status"><span><b>HP</b>{calculateHp(character.data.stats, character.data.statBonuses)}</span><span><b>MP</b>{calculateMp(character.data.stats, character.data.statBonuses)}</span></div><time>{new Date(character.updated_at).toLocaleDateString('ja-JP')}</time><Icon name="arrow" /></Link>)}</div>
+  return <div className="character-list"><div className="character-list-head"><span>キャラクター</span><span>プロフィール</span><span>タグ</span><span>HP / MP / SAN</span><span>更新</span></div>{characters.map((character) => <Link to={`/characters/${character.id}`} className="character-list-row" key={character.id}><div className="list-character"><div className="list-portrait">{character.portrait_url ? <img src={character.portrait_url} alt="" /> : <span>✦</span>}</div><div><h2>{character.name || '名前未設定'}</h2>{character.data.profile.reading && <p>{character.data.profile.reading}</p>}</div></div><p className="list-profile">{character.data.profile.summary || character.data.profile.occupation}</p><div className="list-tags">{character.data.tags.slice(0, 2).map((tag) => <span className="tag" key={tag}>{tag}</span>)}{character.data.tags.length > 2 && <span className="tag tag-muted">+{character.data.tags.length - 2}</span>}</div><div className="list-status"><span><b>HP</b>{calculateHp(character.data.stats, character.data.statBonuses)}</span><span><b>MP</b>{calculateMp(character.data.stats, character.data.statBonuses)}</span><span><b>SAN</b>{calculateSanity(character.data.stats, character.data.statBonuses)}</span></div><time>{new Date(character.updated_at).toLocaleDateString('ja-JP')}</time><Icon name="arrow" /></Link>)}</div>
 }

@@ -6,14 +6,14 @@ export const INITIAL_SKILL_POINTS = 400
 export const MAX_SKILL_VALUE = 100
 export const HP_MULTIPLIER = 3
 export const MP_MULTIPLIER = 3
+export const SANITY_MULTIPLIER = 3
 
 export const STAT_LABELS: Record<StatId, string> = {
   vitality: '体力',
   strength: '筋力',
-  mental: '精神力',
+  magic: '魔力',
   speed: '速力',
-  education: '教養',
-  luck: '運',
+  mental: '精神力',
 }
 
 export const COMMON_SKILLS: Array<{ id: CommonSkillId; label: string }> = [
@@ -33,7 +33,7 @@ export const COMMON_SKILLS: Array<{ id: CommonSkillId; label: string }> = [
 
 export const SPECIALIZED_SKILLS = [
   { id: 'weapon' as const, label: '武器' },
-  { id: 'ranged' as const, label: '射撃' },
+  { id: 'ranged' as const, label: '射撃/投擲' },
   { id: 'knowledge' as const, label: '専門知識' },
 ]
 
@@ -42,18 +42,16 @@ export const DEFAULT_DATA: CharacterData = {
   stats: {
     vitality: INITIAL_STAT_BASE,
     strength: INITIAL_STAT_BASE,
-    mental: INITIAL_STAT_BASE,
+    magic: INITIAL_STAT_BASE,
     speed: INITIAL_STAT_BASE,
-    education: INITIAL_STAT_BASE,
-    luck: INITIAL_STAT_BASE,
+    mental: INITIAL_STAT_BASE,
   },
   statBonuses: {
     vitality: 0,
     strength: 0,
-    mental: 0,
+    magic: 0,
     speed: 0,
-    education: 0,
-    luck: 0,
+    mental: 0,
   },
   skills: {
     common: Object.fromEntries(COMMON_SKILLS.map(({ id }) => [id, 0])) as Record<CommonSkillId, number>,

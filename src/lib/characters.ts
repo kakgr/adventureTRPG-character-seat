@@ -1,16 +1,19 @@
 import { supabase } from './supabase'
+import { normalizeCharacterData } from './characterData'
 import type { CharacterData, CharacterRecord, PublicCharacterRecord } from '../types/character'
 
 const decoratePortrait = async (character: CharacterRecord): Promise<CharacterRecord> => {
-  if (!character.portrait_path) return { ...character, portrait_url: null }
+  const normalized = { ...character, data: normalizeCharacterData(character.data) }
+  if (!character.portrait_path) return { ...normalized, portrait_url: null }
   const { data } = await supabase.storage.from('character-portraits').createSignedUrl(character.portrait_path, 60 * 60)
-  return { ...character, portrait_url: data?.signedUrl ?? null }
+  return { ...normalized, portrait_url: data?.signedUrl ?? null }
 }
 
 const decoratePublicPortrait = (character: PublicCharacterRecord): PublicCharacterRecord => {
-  if (!character.portrait_path) return { ...character, portrait_url: null }
+  const normalized = { ...character, data: normalizeCharacterData(character.data) }
+  if (!character.portrait_path) return { ...normalized, portrait_url: null }
   const { data } = supabase.storage.from('character-portraits').getPublicUrl(character.portrait_path)
-  return { ...character, portrait_url: data.publicUrl }
+  return { ...normalized, portrait_url: data.publicUrl }
 }
 
 export const characterService = {

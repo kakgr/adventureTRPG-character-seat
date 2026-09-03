@@ -130,7 +130,7 @@ h1, h2, h3, p { margin: 0; }.eyebrow { display: block; color: var(--accent); fon
 .skill-detail-table td:last-child { text-align: right; }
 .detail-skill-value { color: var(--accent); font: 14px var(--mono); }
 .detail-stats-card { padding-top: 14px; padding-bottom: 10px; }
-.detail-stat-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 24px; }
+.detail-stat-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; }
 .detail-stat-block { min-width: 0; border-bottom: 2px solid rgba(245, 239, 226, .82); padding: 5px 0 11px; }
 .detail-stat-block span { color: var(--text); font: 500 12px var(--mono); letter-spacing: .08em; }
 .detail-stat-block strong { display: block; margin-top: 8px; color: var(--text); font: 700 34px/1 var(--mono); }
@@ -143,6 +143,8 @@ h1, h2, h3, p { margin: 0; }.eyebrow { display: block; color: var(--accent); fon
   .detail-stat-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px 14px; }
   .detail-stat-block strong { font-size: 27px; }
 }
+
+.hero-resources { flex-wrap: wrap; }
 
 /* Old-world travel journal atmosphere */
 :root {
