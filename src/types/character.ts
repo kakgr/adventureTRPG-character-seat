@@ -87,3 +87,22 @@ export interface CharacterRecord {
   updated_at: string
   portrait_url?: string | null
 }
+
+export interface CharacterShare {
+  token: string
+  character_id: string
+  owner_id: string
+  portrait_path: string | null
+  created_at: string
+  revoked_at: string | null
+}
+
+export interface SharedCharacterRecord {
+  id: string
+  name: string
+  data: CharacterData
+  portrait_path: string | null
+  created_at: string
+  updated_at: string
+  portrait_url?: string | null
+}

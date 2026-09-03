@@ -8,23 +8,44 @@ import { Icon } from '../components/Icons'
 import { StatusMessage } from '../components/StatusMessage'
 import type { CharacterRecord, SpecializedSkill } from '../types/character'
 import { WORLD_IMAGES } from '../constants/world'
+import { buildCocofoliaCharacter, serializeCocofoliaCharacter } from '../lib/ccfolia'
+import { buildShareUrl } from '../lib/share'
+import type { CharacterShare, SharedCharacterRecord } from '../types/character'
 
-export function CharacterDetailPage() {
-  const { id } = useParams()
+export function CharacterDetailPage({ shared = false }: { shared?: boolean }) {
+  const { id, token } = useParams()
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [character, setCharacter] = useState<CharacterRecord | null>(null)
+  const [character, setCharacter] = useState<CharacterRecord | SharedCharacterRecord | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [deleting, setDeleting] = useState(false)
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle')
+  const [share, setShare] = useState<CharacterShare | null>(null)
+  const [shareBusy, setShareBusy] = useState(false)
+  const [shareCopyState, setShareCopyState] = useState<'idle' | 'copied' | 'error'>('idle')
+  const [shareError, setShareError] = useState('')
 
   useEffect(() => {
+    if (shared) {
+      if (!token) { setError('共有リンクが不正です。'); setLoading(false); return }
+      void characterService.getShared(token)
+        .then(setCharacter)
+        .catch((e) => setError(e instanceof Error ? e.message : '共有シートを読み込めませんでした'))
+        .finally(() => setLoading(false))
+      return
+    }
     if (!user || !id) return
     void characterService.get(id, user.id)
       .then(setCharacter)
       .catch((e) => setError(e instanceof Error ? e.message : '読み込めませんでした'))
       .finally(() => setLoading(false))
-  }, [id, user])
+  }, [id, shared, token, user])
+
+  useEffect(() => {
+    if (shared || !user || !id) return
+    void characterService.getActiveShare(id, user.id).then(setShare).catch(() => setShare(null))
+  }, [id, shared, user])
 
   if (loading) return <div className="loading-state">シートを読み込んでいます…</div>
   if (error || !character) return <div className="page"><StatusMessage tone="error">{error || 'キャラクターが見つかりません。'}</StatusMessage><Link className="button button-ghost" to="/characters">一覧に戻る</Link></div>
@@ -42,11 +63,64 @@ export function CharacterDetailPage() {
     }
   }
 
-  return <div className="page detail-page world-page world-rain" style={{ backgroundImage: `linear-gradient(rgba(29, 35, 33, .74), rgba(29, 35, 33, .88)), url(${WORLD_IMAGES.rainyCity})` }}>
+  const shareUrl = share ? buildShareUrl(window.location.origin, import.meta.env.BASE_URL, share.token) : null
+  const copyShareLink = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url)
+      setShareCopyState('copied')
+      window.setTimeout(() => setShareCopyState('idle'), 2400)
+    } catch {
+      setShareCopyState('error')
+    }
+  }
+  const createOrCopyShare = async () => {
+    if (!user || !character || shared) return
+    setShareBusy(true); setShareError('')
+    try {
+      const nextShare = await characterService.createShare(character.id, user.id, character.portrait_path)
+      setShare(nextShare)
+      await copyShareLink(buildShareUrl(window.location.origin, import.meta.env.BASE_URL, nextShare.token))
+    } catch (e) {
+      setShareError(e instanceof Error ? e.message : '公開リンクを作成できませんでした')
+    } finally {
+      setShareBusy(false)
+    }
+  }
+  const revokeShare = async () => {
+    if (!user || !share || !window.confirm('この公開リンクを無効にしますか？')) return
+    setShareBusy(true); setShareError('')
+    try {
+      await characterService.revokeShare(share.token, user.id, share.portrait_path)
+      setShare(null); setShareCopyState('idle')
+    } catch (e) {
+      setShareError(e instanceof Error ? e.message : '公開を停止できませんでした')
+    } finally {
+      setShareBusy(false)
+    }
+  }
+
+  const copyToCocofolia = async () => {
+    if (shared) return
+    try {
+      const payload = buildCocofoliaCharacter(character as CharacterRecord, window.location.href)
+      await navigator.clipboard.writeText(serializeCocofoliaCharacter(payload))
+      setCopyState('copied')
+      window.setTimeout(() => setCopyState('idle'), 2400)
+    } catch {
+      setCopyState('error')
+    }
+  }
+
+  return <div className={`page detail-page world-page world-rain ${shared ? 'shared-detail-page' : ''}`} style={{ backgroundImage: `linear-gradient(rgba(29, 35, 33, .74), rgba(29, 35, 33, .88)), url(${WORLD_IMAGES.rainyCity})` }}>
     <div className="editor-top">
-      <Link to="/characters" className="back-link"><Icon name="back" /> 一覧に戻る</Link>
-      <div className="detail-actions"><Link className="button button-outline button-small" to={`/characters/${character.id}/edit`}><Icon name="edit" /> 編集</Link><button className="icon-button danger-icon" onClick={() => void remove()} disabled={deleting}><Icon name="trash" /></button></div>
+      {shared ? <div className="share-page-brand"><span className="brand-mark">A</span><span>adventureTRPG / 公開シート</span></div> : <Link to="/characters" className="back-link"><Icon name="back" /> 一覧に戻る</Link>}
+      <div className="detail-actions">{!shared && <><button className="button button-outline button-small" onClick={() => void createOrCopyShare()} disabled={shareBusy}><Icon name="copy" /> {shareBusy ? '準備中…' : shareUrl ? (shareCopyState === 'copied' ? 'コピーしました' : 'リンクをコピー') : '公開リンクを作成'}</button>{share && <button className="text-button danger" onClick={() => void revokeShare()} disabled={shareBusy}>公開を停止</button>}<button className="button button-outline button-small" onClick={() => void copyToCocofolia()}><Icon name="copy" /> {copyState === 'copied' ? 'コピーしました' : 'ココフォリアにコピー'}</button><Link className="button button-outline button-small" to={`/characters/${character.id}/edit`}><Icon name="edit" /> 編集</Link><button className="icon-button danger-icon" onClick={() => void remove()} disabled={deleting}><Icon name="trash" /></button></>}</div>
     </div>
+    {copyState === 'error' && <StatusMessage tone="error">コピーに失敗しました。ブラウザの権限を確認してください。</StatusMessage>}
+    {copyState === 'copied' && <p className="copy-help">ココフォリアの盤面をクリックして貼り付けてください。立ち絵はココフォリア側で設定します。</p>}
+    {shareError && <StatusMessage tone="error">{shareError}</StatusMessage>}
+    {shareCopyState === 'error' && <StatusMessage tone="error">公開リンクのコピーに失敗しました。表示されたURLを手動でコピーしてください。</StatusMessage>}
+    {shareUrl && <div className="share-link-panel"><span>公開URL</span><input readOnly value={shareUrl} onFocus={(event) => event.currentTarget.select()} /><button className="button button-outline button-small" onClick={() => void copyShareLink(shareUrl)}>{shareCopyState === 'copied' ? 'コピーしました' : 'コピー'}</button></div>}
 
     <section className="detail-hero">
       <div className="detail-portrait">{character.portrait_url ? <img src={character.portrait_url} alt="" /> : <span>✦</span>}</div>

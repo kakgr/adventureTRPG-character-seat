@@ -37,6 +37,7 @@ export function CharacterEditorPage() {
         let portraitPath = previousPortraitPath
         if (portraitFile) portraitPath = await characterService.uploadPortrait(user.id, id, portraitFile)
         await characterService.update(id, user.id, name.trim(), data, portraitPath)
+        if (portraitFile) await characterService.syncSharePortraits(id, user.id, portraitPath)
         if (portraitFile && previousPortraitPath && previousPortraitPath !== portraitPath) await characterService.removePortrait(previousPortraitPath)
         setPortraitFile(null); setDirty(false); setSaved(true)
       }
