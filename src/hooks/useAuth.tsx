@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { Session, User } from '@supabase/supabase-js'
 import { supabase, supabaseConfigured } from '../lib/supabase'
 import { accessService } from '../lib/access'
+import { clearAuthResponseHash } from '../lib/authUrl'
 
 interface AuthContextValue {
   user: User | null
@@ -23,8 +24,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!supabaseConfigured) { setLoading(false); return }
-    void supabase.auth.getSession().then(({ data }) => { setSession(data.session); setLoading(false) })
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession))
+    void supabase.auth.getSession().then(({ data }) => { clearAuthResponseHash(); setSession(data.session); setLoading(false) })
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => { clearAuthResponseHash(); setSession(nextSession) })
     return () => listener.subscription.unsubscribe()
   }, [])
 
