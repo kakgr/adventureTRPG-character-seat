@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { characterService } from '../lib/characters'
 import { calculateDamageBonus, calculateHp, calculateMp, calculateSanity, totalStatValue } from '../lib/characterRules'
-import { COMMON_SKILLS, SPECIALIZED_SKILLS, STAT_DESCRIPTIONS, STAT_LABELS } from '../constants/game'
+import { COMMON_SKILL_GENRES, COMMON_SKILLS, SKILL_GENRE_LABELS, SPECIALIZED_SKILL_GENRES, SPECIALIZED_SKILLS, STAT_DESCRIPTIONS, STAT_LABELS } from '../constants/game'
 import { useAuth } from '../hooks/useAuth'
 import { Icon } from '../components/Icons'
 import { StatusMessage } from '../components/StatusMessage'
 import type { CharacterRecord, PublicCharacterRecord, SpecializedSkill } from '../types/character'
+import type { SkillGenreId } from '../constants/game'
 import { WORLD_IMAGES } from '../constants/world'
 import { buildCocofoliaCharacter, serializeCocofoliaCharacter } from '../lib/ccfolia'
 
@@ -49,6 +50,14 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
 
   const displayCharacter = ownerCharacter ?? character
   const { data } = displayCharacter
+  const skillGroups = (Object.keys(SKILL_GENRE_LABELS) as SkillGenreId[]).map((genre) => ({
+    genre,
+    entries: [
+      ...COMMON_SKILLS.filter((skill) => COMMON_SKILL_GENRES[skill.id] === genre).map((skill) => ({ key: skill.id, category: '通常', label: skill.label, value: data.skills.common[skill.id] })),
+      ...SPECIALIZED_SKILLS.flatMap((group) => SPECIALIZED_SKILL_GENRES[group.id] === genre ? data.skills[group.id].map((skill: SpecializedSkill) => ({ key: skill.id, category: group.label, label: skill.specialty || '専門未設定', value: skill.value })) : []),
+      ...(genre === 'custom' ? data.skills.custom.map((skill) => ({ key: skill.id, category: 'カスタム', label: skill.name || '技能名未設定', value: skill.value })) : []),
+    ],
+  })).filter(({ entries }) => entries.length > 0)
   const canManage = Boolean(ownerCharacter) || !publicView
   const remove = async () => {
     if (!canManage || !user) return
@@ -91,7 +100,7 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
     <div className="detail-grid">
       <section className="detail-card detail-card-wide detail-stats-card"><div className="detail-stat-strip">{(Object.keys(STAT_LABELS) as Array<keyof typeof STAT_LABELS>).map((statId) => <div className="detail-stat-block" key={statId}><div className="detail-stat-label"><span>{STAT_SHORT_LABELS[statId]}</span><button type="button" className="stat-help" aria-label={`${STAT_LABELS[statId]}の説明`} title={STAT_DESCRIPTIONS[statId]} data-tooltip={STAT_DESCRIPTIONS[statId]}>?</button></div><strong>{totalStatValue(data.stats, data.statBonuses, statId)}</strong></div>)}</div></section>
 
-      <section className="detail-card detail-card-wide"><CardHeading icon="book" title="技能一覧"/><div className="skill-detail-table-wrap"><table className="skill-table skill-detail-table"><thead><tr><th>区分</th><th>技能名</th><th>技能値</th></tr></thead><tbody><tr className="skill-genre-row"><th colSpan={3}>通常技能</th></tr>{COMMON_SKILLS.map((skill) => <tr key={skill.id}><td><span className="skill-category-chip">通常</span></td><td><b className="skill-name">{skill.label}</b></td><td><b className="detail-skill-value">{data.skills.common[skill.id]}</b></td></tr>)}</tbody>{SPECIALIZED_SKILLS.filter((group) => data.skills[group.id].length > 0).map((group) => <tbody key={group.id}><tr className="skill-genre-row"><th colSpan={3}>{group.label}</th></tr>{data.skills[group.id].map((skill: SpecializedSkill) => <tr key={skill.id}><td><span className="skill-category-chip">{group.label}</span></td><td><b className="skill-name">{skill.specialty || '専門未設定'}</b></td><td><b className="detail-skill-value">{skill.value}</b></td></tr>)}</tbody>)}{data.skills.custom.length > 0 && <tbody><tr className="skill-genre-row"><th colSpan={3}>カスタム</th></tr>{data.skills.custom.map((skill) => <tr key={skill.id}><td><span className="skill-category-chip">カスタム</span></td><td><b className="skill-name">{skill.name || '技能名未設定'}</b></td><td><b className="detail-skill-value">{skill.value}</b></td></tr>)}</tbody>}</table>{SPECIALIZED_SKILLS.every((group) => data.skills[group.id].length === 0) && data.skills.custom.length === 0 && <p className="skill-empty">追加技能は未登録</p>}</div></section>
+      <section className="detail-card detail-card-wide"><CardHeading icon="book" title="技能一覧"/><div className="skill-detail-table-wrap"><table className="skill-table skill-detail-table"><thead><tr><th>区分</th><th>技能名</th><th>技能値</th></tr></thead>{skillGroups.map((group) => <tbody key={group.genre}><tr className="skill-genre-row"><th colSpan={3}>{SKILL_GENRE_LABELS[group.genre]}</th></tr>{group.entries.map((entry) => <tr key={entry.key}><td><span className="skill-category-chip">{entry.category}</span></td><td><b className="skill-name">{entry.label}</b></td><td><b className="detail-skill-value">{entry.value}</b></td></tr>)}</tbody>)}</table>{skillGroups.length === 0 && <p className="skill-empty">技能は未登録</p>}</div></section>
 
       <section className="detail-card"><CardHeading icon="bag" title="持ち物"/><div className="detail-items">{data.items.length ? data.items.map((item) => <div className="detail-item" key={item.id}><b>{item.name || '名称未設定'}</b><span>× {item.quantity}</span><small>{item.description}</small></div>) : <p className="muted-copy">持ち物はまだありません。</p>}</div></section>
 

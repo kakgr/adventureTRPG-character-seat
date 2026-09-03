@@ -1,4 +1,4 @@
-import type { CharacterData, CommonSkillId, StatId } from '../types/character'
+import type { CharacterData, CommonSkillId, SpecializedSkillId, StatId } from '../types/character'
 
 export const INITIAL_STAT_BASE = 1
 export const INITIAL_STAT_POINTS = 18
@@ -46,6 +46,40 @@ export const SPECIALIZED_SKILLS = [
   { id: 'knowledge' as const, label: '専門知識' },
   { id: 'magic' as const, label: '魔術' },
 ]
+
+export type SkillGenreId = 'combat' | 'physical' | 'exploration' | 'social' | 'technical' | 'custom'
+
+export const SKILL_GENRE_LABELS: Record<SkillGenreId, string> = {
+  combat: '戦闘系',
+  physical: '身体・移動系',
+  exploration: '探索・感知系',
+  social: '対人系',
+  technical: '技術・知識系',
+  custom: 'カスタム',
+}
+
+export const COMMON_SKILL_GENRES: Record<CommonSkillId, Exclude<SkillGenreId, 'custom'>> = {
+  athletics: 'physical',
+  martialArts: 'combat',
+  evasion: 'combat',
+  stealth: 'exploration',
+  insight: 'exploration',
+  search: 'exploration',
+  negotiation: 'social',
+  intimidation: 'social',
+  technology: 'technical',
+  medicine: 'technical',
+  survival: 'physical',
+  piloting: 'physical',
+  attunement: 'exploration',
+}
+
+export const SPECIALIZED_SKILL_GENRES: Record<SpecializedSkillId, Exclude<SkillGenreId, 'custom'>> = {
+  weapon: 'combat',
+  ranged: 'combat',
+  knowledge: 'technical',
+  magic: 'technical',
+}
 
 export const DEFAULT_DATA: CharacterData = {
   profile: { reading: '', age: null, gender: '', occupation: '', summary: '', description: '' },
