@@ -11,7 +11,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const handleSignOut = async () => { await signOut(); navigate('/login') }
   return <div className="app-frame">
     <header className="topbar">
-      <Link to="/characters" className="brand"><span className="brand-mark">F</span><span>FOLIO</span></Link>
+      <Link to="/characters" className="brand"><span className="brand-mark">A</span><span>adventureTRPG</span></Link>
       <div className="topbar-right">
         {!isEditor && <Link className="button button-primary button-small" to="/characters/new"><Icon name="plus" /> 新しいシート</Link>}
         <span className="user-email">{user?.email}</span>

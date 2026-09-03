@@ -1,4 +1,4 @@
-# FOLIO — 身内向けTRPGキャラクターシート
+# adventureTRPG — 身内向けTRPGキャラクターシート
 
 数人〜十数人で使うことを想定した、Supabase連携のTRPGキャラクターシートWebアプリです。
 

@@ -7,6 +7,7 @@ import { useAuth } from '../hooks/useAuth'
 import { Icon } from '../components/Icons'
 import { StatusMessage } from '../components/StatusMessage'
 import type { CharacterRecord, SpecializedSkill } from '../types/character'
+import { WORLD_IMAGES } from '../constants/world'
 
 export function CharacterDetailPage() {
   const { id } = useParams()
@@ -41,7 +42,7 @@ export function CharacterDetailPage() {
     }
   }
 
-  return <div className="page detail-page">
+  return <div className="page detail-page world-page world-rain" style={{ backgroundImage: `linear-gradient(rgba(29, 35, 33, .74), rgba(29, 35, 33, .88)), url(${WORLD_IMAGES.rainyCity})` }}>
     <div className="editor-top">
       <Link to="/characters" className="back-link"><Icon name="back" /> 一覧に戻る</Link>
       <div className="detail-actions"><Link className="button button-outline button-small" to={`/characters/${character.id}/edit`}><Icon name="edit" /> 編集</Link><button className="icon-button danger-icon" onClick={() => void remove()} disabled={deleting}><Icon name="trash" /></button></div>

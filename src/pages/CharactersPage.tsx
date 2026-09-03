@@ -25,7 +25,7 @@ export function CharactersPage() {
     return characters.filter((character) => [character.name, character.data.profile.summary, character.data.profile.occupation, ...character.data.tags].join(' ').toLowerCase().includes(normalized))
   }, [characters, query])
 
-  return <div className="page page-list">
+  return <div className="page page-list world-page">
     <section className="page-intro"><h1>キャラクター</h1><Link className="button button-primary" to="/characters/new"><Icon name="plus" /> 新しいシート</Link></section>
     {error && <StatusMessage tone="error">{error}</StatusMessage>}
     {!loading && characters.length > 0 && <div className="list-toolbar"><label className="search-field"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="名前、職業、タグで検索" aria-label="キャラクターを検索" /></label><span className="list-count">{filteredCharacters.length} / {characters.length} SHEETS</span></div>}

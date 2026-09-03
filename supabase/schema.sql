@@ -1,4 +1,4 @@
--- FOLIO: run this file in the Supabase SQL Editor.
+-- adventureTRPG: run this file in the Supabase SQL Editor.
 create extension if not exists pgcrypto;
 
 -- DiscordのユーザーIDを登録したアカウントだけが利用できます。

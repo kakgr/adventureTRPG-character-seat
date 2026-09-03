@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { StatusMessage } from '../components/StatusMessage'
+import { WORLD_IMAGES } from '../constants/world'
 
 export function AuthPage() {
   const { signInWithDiscord, signOut, configured, user, allowed, accessError } = useAuth()
@@ -22,9 +23,9 @@ export function AuthPage() {
   const rejected = Boolean(user && allowed === false && !accessError)
 
   return <div className="auth-page">
-    <div className="auth-art"><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-star">✦</div></div>
+    <div className="auth-art" style={{ backgroundImage: `linear-gradient(90deg, rgba(20, 28, 29, .28), rgba(20, 28, 29, .66)), url(${WORLD_IMAGES.rainyCity})` }}><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-star">✦</div></div>
     <section className="auth-panel">
-      <div className="auth-heading"><h1>物語の続きを、<br /><em>ここに記す。</em></h1></div>
+      <div className="auth-heading"><h1>adventureTRPG</h1></div>
       {!configured && <StatusMessage tone="error">Supabaseの環境変数が未設定です。<code>.env.local</code> を設定してください。</StatusMessage>}
       {error && <StatusMessage tone="error">{error}</StatusMessage>}
       {accessError && <StatusMessage tone="error">{accessError}</StatusMessage>}
