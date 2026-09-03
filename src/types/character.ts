@@ -3,6 +3,7 @@ export type StatId = 'vitality' | 'strength' | 'magic' | 'speed' | 'mental'
 export type CommonSkillId =
   | 'athletics'
   | 'martialArts'
+  | 'evasion'
   | 'stealth'
   | 'insight'
   | 'search'
@@ -14,7 +15,7 @@ export type CommonSkillId =
   | 'piloting'
   | 'attunement'
 
-export type SpecializedSkillId = 'weapon' | 'ranged' | 'knowledge'
+export type SpecializedSkillId = 'weapon' | 'ranged' | 'knowledge' | 'magic'
 
 export interface Profile {
   reading: string
@@ -52,6 +53,7 @@ export interface Skills {
   weapon: SpecializedSkill[]
   ranged: SpecializedSkill[]
   knowledge: SpecializedSkill[]
+  magic: SpecializedSkill[]
   custom: CustomSkill[]
 }
 

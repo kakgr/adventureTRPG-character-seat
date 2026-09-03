@@ -24,6 +24,7 @@ const normalizeSkills = (source: Partial<Skills> | undefined): Skills => ({
   weapon: Array.isArray(source?.weapon) ? source.weapon : [],
   ranged: Array.isArray(source?.ranged) ? source.ranged : [],
   knowledge: Array.isArray(source?.knowledge) ? source.knowledge : [],
+  magic: Array.isArray(source?.magic) ? source.magic : [],
   custom: Array.isArray(source?.custom) ? source.custom : [],
 })
 

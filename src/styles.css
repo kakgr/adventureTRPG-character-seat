@@ -85,6 +85,8 @@ h1, h2, h3, p { margin: 0; }.eyebrow { display: block; color: var(--accent); fon
 .nav-link-active { border-left-color: var(--accent); background: linear-gradient(90deg, var(--accent-soft), transparent); }
 .nav-link-active .nav-indicator { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
 .field input:focus, .field textarea:focus, .skill-table input:focus, .stat-bonus-cell input:focus { box-shadow: 0 0 0 2px rgba(255, 79, 216, .14); }
+.skill-label-with-hint { display: inline-flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.skill-label-with-hint small { color: var(--text-tertiary); font-size: 9px; font-weight: 400; }
 
 .stat-row { grid-template-columns: minmax(110px, 1fr) 124px 86px 62px; gap: 18px; min-height: 70px; }
 .stat-cell { display: grid; gap: 6px; align-items: center; }

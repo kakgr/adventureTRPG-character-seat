@@ -118,6 +118,7 @@ VITE_SUPABASE_PUBLISHABLE_KEY
     weapon: { id, specialty, value }[],
     ranged: { id, specialty, value }[],
     knowledge: { id, specialty, value }[],
+    magic: { id, specialty, value }[],
     custom: { id, name, value }[]
   },
   items: { id, name, quantity, description }[],

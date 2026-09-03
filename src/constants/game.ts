@@ -16,25 +16,27 @@ export const STAT_LABELS: Record<StatId, string> = {
   mental: '精神力',
 }
 
-export const COMMON_SKILLS: Array<{ id: CommonSkillId; label: string }> = [
-  { id: 'athletics', label: '運動' },
-  { id: 'martialArts', label: '格闘' },
-  { id: 'stealth', label: '隠密' },
-  { id: 'insight', label: '洞察' },
-  { id: 'search', label: '探索' },
-  { id: 'negotiation', label: '交渉' },
-  { id: 'intimidation', label: '威圧' },
-  { id: 'technology', label: '技術' },
-  { id: 'medicine', label: '医療' },
-  { id: 'survival', label: 'サバイバル' },
-  { id: 'piloting', label: '操縦' },
-  { id: 'attunement', label: '感応' },
+export const COMMON_SKILLS: Array<{ id: CommonSkillId; label: string; hint: string }> = [
+  { id: 'athletics', label: '運動', hint: '走る・跳ぶ' },
+  { id: 'martialArts', label: '格闘', hint: '殴る・組み合う' },
+  { id: 'evasion', label: '回避', hint: '攻撃をかわす' },
+  { id: 'stealth', label: '隠密', hint: '隠れる・忍び歩き' },
+  { id: 'insight', label: '洞察', hint: '観察・見抜く' },
+  { id: 'search', label: '探索', hint: '調べる・探す' },
+  { id: 'negotiation', label: '交渉', hint: '説得・取引' },
+  { id: 'intimidation', label: '威圧', hint: '脅す・圧する' },
+  { id: 'technology', label: '技術', hint: '機械・工作' },
+  { id: 'medicine', label: '医療', hint: '治療・応急手当' },
+  { id: 'survival', label: 'サバイバル', hint: '野外活動・追跡' },
+  { id: 'piloting', label: '操縦', hint: '乗り物を動かす' },
+  { id: 'attunement', label: '感応', hint: '気配・超常感知' },
 ]
 
 export const SPECIALIZED_SKILLS = [
   { id: 'weapon' as const, label: '武器' },
   { id: 'ranged' as const, label: '射撃/投擲' },
   { id: 'knowledge' as const, label: '専門知識' },
+  { id: 'magic' as const, label: '魔術' },
 ]
 
 export const DEFAULT_DATA: CharacterData = {
@@ -58,6 +60,7 @@ export const DEFAULT_DATA: CharacterData = {
     weapon: [],
     ranged: [],
     knowledge: [],
+    magic: [],
     custom: [],
   },
   items: [],
