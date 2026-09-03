@@ -5,19 +5,21 @@
   color: #e7e9e8;
   background: #1a1c1e;
   font-synthesis: none;
-  --bg: #1a1c1e;
-  --surface: #222527;
-  --surface-raised: #292d30;
-  --surface-soft: #25292b;
-  --text: #e7e9e8;
-  --text-secondary: #a0a6a7;
-  --text-tertiary: #707779;
-  --border: #363b3e;
-  --border-strong: #484e51;
-  --accent: #d29b62;
-  --accent-soft: rgba(210, 155, 98, .13);
-  --success: #8ab59b;
-  --danger: #d68076;
+  --bg: #15161b;
+  --surface: #20222b;
+  --surface-raised: #2b2e3a;
+  --surface-soft: #252735;
+  --text: #f3f4ff;
+  --text-secondary: #b4b9d0;
+  --text-tertiary: #7e849d;
+  --border: #393e56;
+  --border-strong: #565d7d;
+  --accent: #ff4fd8;
+  --accent-cyan: #38e8ff;
+  --accent-lime: #b7ff51;
+  --accent-soft: rgba(255, 79, 216, .15);
+  --success: #b7ff51;
+  --danger: #ff7187;
   --mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
@@ -71,3 +73,64 @@ h1, h2, h3, p { margin: 0; }.eyebrow { display: block; color: var(--accent); fon
 
 @media (max-width: 1050px) { .sidebar { width: 180px; }.page { width: min(100% - 48px, 1000px); }.character-list-head, .character-list-row { grid-template-columns: minmax(210px, 1.35fr) minmax(140px, 1fr) 120px 130px 88px 18px; }.character-list-head span:nth-child(3), .character-list-row .list-tags { display: none; }.skill-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); }.skill-category:first-child { grid-column: 1 / -1; } }
 @media (max-width: 760px) { .topbar { padding: 0 17px; }.topbar-right .button { display: none; }.sidebar { display: none; }.page { width: calc(100% - 34px); padding: 30px 0 55px; }.page-intro, .editor-heading { display: block; margin-bottom: 28px; }.page-intro .button { margin-top: 20px; width: 100%; }.page-intro h1, .editor-heading h1 { font-size: 28px; }.list-toolbar { align-items: center; }.character-list-head { display: none; }.character-list-row { grid-template-columns: 1fr 18px; min-height: 77px; padding: 10px 0; gap: 10px; }.character-list-row .list-profile, .character-list-row .list-status, .character-list-row time { display: none; }.list-tags { display: flex !important; margin-left: auto; }.list-character { min-width: 0; }.list-portrait { width: 42px; height: 50px; }.auth-page { display: block; }.auth-art { min-height: 180px; border-right: 0; border-bottom: 1px solid var(--border); }.art-star { font-size: 58px; }.auth-art:after { left: 20px; bottom: 18px; }.auth-panel { width: calc(100% - 40px); padding: 37px 0 55px; }.editor-top { margin-bottom: 29px; }.resource-pills { margin-top: 20px; }.basic-grid { grid-template-columns: 1fr 1fr; }.field-wide, .field-full { grid-column: 1 / -1; }.form-section { padding: 25px 0 31px; }.stat-layout { display: block; }.derived-card { margin-top: 22px; }.skill-list { grid-template-columns: 1fr; }.specialized-grid { grid-template-columns: 1fr; }.item-row { grid-template-columns: 1fr 55px 27px; }.item-row input:nth-child(3) { grid-column: 1 / 3; grid-row: 2; }.portrait-editor { align-items: start; }.form-actions { justify-content: stretch; }.form-actions .button { flex: 1; padding: 0 10px; }.detail-page .editor-top { align-items: center; }.detail-hero { grid-template-columns: 1fr; gap: 20px; }.detail-portrait { width: 100%; height: 300px; }.hero-resources { grid-column: 1; align-self: auto; }.detail-identity h1 { font-size: 34px; }.detail-grid { grid-template-columns: 1fr; }.detail-card-wide { grid-column: auto; }.skill-catalog { grid-template-columns: 1fr; }.skill-category:first-child { grid-column: auto; }.experience-grid { grid-template-columns: 1fr 1fr; }.stat-row { grid-template-columns: 1fr 31px 35px 31px; gap: 5px; }.stat-rule { display: none; }.specialty-row { grid-template-columns: 1fr 58px; }.specialty-row .text-button { grid-column: 1 / -1; justify-self: start; } }
+
+/* Vivid sheet controls */
+.button-primary { box-shadow: 0 0 22px rgba(255, 79, 216, .18); }
+.button-primary:hover { background: #ff7ae2; }
+.button-dark:hover { background: var(--accent-cyan); color: #11151b; }
+.brand-mark { color: #18151d; background: linear-gradient(135deg, var(--accent), var(--accent-cyan)); box-shadow: 0 0 20px rgba(56, 232, 255, .18); }
+.eyebrow, .section-number, .resource-pills b, .points-left b, .skill-total b, .hero-resources span, .card-heading .icon { color: var(--accent-cyan); }
+.nav-link-active { border-left-color: var(--accent); background: linear-gradient(90deg, var(--accent-soft), transparent); }
+.nav-link-active .nav-indicator { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
+.field input:focus, .field textarea:focus, .skill-table input:focus, .stat-bonus-cell input:focus { box-shadow: 0 0 0 2px rgba(255, 79, 216, .14); }
+
+.stat-row { grid-template-columns: minmax(110px, 1fr) 124px 86px 62px; gap: 18px; min-height: 70px; }
+.stat-cell { display: grid; gap: 6px; align-items: center; }
+.stat-cell small { color: var(--text-tertiary); font: 9px var(--mono); letter-spacing: .04em; }
+.stat-stepper { display: grid; grid-template-columns: 28px 40px 28px; align-items: center; gap: 6px; }
+.stat-stepper output { text-align: center; font: 15px var(--mono); }
+.stat-bonus-cell input { width: 70px; padding: 7px 8px; }
+.stat-total-cell { justify-items: end; }
+.stat-total-cell output { color: var(--accent-lime); font: 19px var(--mono); }
+
+.skill-table-panel { border: 1px solid var(--border); background: var(--surface); }
+.skill-table-wrap, .skill-detail-table-wrap { overflow-x: auto; }
+.skill-table { width: 100%; min-width: 760px; border-collapse: collapse; table-layout: fixed; }
+.skill-table th { padding: 12px 14px; background: rgba(56, 232, 255, .06); color: var(--text-tertiary); text-align: left; font: 9px var(--mono); letter-spacing: .08em; }
+.skill-table th:nth-child(1) { width: 92px; }
+.skill-table th:nth-child(2) { width: 22%; }
+.skill-table th:nth-child(3) { width: auto; }
+.skill-table th:nth-child(4) { width: 120px; }
+.skill-table th:nth-child(5) { width: 70px; }
+.skill-table td { padding: 10px 14px; border-top: 1px solid var(--border); vertical-align: middle; }
+.skill-table tbody tr:hover { background: rgba(255, 79, 216, .045); }
+.skill-table input { width: 100%; min-width: 0; border: 1px solid var(--border); border-radius: 3px; background: var(--surface-raised); padding: 8px 9px; outline: none; color: var(--text); }
+.skill-category-chip { display: inline-flex; padding: 4px 7px; border: 1px solid rgba(56, 232, 255, .34); border-radius: 999px; color: var(--accent-cyan); background: rgba(56, 232, 255, .08); font-size: 10px; white-space: nowrap; }
+.skill-name { font-size: 12px; }
+.skill-note { color: var(--text-tertiary); font-size: 10px; line-height: 1.5; }
+.skill-value-input { display: flex; align-items: center; gap: 7px; }
+.skill-value-input input { width: 70px; text-align: right; font-family: var(--mono); }
+.skill-value-input > span { color: var(--text-tertiary); font: 9px var(--mono); }
+.skill-add-actions { display: flex; flex-wrap: wrap; gap: 14px 22px; padding: 14px; border-top: 1px solid var(--border); background: rgba(255, 79, 216, .035); }
+.skill-add-actions .add-link { padding: 0; }
+.skill-add-actions .add-link:hover { color: var(--accent-cyan); }
+
+.detail-stats { display: grid; gap: 0; padding-top: 14px; }
+.detail-stat-head, .detail-stat-row { display: grid; grid-template-columns: 1fr 76px 76px 66px; gap: 12px; align-items: center; }
+.detail-stat-head { padding: 0 0 8px; color: var(--text-tertiary); font: 9px var(--mono); }
+.detail-stat-row { padding: 9px 0; border-top: 1px solid var(--border); font-size: 11px; }
+.detail-stat-row b { text-align: right; font: 13px var(--mono); }
+.detail-stat-row b:last-child { color: var(--accent-lime); }
+.skill-detail-table { min-width: 660px; }
+.skill-detail-table th:nth-child(1) { width: 100px; }
+.skill-detail-table th:nth-child(2) { width: 25%; }
+.skill-detail-table th:nth-child(4) { width: 90px; text-align: right; }
+.skill-detail-table td:last-child { text-align: right; }
+.detail-skill-value { color: var(--accent); font: 14px var(--mono); }
+
+@media (max-width: 760px) {
+  .stat-row { grid-template-columns: minmax(75px, 1fr) 112px 74px 45px; gap: 8px; }
+  .stat-stepper { grid-template-columns: 25px 34px 25px; gap: 3px; }
+  .stat-bonus-cell input { width: 62px; }
+  .detail-stat-head, .detail-stat-row { grid-template-columns: 1fr 55px 55px 50px; gap: 6px; }
+}

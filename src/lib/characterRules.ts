@@ -6,13 +6,14 @@ import {
   MAX_SKILL_VALUE,
   MP_MULTIPLIER,
 } from '../constants/game'
-import type { CharacterData, Skills, StatId, Stats } from '../types/character'
+import type { CharacterData, Skills, StatBonuses, StatId, Stats } from '../types/character'
 
 export const sumStats = (stats: Stats) => Object.values(stats).reduce((sum, value) => sum + value, 0)
 export const usedStatPoints = (stats: Stats) => sumStats(stats) - Object.keys(stats).length * INITIAL_STAT_BASE
 export const remainingStatPoints = (stats: Stats) => INITIAL_STAT_POINTS - usedStatPoints(stats)
-export const calculateHp = (stats: Stats) => stats.vitality * HP_MULTIPLIER
-export const calculateMp = (stats: Stats) => stats.mental * MP_MULTIPLIER
+export const totalStatValue = (stats: Stats, bonuses: StatBonuses | undefined, id: StatId) => stats[id] + (bonuses?.[id] ?? 0)
+export const calculateHp = (stats: Stats, bonuses?: StatBonuses) => totalStatValue(stats, bonuses, 'vitality') * HP_MULTIPLIER
+export const calculateMp = (stats: Stats, bonuses?: StatBonuses) => totalStatValue(stats, bonuses, 'mental') * MP_MULTIPLIER
 
 export const sumSkillValues = (skills: Skills) => [
   ...Object.values(skills.common),

@@ -34,6 +34,8 @@ export interface Stats {
   luck: number
 }
 
+export type StatBonuses = Partial<Record<StatId, number>>
+
 export interface SpecializedSkill {
   id: string
   specialty: string
@@ -68,6 +70,7 @@ export interface Experience {
 export interface CharacterData {
   profile: Profile
   stats: Stats
+  statBonuses?: StatBonuses
   skills: Skills
   items: Item[]
   experience: Experience

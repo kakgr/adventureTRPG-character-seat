@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { DEFAULT_DATA } from '../constants/game'
-import { calculateHp, calculateMp, isInitialDataValid, remainingSkillPoints, remainingStatPoints, sumSkillValues, updateStat } from './characterRules'
+import { calculateHp, calculateMp, isInitialDataValid, remainingSkillPoints, remainingStatPoints, sumSkillValues, totalStatValue, updateStat } from './characterRules'
 import type { CharacterData } from '../types/character'
 
 const data = () => structuredClone(DEFAULT_DATA) as CharacterData
@@ -19,6 +19,14 @@ describe('character rules', () => {
   it('calculates derived values', () => {
     const next = data(); next.stats = { ...next.stats, vitality: 4, mental: 5 }
     expect(calculateHp(next.stats)).toBe(12); expect(calculateMp(next.stats)).toBe(15)
+  })
+  it('adds optional stat bonuses without changing the initial stat budget', () => {
+    const next = data(); next.stats = { vitality: 4, strength: 4, mental: 5, speed: 4, education: 4, luck: 3 }
+    next.statBonuses = { vitality: 2, mental: 1 }
+    expect(totalStatValue(next.stats, next.statBonuses, 'vitality')).toBe(6)
+    expect(calculateHp(next.stats, next.statBonuses)).toBe(18)
+    expect(calculateMp(next.stats, next.statBonuses)).toBe(18)
+    expect(remainingStatPoints(next.stats)).toBe(0)
   })
   it('sums all common, specialized and custom skills', () => {
     const next = data(); next.skills.common.athletics = 40; next.skills.weapon.push({ id: '1', specialty: '剣', value: 70 }); next.skills.custom.push({ id: '2', name: '料理', value: 15 })

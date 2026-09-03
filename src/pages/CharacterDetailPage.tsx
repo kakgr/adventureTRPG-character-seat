@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { characterService } from '../lib/characters'
-import { calculateHp, calculateMp } from '../lib/characterRules'
+import { calculateHp, calculateMp, totalStatValue } from '../lib/characterRules'
 import { COMMON_SKILLS, SPECIALIZED_SKILLS, STAT_LABELS } from '../constants/game'
 import { useAuth } from '../hooks/useAuth'
 import { Icon } from '../components/Icons'
@@ -50,13 +50,13 @@ export function CharacterDetailPage() {
     <section className="detail-hero">
       <div className="detail-portrait">{character.portrait_url ? <img src={character.portrait_url} alt="" /> : <span>✦</span>}</div>
       <div className="detail-identity"><span className="eyebrow">CHARACTER SHEET / {character.id.slice(0, 4).toUpperCase()}</span><h1>{character.name || '名前未設定'}</h1><p className="reading">{data.profile.reading}</p><p className="hero-summary">{data.profile.summary || '一言説明はまだありません。'}</p><div className="tag-row">{data.tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}</div></div>
-      <div className="hero-resources"><div><span>HP</span><strong>{calculateHp(data.stats)}</strong><small>体力 × 3</small></div><div><span>MP</span><strong>{calculateMp(data.stats)}</strong><small>精神力 × 3</small></div></div>
+      <div className="hero-resources"><div><span>HP</span><strong>{calculateHp(data.stats, data.statBonuses)}</strong><small>体力合計 × 3</small></div><div><span>MP</span><strong>{calculateMp(data.stats, data.statBonuses)}</strong><small>精神力合計 × 3</small></div></div>
     </section>
 
     <div className="detail-grid">
-      <section className="detail-card"><CardHeading icon="spark" title="能力値"/><div className="detail-stats">{(Object.keys(STAT_LABELS) as Array<keyof typeof STAT_LABELS>).map((statId) => <div key={statId}><span>{STAT_LABELS[statId]}</span><b>{data.stats[statId]}</b></div>)}</div></section>
+      <section className="detail-card"><CardHeading icon="spark" title="能力値"/><div className="detail-stats"><div className="detail-stat-head"><span>能力値</span><span>初期値</span><span>追加値</span><span>合計</span></div>{(Object.keys(STAT_LABELS) as Array<keyof typeof STAT_LABELS>).map((statId) => <div className="detail-stat-row" key={statId}><span>{STAT_LABELS[statId]}</span><b>{data.stats[statId]}</b><b>{data.statBonuses?.[statId] ?? 0}</b><b>{totalStatValue(data.stats, data.statBonuses, statId)}</b></div>)}</div></section>
 
-      <section className="detail-card detail-card-wide"><CardHeading icon="book" title="技能一覧"/><div className="skill-catalog">{COMMON_SKILLS.length > 0 && <div className="skill-category"><div className="category-heading"><span>STANDARD</span><h3>標準技能</h3></div>{COMMON_SKILLS.map((skill) => <DetailSkill key={skill.id} label={skill.label} value={data.skills.common[skill.id]}/>)}</div>}{SPECIALIZED_SKILLS.map((group) => <div className="skill-category" key={group.id}><div className="category-heading"><span>SPECIALTY</span><h3>{group.label}</h3></div>{data.skills[group.id].length > 0 ? data.skills[group.id].map((skill: SpecializedSkill) => <DetailSkill key={skill.id} label={skill.specialty || '専門未設定'} value={skill.value} prefix={group.label}/>) : <p className="skill-empty">専門技能は未登録</p>}</div>)}<div className="skill-category"><div className="category-heading"><span>CUSTOM</span><h3>カスタム</h3></div>{data.skills.custom.length > 0 ? data.skills.custom.map((skill) => <DetailSkill key={skill.id} label={skill.name || '技能名未設定'} value={skill.value}/>) : <p className="skill-empty">カスタム技能は未登録</p>}</div></div></section>
+      <section className="detail-card detail-card-wide"><CardHeading icon="book" title="技能一覧"/><div className="skill-detail-table-wrap"><table className="skill-table skill-detail-table"><thead><tr><th>区分</th><th>技能名</th><th>内容</th><th>技能値</th></tr></thead><tbody>{COMMON_SKILLS.map((skill) => <tr key={skill.id}><td><span className="skill-category-chip">通常</span></td><td><b className="skill-name">{skill.label}</b></td><td className="skill-note">{skill.note}</td><td><b className="detail-skill-value">{data.skills.common[skill.id]}</b></td></tr>)}{SPECIALIZED_SKILLS.flatMap((group) => data.skills[group.id].map((skill: SpecializedSkill) => <tr key={skill.id}><td><span className="skill-category-chip">{group.label}</span></td><td><b className="skill-name">{skill.specialty || '専門未設定'}</b></td><td className="skill-note">{group.note}</td><td><b className="detail-skill-value">{skill.value}</b></td></tr>))}{data.skills.custom.map((skill) => <tr key={skill.id}><td><span className="skill-category-chip">カスタム</span></td><td><b className="skill-name">{skill.name || '技能名未設定'}</b></td><td className="skill-note">標準技能にない自由記述</td><td><b className="detail-skill-value">{skill.value}</b></td></tr>)}</tbody></table>{SPECIALIZED_SKILLS.every((group) => data.skills[group.id].length === 0) && data.skills.custom.length === 0 && <p className="skill-empty">追加技能は未登録</p>}</div></section>
 
       <section className="detail-card"><CardHeading icon="bag" title="持ち物"/><div className="detail-items">{data.items.length ? data.items.map((item) => <div className="detail-item" key={item.id}><b>{item.name || '名称未設定'}</b><span>× {item.quantity}</span><small>{item.description}</small></div>) : <p className="muted-copy">持ち物はまだありません。</p>}</div></section>
 
@@ -66,5 +66,4 @@ export function CharacterDetailPage() {
   </div>
 }
 
-function DetailSkill({ label, value, prefix }: { label: string; value: number; prefix?: string }) { return <div className="detail-skill"><span>{prefix && <small>{prefix}</small>}{label}</span><b>{value}</b></div> }
 function CardHeading({ icon, title }: { icon: 'spark' | 'book' | 'bag'; title: string }) { return <div className="card-heading"><Icon name={icon} /><h2>{title}</h2></div> }

@@ -47,6 +47,14 @@ export const DEFAULT_DATA: CharacterData = {
     education: INITIAL_STAT_BASE,
     luck: INITIAL_STAT_BASE,
   },
+  statBonuses: {
+    vitality: 0,
+    strength: 0,
+    mental: 0,
+    speed: 0,
+    education: 0,
+    luck: 0,
+  },
   skills: {
     common: Object.fromEntries(COMMON_SKILLS.map(({ id }) => [id, 0])) as Record<CommonSkillId, number>,
     weapon: [],
