@@ -18,6 +18,6 @@ export function AppShell({ children }: { children: ReactNode }) {
         <button className="icon-button" onClick={() => void handleSignOut()} title="ログアウト"><Icon name="logout" /></button>
       </div>
     </header>
-    <div className="app-body"><aside className="sidebar"><Link className={`nav-link ${location.pathname.startsWith('/characters') ? 'nav-link-active' : ''}`} to="/characters"><span className="nav-indicator" />キャラクター</Link></aside><main className="app-content">{children}</main></div>
+    <div className="app-body"><aside className="sidebar"><Link className={`nav-link ${location.pathname.startsWith('/characters') ? 'nav-link-active' : ''}`} to="/characters"><span className="nav-indicator" />キャラクター</Link><Link className={`nav-link ${location.pathname.startsWith('/scenarios') ? 'nav-link-active' : ''}`} to="/scenarios"><span className="nav-indicator" />シナリオ</Link><Link className={`nav-link ${location.pathname.startsWith('/world') ? 'nav-link-active' : ''}`} to="/world"><span className="nav-indicator" />世界</Link></aside><main className="app-content">{children}</main></div>
   </div>
 }
