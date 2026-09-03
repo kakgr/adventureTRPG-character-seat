@@ -19,10 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
@@ -30,29 +30,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate Supabase configuration
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-        run: |
-          test -n "$VITE_SUPABASE_URL"
-          test -n "$VITE_SUPABASE_PUBLISHABLE_KEY"
-
       - name: Build
+        run: npm run build
         env:
+          VITE_BASE_PATH: /adventureTRPG-character-seat/
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          VITE_BASE_PATH: ${{ endsWith(github.event.repository.name, '.github.io') && '/' || format('/{0}/', github.event.repository.name) }}
-        run: npm run build
 
-      - name: Support SPA routes on GitHub Pages
+      - name: Add SPA fallback
         run: cp dist/index.html dist/404.html
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
