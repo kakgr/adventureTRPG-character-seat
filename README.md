@@ -1,0 +1,139 @@
+# FOLIO — 身内向けTRPGキャラクターシート
+
+数人〜十数人で使うことを想定した、Supabase連携のTRPGキャラクターシートWebアプリです。
+
+## 実装機能
+
+- Discord OAuthによるログイン・初回アカウント自動作成・ログアウト・セッション維持
+- ログインユーザー専用のキャラクター一覧、詳細、作成、編集、削除
+- 基本情報、能力値、HP/MP、技能、専門技能、カスタム技能、持ち物、通過シナリオ、タグ、立ち絵
+- 能力値ポイント18（初期値1）と技能ポイント400のリアルタイム計算
+- 入力中の離脱警告、保存中/保存済み/失敗表示、二重送信防止、数値バリデーション
+- レスポンシブUI（PC / スマートフォン）
+
+## 技術構成
+
+- React 19 / TypeScript / Vite
+- Supabase JS v2（PostgreSQL、Auth、Storage）
+- CSSは `src/styles.css` に集約。ゲームルールとSupabaseアクセスはUIから分離
+
+## セットアップ
+
+```bash
+npm install
+cp .env.example .env.local
+npm run dev
+```
+
+`.env.local` には次を設定します。クライアントではPublishable keyだけを使い、service_role keyは絶対に設定しないでください。
+
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+```
+
+## Supabase側で手動で行う作業
+
+1. Supabaseプロジェクトを作成する
+2. Project URLを取得する
+3. Publishable key（旧anon key）を取得する
+4. `.env.local` に2つの環境変数を設定する
+5. Supabase DashboardのSQL Editorで [`supabase/schema.sql`](supabase/schema.sql) を実行する
+6. `character-portraits` バケットが作成され、Private設定になっていることを確認する（SQLにも作成処理を含む）
+7. Storage Policyが4つ作成されていることを確認する
+8. Authentication > Sign In / Providers > Discordを有効化し、Discord ApplicationのClient ID / Client Secretを登録する
+9. Supabase Authentication > URL Configurationで、ローカルの戻り先（例：`http://127.0.0.1:5174/login`）をRedirect URLsに追加する
+10. Discord Developer PortalのOAuth2 > Redirectsには、Supabaseに表示されるCallback URL（`https://<project-ref>.supabase.co/auth/v1/callback`）を登録する
+11. Discordの開発者モードを有効にし、許可するユーザーのDiscordユーザーIDを `public.allowed_discord_users` にSQL Editorから登録する
+12. Authentication > Hooks > Before User Createdで `public.hook_restrict_discord_signup` を選択して有効化する
+
+### 身内限定アクセスの設定
+
+DiscordのユーザーIDは、Discordの開発者モードを有効にして対象ユーザーを右クリックし、「ユーザーIDをコピー」から取得できます。取得したIDをSQL Editorで登録してください。
+
+```sql
+insert into public.allowed_discord_users (discord_user_id, display_name)
+values ('123456789012345678', '参加者A');
+```
+
+`supabase/schema.sql` には、未許可ユーザーの新規作成を拒否するAuth Hookと、許可済みユーザーだけにキャラクター・立ち絵へのアクセスを許可するRLSを含めています。SQLを実行した後、DashboardのAuthentication > Hooksで `Before User Created` に `public.hook_restrict_discord_signup` を設定してください。許可リストの変更はSQL Editorからのみ行えます。
+
+### Discord OAuth設定の整理
+
+リダイレクトURLは2種類あります。Discord側にはSupabaseのCallback URLを登録し、Supabase側にはユーザーを戻すアプリURLを登録します。
+
+```text
+Discord Developer Portal:
+https://<project-ref>.supabase.co/auth/v1/callback
+
+Supabase URL Configuration:
+http://127.0.0.1:5174/login
+```
+
+本番公開時は、本番ドメインの `/login` もSupabaseのRedirect URLsへ追加してください。DiscordのClient Secretはブラウザ側の `.env.local` やソースコードに書かず、Supabase Dashboardにだけ入力します。
+
+## DB構造
+
+`public.characters` に以下を保存します。
+
+| カラム | 型 | 内容 |
+| --- | --- | --- |
+| `id` | uuid | キャラクターID |
+| `user_id` | uuid | `auth.users.id` |
+| `name` | text | 一覧で使うキャラクター名 |
+| `data` | jsonb | 能力値・技能・プロフィール等 |
+| `portrait_path` | text nullable | Storageのファイルパス |
+| `created_at` / `updated_at` | timestamptz | 作成・更新日時 |
+
+## JSON構造
+
+`data` は次の型をTypeScriptで定義しています。
+
+```ts
+{
+  profile: { reading, age, gender, occupation, summary, description },
+  stats: { vitality, strength, mental, speed, education, luck },
+  skills: {
+    common: Record<CommonSkillId, number>,
+    weapon: { id, specialty, value }[],
+    ranged: { id, specialty, value }[],
+    knowledge: { id, specialty, value }[],
+    custom: { id, name, value }[]
+  },
+  items: { id, name, quantity, description }[],
+  experience: { notes },
+  tags: string[]
+}
+```
+
+## ルールと定数
+
+ゲームバランスに関わる値は [`src/constants/game.ts`](src/constants/game.ts) にあります。
+
+- `INITIAL_STAT_BASE = 1`
+- `INITIAL_STAT_POINTS = 18`
+- `INITIAL_SKILL_POINTS = 400`
+- `MAX_SKILL_VALUE = 100`
+- `HP = vitality × 3` / `MP = mental × 3`
+- 初期作成時は能力値ポイントを18すべて使用して保存。技能ポイントは使い切らなくても保存可能
+- 通過シナリオは、シナリオ名やそのキャラクターに起きた出来事・得た経験を自由記述で記録
+- 編集時は同じ入力UIを使い、成長ルールを追加しやすいよう作成時の必須判定を分離
+
+計算処理は [`src/lib/characterRules.ts`](src/lib/characterRules.ts) に集約しています。
+
+## RLS / Storage
+
+`characters` はRLSを有効化し、SELECT / INSERT / UPDATE / DELETEすべてでログインユーザーの `auth.uid() = user_id` とDiscord許可リストを保証します。StorageはPrivate bucketで、パスの先頭をユーザーIDにして、同じ許可済みユーザーのファイルだけ操作できるPolicyを設定しています。
+
+立ち絵パスは `ユーザーID / キャラクターID / UUID付きファイル名` です。画像本体をPostgreSQLには保存しません。
+
+## 未実装事項
+
+シナリオ履歴、成長履歴、人間関係、公開/共有、GM編集、複製、JSON入出力、技能成長、能力値成長は未実装です。履歴用テーブルは現時点では追加せず、将来 `character_history` 等の別テーブルで扱える構成にしています。
+
+## 確認コマンド
+
+```bash
+npm test
+npm run build
+```
