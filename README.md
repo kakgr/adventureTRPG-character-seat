@@ -6,7 +6,6 @@
 
 - Discord OAuthによるログイン・初回アカウント自動作成・ログアウト・セッション維持
 - ログインユーザー専用のキャラクター一覧、詳細、作成、編集、削除
-- トークン付き共有URLによる、ログイン不要の読み取り専用キャラクター閲覧
 - 基本情報、能力値、HP/MP、技能、専門技能、カスタム技能、持ち物、通過シナリオ、タグ、立ち絵
 - 能力値ポイント18（初期値1）と技能ポイント400のリアルタイム計算
 - 入力中の離脱警告、保存中/保存済み/失敗表示、二重送信防止、数値バリデーション
@@ -48,7 +47,6 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 10. Discord Developer PortalのOAuth2 > Redirectsには、Supabaseに表示されるCallback URL（`https://<project-ref>.supabase.co/auth/v1/callback`）を登録する
 11. Discordの開発者モードを有効にし、許可するユーザーのDiscordユーザーIDを `public.allowed_discord_users` にSQL Editorから登録する
 12. Authentication > Hooks > Before User Createdで `public.hook_restrict_discord_signup` を選択して有効化する
-13. 共有機能を使う場合、更新した [`supabase/schema.sql`](supabase/schema.sql) をSQL Editorで再実行する
 
 ### 身内限定アクセスの設定
 
@@ -144,14 +142,6 @@ VITE_SUPABASE_PUBLISHABLE_KEY
 `characters` はRLSを有効化し、SELECT / INSERT / UPDATE / DELETEすべてでログインユーザーの `auth.uid() = user_id` とDiscord許可リストを保証します。StorageはPrivate bucketで、パスの先頭をユーザーIDにして、同じ許可済みユーザーのファイルだけ操作できるPolicyを設定しています。
 
 立ち絵パスは `ユーザーID / キャラクターID / UUID付きファイル名` です。画像本体をPostgreSQLには保存しません。
-
-`public.character_shares` はキャラクターごとの共有トークンと公開用立ち絵パスを管理します。匿名ユーザーはテーブルを直接検索できず、`get_shared_character` RPCに共有トークンを渡したときだけ公開項目が1件返ります。
-
-### キャラクターの共有
-
-詳細画面の「公開リンクを作成」から、ログイン不要の読み取り専用URLを発行できます。共有URLは推測困難なトークンを含み、所有者が「公開を停止」すると即時に無効になります。URLを知っている人には閲覧できるため、機密情報を含むシートには共有リンクを発行しないでください。
-
-通常の `/characters`、`/characters/:id`、編集画面は引き続きDiscord認証と許可リストが必要です。共有立ち絵は専用の公開バケットにコピーされ、通常の非公開バケット内の立ち絵は公開されません。
 
 ## 未実装事項
 
