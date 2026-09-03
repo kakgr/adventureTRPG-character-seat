@@ -1,10 +1,16 @@
 import { supabase } from './supabase'
-import type { CharacterData, CharacterRecord } from '../types/character'
+import type { CharacterData, CharacterRecord, PublicCharacterRecord } from '../types/character'
 
 const decoratePortrait = async (character: CharacterRecord): Promise<CharacterRecord> => {
   if (!character.portrait_path) return { ...character, portrait_url: null }
   const { data } = await supabase.storage.from('character-portraits').createSignedUrl(character.portrait_path, 60 * 60)
   return { ...character, portrait_url: data?.signedUrl ?? null }
+}
+
+const decoratePublicPortrait = (character: PublicCharacterRecord): PublicCharacterRecord => {
+  if (!character.portrait_path) return { ...character, portrait_url: null }
+  const { data } = supabase.storage.from('character-portraits').getPublicUrl(character.portrait_path)
+  return { ...character, portrait_url: data.publicUrl }
 }
 
 export const characterService = {
@@ -17,6 +23,13 @@ export const characterService = {
     const { data, error } = await supabase.from('characters').select('*').eq('id', id).eq('user_id', userId).single()
     if (error) throw error
     return decoratePortrait(data as CharacterRecord)
+  },
+  async getPublic(id: string) {
+    const { data, error } = await supabase.rpc('get_public_character', { p_character_id: id })
+    if (error) throw error
+    const record = (Array.isArray(data) ? data[0] : data) as PublicCharacterRecord | undefined
+    if (!record) throw new Error('キャラクターが見つかりません。')
+    return decoratePublicPortrait(record)
   },
   async create(userId: string, name: string, data: CharacterData) {
     const { data: created, error } = await supabase.from('characters').insert({ user_id: userId, name, data }).select().single()

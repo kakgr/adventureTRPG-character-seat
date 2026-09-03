@@ -113,3 +113,46 @@ with check (bucket_id = 'character-portraits' and (storage.foldername(name))[1] 
 drop policy if exists "Users can delete own portraits" on storage.objects;
 create policy "Users can delete own portraits" on storage.objects for delete to authenticated
 using (bucket_id = 'character-portraits' and (storage.foldername(name))[1] = (select auth.uid()::text) and public.is_current_user_allowed());
+
+-- キャラクター詳細URLは、ログインしていない人にも読み取り専用で公開します。
+alter table public.characters
+  add column if not exists is_public boolean not null default true;
+
+create index if not exists characters_public_id_idx
+  on public.characters(id)
+  where is_public;
+
+create or replace function public.get_public_character(p_character_id uuid)
+returns table (
+  id uuid,
+  name text,
+  data jsonb,
+  portrait_path text,
+  created_at timestamptz,
+  updated_at timestamptz
+)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select
+    characters.id,
+    characters.name,
+    characters.data,
+    characters.portrait_path,
+    characters.created_at,
+    characters.updated_at
+  from public.characters
+  where characters.id = p_character_id
+    and characters.is_public = true
+  limit 1;
+$$;
+
+revoke all on function public.get_public_character(uuid) from public;
+grant execute on function public.get_public_character(uuid) to anon, authenticated;
+
+-- 公開閲覧用の立ち絵URLを生成できるよう、既存バケットを公開設定にします。
+update storage.buckets
+set public = true
+where id = 'character-portraits';

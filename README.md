@@ -6,6 +6,7 @@
 
 - Discord OAuthによるログイン・初回アカウント自動作成・ログアウト・セッション維持
 - ログインユーザー専用のキャラクター一覧、詳細、作成、編集、削除
+- キャラクターID URLによる、ログイン不要の読み取り専用詳細閲覧
 - 基本情報、能力値、HP/MP、技能、専門技能、カスタム技能、持ち物、通過シナリオ、タグ、立ち絵
 - 能力値ポイント18（初期値1）と技能ポイント400のリアルタイム計算
 - 入力中の離脱警告、保存中/保存済み/失敗表示、二重送信防止、数値バリデーション
@@ -40,13 +41,14 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 3. Publishable key（旧anon key）を取得する
 4. `.env.local` に2つの環境変数を設定する
 5. Supabase DashboardのSQL Editorで [`supabase/schema.sql`](supabase/schema.sql) を実行する
-6. `character-portraits` バケットが作成され、Private設定になっていることを確認する（SQLにも作成処理を含む）
+6. `character-portraits` バケットが作成され、公開設定になっていることを確認する（公開詳細画面の立ち絵表示に使用）
 7. Storage Policyが4つ作成されていることを確認する
 8. Authentication > Sign In / Providers > Discordを有効化し、Discord ApplicationのClient ID / Client Secretを登録する
 9. Supabase Authentication > URL Configurationで、ローカルの戻り先（例：`http://127.0.0.1:5174/login`）をRedirect URLsに追加する
 10. Discord Developer PortalのOAuth2 > Redirectsには、Supabaseに表示されるCallback URL（`https://<project-ref>.supabase.co/auth/v1/callback`）を登録する
 11. Discordの開発者モードを有効にし、許可するユーザーのDiscordユーザーIDを `public.allowed_discord_users` にSQL Editorから登録する
 12. Authentication > Hooks > Before User Createdで `public.hook_restrict_discord_signup` を選択して有効化する
+13. 既存のSupabaseプロジェクトでは、更新した [`supabase/schema.sql`](supabase/schema.sql) をSQL Editorで再実行する
 
 ### 身内限定アクセスの設定
 
@@ -99,6 +101,7 @@ VITE_SUPABASE_PUBLISHABLE_KEY
 | `name` | text | 一覧で使うキャラクター名 |
 | `data` | jsonb | 能力値・技能・プロフィール等 |
 | `portrait_path` | text nullable | Storageのファイルパス |
+| `is_public` | boolean | 詳細URLを公開するか（既定値はtrue） |
 | `created_at` / `updated_at` | timestamptz | 作成・更新日時 |
 
 ## JSON構造
@@ -139,9 +142,11 @@ VITE_SUPABASE_PUBLISHABLE_KEY
 
 ## RLS / Storage
 
-`characters` はRLSを有効化し、SELECT / INSERT / UPDATE / DELETEすべてでログインユーザーの `auth.uid() = user_id` とDiscord許可リストを保証します。StorageはPrivate bucketで、パスの先頭をユーザーIDにして、同じ許可済みユーザーのファイルだけ操作できるPolicyを設定しています。
+`characters` はRLSを有効化し、SELECT / INSERT / UPDATE / DELETEすべてでログインユーザーの `auth.uid() = user_id` とDiscord許可リストを保証します。Storageは公開bucketですが、アップロード・更新・削除はパスの先頭をユーザーIDにしたPolicyで許可済みユーザーだけに制限しています。
 
 立ち絵パスは `ユーザーID / キャラクターID / UUID付きファイル名` です。画像本体をPostgreSQLには保存しません。
+
+キャラクター詳細URL（`/characters/<id>`）は `get_public_character` RPCで公開項目だけを読み取り、ログイン不要で表示します。公開立ち絵を表示するため、`character-portraits` バケットは公開設定です。前回実行した共有用のテーブル・RPC・バケットが残っていても、新しい公開詳細画面とは別経路のため動作には影響しません。
 
 ## 未実装事項
 

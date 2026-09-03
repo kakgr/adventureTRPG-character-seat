@@ -87,3 +87,13 @@ export interface CharacterRecord {
   updated_at: string
   portrait_url?: string | null
 }
+
+export interface PublicCharacterRecord {
+  id: string
+  name: string
+  data: CharacterData
+  portrait_path: string | null
+  created_at: string
+  updated_at: string
+  portrait_url?: string | null
+}

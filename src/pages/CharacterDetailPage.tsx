@@ -6,37 +6,48 @@ import { COMMON_SKILLS, SPECIALIZED_SKILLS, STAT_LABELS } from '../constants/gam
 import { useAuth } from '../hooks/useAuth'
 import { Icon } from '../components/Icons'
 import { StatusMessage } from '../components/StatusMessage'
-import type { CharacterRecord, SpecializedSkill } from '../types/character'
+import type { CharacterRecord, PublicCharacterRecord, SpecializedSkill } from '../types/character'
 import { WORLD_IMAGES } from '../constants/world'
 import { buildCocofoliaCharacter, serializeCocofoliaCharacter } from '../lib/ccfolia'
 
-export function CharacterDetailPage() {
+export function CharacterDetailPage({ publicView = false }: { publicView?: boolean }) {
   const { id } = useParams()
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [character, setCharacter] = useState<CharacterRecord | null>(null)
+  const [character, setCharacter] = useState<CharacterRecord | PublicCharacterRecord | null>(null)
+  const [ownerCharacter, setOwnerCharacter] = useState<CharacterRecord | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [deleting, setDeleting] = useState(false)
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle')
 
   useEffect(() => {
-    if (!user || !id) return
-    void characterService.get(id, user.id)
+    if (!id) return
+    const load = publicView ? characterService.getPublic(id) : user ? characterService.get(id, user.id) : null
+    if (!load) return
+    void load
       .then(setCharacter)
-      .catch((e) => setError(e instanceof Error ? e.message : '読み込めませんでした'))
+      .catch((e) => setError(e instanceof Error ? e.message : publicView ? '公開シートを読み込めませんでした' : '読み込めませんでした'))
       .finally(() => setLoading(false))
-  }, [id, user])
+  }, [id, publicView, user])
+
+  useEffect(() => {
+    if (!publicView || !user || !id) return
+    void characterService.get(id, user.id).then(setOwnerCharacter).catch(() => setOwnerCharacter(null))
+  }, [id, publicView, user])
 
   if (loading) return <div className="loading-state">シートを読み込んでいます…</div>
-  if (error || !character) return <div className="page"><StatusMessage tone="error">{error || 'キャラクターが見つかりません。'}</StatusMessage><Link className="button button-ghost" to="/characters">一覧に戻る</Link></div>
+  if (error || !character) return <div className="page"><StatusMessage tone="error">{error || 'キャラクターが見つかりません。'}</StatusMessage><Link className="button button-ghost" to={publicView ? '/login' : '/characters'}>{publicView ? 'ログイン画面へ' : '一覧に戻る'}</Link></div>
 
-  const { data } = character
+  const displayCharacter = ownerCharacter ?? character
+  const { data } = displayCharacter
+  const canManage = Boolean(ownerCharacter) || !publicView
   const remove = async () => {
+    if (!canManage || !user) return
     if (!window.confirm(`「${character.name}」を削除しますか？この操作は取り消せません。`)) return
     setDeleting(true)
     try {
-      await characterService.remove(character.id, user!.id, character.portrait_path)
+      await characterService.remove(displayCharacter.id, user.id, displayCharacter.portrait_path)
       navigate('/characters')
     } catch (e) {
       setError(e instanceof Error ? e.message : '削除に失敗しました')
@@ -45,8 +56,9 @@ export function CharacterDetailPage() {
   }
 
   const copyToCocofolia = async () => {
+    if (!canManage || !ownerCharacter && publicView) return
     try {
-      const payload = buildCocofoliaCharacter(character, window.location.href)
+      const payload = buildCocofoliaCharacter(displayCharacter as CharacterRecord, window.location.href)
       await navigator.clipboard.writeText(serializeCocofoliaCharacter(payload))
       setCopyState('copied')
       window.setTimeout(() => setCopyState('idle'), 2400)
@@ -55,10 +67,10 @@ export function CharacterDetailPage() {
     }
   }
 
-  return <div className="page detail-page world-page world-rain" style={{ backgroundImage: `linear-gradient(rgba(29, 35, 33, .74), rgba(29, 35, 33, .88)), url(${WORLD_IMAGES.rainyCity})` }}>
+  return <div className={`page detail-page world-page world-rain ${publicView ? 'public-detail-page' : ''}`} style={{ backgroundImage: `linear-gradient(rgba(29, 35, 33, .74), rgba(29, 35, 33, .88)), url(${WORLD_IMAGES.rainyCity})` }}>
     <div className="editor-top">
-      <Link to="/characters" className="back-link"><Icon name="back" /> 一覧に戻る</Link>
-      <div className="detail-actions"><button className="button button-outline button-small" onClick={() => void copyToCocofolia()}><Icon name="copy" /> {copyState === 'copied' ? 'コピーしました' : 'ココフォリアにコピー'}</button><Link className="button button-outline button-small" to={`/characters/${character.id}/edit`}><Icon name="edit" /> 編集</Link><button className="icon-button danger-icon" onClick={() => void remove()} disabled={deleting}><Icon name="trash" /></button></div>
+      <Link to={publicView && !canManage ? '/login' : '/characters'} className="back-link"><Icon name="back" /> {publicView && !canManage ? 'ログイン画面へ' : '一覧に戻る'}</Link>
+      {canManage && <div className="detail-actions"><button className="button button-outline button-small" onClick={() => void copyToCocofolia()}><Icon name="copy" /> {copyState === 'copied' ? 'コピーしました' : 'ココフォリアにコピー'}</button><Link className="button button-outline button-small" to={`/characters/${displayCharacter.id}/edit`}><Icon name="edit" /> 編集</Link><button className="icon-button danger-icon" onClick={() => void remove()} disabled={deleting}><Icon name="trash" /></button></div>}
     </div>
     {copyState === 'error' && <StatusMessage tone="error">コピーに失敗しました。ブラウザの権限を確認してください。</StatusMessage>}
     {copyState === 'copied' && <p className="copy-help">ココフォリアの盤面をクリックして貼り付けてください。立ち絵はココフォリア側で設定します。</p>}
