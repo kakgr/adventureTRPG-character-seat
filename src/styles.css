@@ -328,6 +328,20 @@ body { background: var(--background); }
 .brand-mark { overflow: hidden; padding: 0; background: var(--background); }
 .brand-mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
+/* World pages use full-bleed fixed backgrounds; only their content stays centered. */
+.world-page {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  min-height: calc(100vh - 64px);
+  padding-left: max(17px, calc((100% - 1280px) / 2));
+  padding-right: max(17px, calc((100% - 1280px) / 2));
+}
+
+@media (max-width: 760px) {
+  .world-page { min-height: calc(100vh - 58px); }
+}
+
 /* World overview */
 .world-overview-page { max-width: 1240px; }
 .world-hero { margin-bottom: 46px; }
