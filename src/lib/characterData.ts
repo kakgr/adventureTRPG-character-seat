@@ -1,4 +1,5 @@
-import { DEFAULT_DATA, INITIAL_STAT_BASE } from '../constants/game'
+import { DEFAULT_DATA, INITIAL_STAT_BASE, MAX_SKILL_BONUS } from '../constants/game'
+import { normalizeLuck } from './characterRules'
 import type { CharacterData, Skills, StatBonuses, Stats } from '../types/character'
 
 const finiteNumber = (value: unknown, fallback: number) => typeof value === 'number' && Number.isFinite(value) ? value : fallback
@@ -19,8 +20,20 @@ const normalizeStatBonuses = (source: Partial<StatBonuses> | undefined): StatBon
   mental: finiteNumber(source?.mental, 0),
 })
 
+const normalizeSkillBonus = (value: unknown) => Math.max(0, Math.min(MAX_SKILL_BONUS, typeof value === 'number' && Number.isFinite(value) ? Math.round(value) : 0))
+const normalizeSkillBonusMap = (source: Record<string, unknown> | undefined) => Object.fromEntries(Object.entries(source ?? {}).map(([id, value]) => [id, normalizeSkillBonus(value)]))
+
 const normalizeSkills = (source: Partial<Skills> | undefined): Skills => ({
   common: { ...DEFAULT_DATA.skills.common, ...(source?.common ?? {}) },
+  luck: normalizeLuck(source?.luck),
+  bonuses: {
+    common: { ...DEFAULT_DATA.skills.bonuses.common, ...normalizeSkillBonusMap(source?.bonuses?.common) },
+    weapon: normalizeSkillBonusMap(source?.bonuses?.weapon),
+    ranged: normalizeSkillBonusMap(source?.bonuses?.ranged),
+    knowledge: normalizeSkillBonusMap(source?.bonuses?.knowledge),
+    magic: normalizeSkillBonusMap(source?.bonuses?.magic),
+    custom: normalizeSkillBonusMap(source?.bonuses?.custom),
+  },
   weapon: Array.isArray(source?.weapon) ? source.weapon : [],
   ranged: Array.isArray(source?.ranged) ? source.ranged : [],
   knowledge: Array.isArray(source?.knowledge) ? source.knowledge : [],

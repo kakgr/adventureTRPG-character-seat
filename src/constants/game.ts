@@ -4,6 +4,9 @@ export const INITIAL_STAT_BASE = 1
 export const INITIAL_STAT_POINTS = 18
 export const INITIAL_SKILL_POINTS = 400
 export const MAX_SKILL_VALUE = 100
+export const MAX_SKILL_BONUS = 100
+export const LUCK_MIN = 0
+export const LUCK_MAX = 90
 export const HP_MULTIPLIER = 3
 export const MP_MULTIPLIER = 3
 export const SANITY_MULTIPLIER = 3
@@ -99,6 +102,15 @@ export const DEFAULT_DATA: CharacterData = {
   },
   skills: {
     common: Object.fromEntries(COMMON_SKILLS.map(({ id }) => [id, 0])) as Record<CommonSkillId, number>,
+    luck: 0,
+    bonuses: {
+      common: Object.fromEntries(COMMON_SKILLS.map(({ id }) => [id, 0])) as Record<CommonSkillId, number>,
+      weapon: {},
+      ranged: {},
+      knowledge: {},
+      magic: {},
+      custom: {},
+    },
     weapon: [],
     ranged: [],
     knowledge: [],

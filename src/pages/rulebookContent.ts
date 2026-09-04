@@ -33,6 +33,13 @@ export const skillRules = {
   fumble: '95〜100',
 } as const
 
+export const luckRules = {
+  minimum: 0,
+  maximum: 90,
+  points: 0,
+  reroll: '何度でも振り直し可能',
+} as const
+
 export const commonSkills = [
   '運動', '格闘', '回避', '隠密', '洞察', '探索', '交渉',
   '威圧', '技術', '医療', 'サバイバル', '操縦', '感応',

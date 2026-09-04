@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { insanityTable, playerTerm, rulebookSections, skillRules, statDefinitions } from './rulebookContent'
+import { insanityTable, luckRules, playerTerm, rulebookSections, skillRules, statDefinitions } from './rulebookContent'
 
 describe('rulebook content', () => {
   it('contains the first-edition core sections', () => {
@@ -29,6 +29,10 @@ describe('rulebook content', () => {
       critical: '1〜5',
       fumble: '95〜100',
     }))
+  })
+
+  it('defines luck as a rerollable random skill', () => {
+    expect(luckRules).toEqual({ minimum: 0, maximum: 90, points: 0, reroll: '何度でも振り直し可能' })
   })
 
   it('provides an optional insanity table', () => {

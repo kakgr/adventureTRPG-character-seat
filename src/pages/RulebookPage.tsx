@@ -1,5 +1,5 @@
 import { WORLD_IMAGES } from '../constants/world'
-import { commonSkills, insanityTable, playerTerm, rulebookSections, skillRules, specializedSkills, statDefinitions } from './rulebookContent'
+import { commonSkills, insanityTable, luckRules, playerTerm, rulebookSections, skillRules, specializedSkills, statDefinitions } from './rulebookContent'
 
 export function RulebookPage() {
   return <div className="page world-page rulebook-page" style={{ backgroundImage: `linear-gradient(color-mix(in srgb, var(--background) 78%, transparent), color-mix(in srgb, var(--background) 94%, transparent)), url(${WORLD_IMAGES.riverRoad})` }}>
@@ -32,9 +32,10 @@ export function RulebookPage() {
 
         <RuleSection id="checks" title="判定">
           <div className="check-rule-grid">
-            <RuleCard title="技能判定"><div className="rulebook-number"><strong>D100</strong><span>{skillRules.success}</span></div><p>技能値の上限は{skillRules.maximum}。初期値は{skillRules.initial}です。技能ポイント{skillRules.points}点を、各技能0〜100の範囲で自由に配分します。</p><div className="critical-line"><span>クリティカル {skillRules.critical}</span><span>ファンブル {skillRules.fumble}</span></div><p className="rulebook-note">クリティカル・ファンブルの具体的な効果は、各自の判断に委ねます。</p></RuleCard>
+            <RuleCard title="技能判定"><div className="rulebook-number"><strong>D100</strong><span>{skillRules.success}</span></div><p>技能値の上限は{skillRules.maximum}。初期値は{skillRules.initial}です。技能ポイント{skillRules.points}点を、各技能0〜100の範囲で自由に配分します。初期作成の400点とは別に、各技能へ追加値を加えることもできます。</p><div className="critical-line"><span>クリティカル {skillRules.critical}</span><span>ファンブル {skillRules.fumble}</span></div><p className="rulebook-note">クリティカル・ファンブルの具体的な効果は、各自の判断に委ねます。</p></RuleCard>
             <RuleCard title="対抗判定"><p>対抗判定は技能ではなく、基本能力値を使います。</p><p>双方の能力値の差1点につき、成功率を±5%します。</p><p>能力値が同じなら基準値は50%です。</p></RuleCard>
           </div>
+          <RuleCard title="幸運"><div className="rulebook-number"><strong>{luckRules.minimum}〜{luckRules.maximum}</strong><span>乱数で決定</span></div><p>幸運は技能ポイントを使わずに決定します。キャラクター作成時に何度でも振り直せます。</p></RuleCard>
           <RuleCard title="組み付け"><p>組み付きを仕掛ける側の筋力と、対象の筋力の差で判定します。</p><div className="formula">50% ＋（仕掛ける側の筋力 − 対象側の筋力）× 5%</div><p>効果は主に1ターンまたは1分程度。継続する場合は再度判定します。</p></RuleCard>
         </RuleSection>
 

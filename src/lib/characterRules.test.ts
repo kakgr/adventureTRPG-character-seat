@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { DEFAULT_DATA } from '../constants/game'
-import { calculateDamageBonus, calculateHp, calculateMp, calculateSanity, isInitialDataValid, remainingSkillPoints, remainingStatPoints, sumSkillValues, totalStatValue, updateStat } from './characterRules'
+import { calculateDamageBonus, calculateHp, calculateMp, calculateSanity, isInitialDataValid, remainingSkillPoints, remainingStatPoints, rollLuck, sumSkillValues, totalSkillValue, updateSkillBonus, totalStatValue, updateStat } from './characterRules'
 import type { CharacterData } from '../types/character'
 
 const data = () => structuredClone(DEFAULT_DATA) as CharacterData
@@ -34,7 +34,15 @@ describe('character rules', () => {
     expect(remainingStatPoints(next.stats)).toBe(0)
   })
   it('sums all common, specialized and custom skills', () => {
-    const next = data(); next.skills.common.athletics = 40; next.skills.weapon.push({ id: '1', specialty: '剣', value: 70 }); next.skills.custom.push({ id: '2', name: '料理', value: 15 })
-    expect(sumSkillValues(next.skills)).toBe(125); expect(remainingSkillPoints(next.skills)).toBe(275)
+    const next = data(); next.skills.common.athletics = 40; next.skills.luck = 90; next.skills.weapon.push({ id: '1', specialty: '剣', value: 70 }); next.skills.magic.push({ id: '3', specialty: '火球', value: 20 }); next.skills.custom.push({ id: '2', name: '料理', value: 15 }); next.skills.bonuses.common.athletics = 5; next.skills.bonuses.weapon['1'] = 10
+    expect(sumSkillValues(next.skills)).toBe(145); expect(remainingSkillPoints(next.skills)).toBe(255)
+    expect(totalSkillValue(next.skills.common.athletics, next.skills.bonuses.common.athletics)).toBe(45)
+    expect(totalSkillValue(next.skills.weapon[0].value, next.skills.bonuses.weapon['1'])).toBe(80)
+    expect(updateSkillBonus(120)).toBe(100)
+  })
+
+  it('rolls luck from 0 through 90 inclusively', () => {
+    expect(rollLuck(() => 0)).toBe(0)
+    expect(rollLuck(() => 0.999999)).toBe(90)
   })
 })

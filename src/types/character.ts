@@ -48,8 +48,19 @@ export interface CustomSkill {
   value: number
 }
 
+export interface SkillBonuses {
+  common: Record<CommonSkillId, number>
+  weapon: Record<string, number>
+  ranged: Record<string, number>
+  knowledge: Record<string, number>
+  magic: Record<string, number>
+  custom: Record<string, number>
+}
+
 export interface Skills {
   common: Record<CommonSkillId, number>
+  luck: number
+  bonuses: SkillBonuses
   weapon: SpecializedSkill[]
   ranged: SpecializedSkill[]
   knowledge: SpecializedSkill[]

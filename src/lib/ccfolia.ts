@@ -1,4 +1,4 @@
-import { calculateDamageBonus, calculateHp, calculateMp, calculateSanity, totalStatValue } from './characterRules'
+import { calculateDamageBonus, calculateHp, calculateMp, calculateSanity, totalSkillValue, totalStatValue } from './characterRules'
 import { COMMON_SKILLS, SPECIALIZED_SKILLS, STAT_LABELS } from '../constants/game'
 import type { CharacterRecord, SpecializedSkill, SpecializedSkillId, StatId } from '../types/character'
 
@@ -57,19 +57,20 @@ function buildParams(character: CharacterRecord): CocofoliaParam[] {
   }))
 
   for (const skill of COMMON_SKILLS) {
-    params.push({ label: skill.label, value: String(data.skills.common[skill.id]) })
+    params.push({ label: skill.label, value: String(totalSkillValue(data.skills.common[skill.id], data.skills.bonuses.common[skill.id])) })
   }
+  params.push({ label: '幸運', value: String(data.skills.luck) })
 
   for (const group of SPECIALIZED_SKILLS) {
     for (const skill of data.skills[group.id]) {
       const label = nonEmpty(skill.specialty)
-      if (label) params.push({ label, value: String(skill.value) })
+      if (label) params.push({ label, value: String(totalSkillValue(skill.value, data.skills.bonuses[group.id][skill.id])) })
     }
   }
 
   for (const skill of data.skills.custom) {
     const label = nonEmpty(skill.name)
-    if (label) params.push({ label, value: String(skill.value) })
+    if (label) params.push({ label, value: String(totalSkillValue(skill.value, data.skills.bonuses.custom[skill.id])) })
   }
 
   return params
@@ -79,23 +80,24 @@ function buildSkillEntries(character: CharacterRecord) {
   const { data } = character
   const entries: Array<{ label: string; value: number }> = COMMON_SKILLS.map((skill) => ({
     label: skill.label,
-    value: data.skills.common[skill.id],
+    value: totalSkillValue(data.skills.common[skill.id], data.skills.bonuses.common[skill.id]),
   }))
+  entries.push({ label: '幸運', value: data.skills.luck })
 
   for (const group of SPECIALIZED_SKILLS) {
     entries.push(...data.skills[group.id]
       .filter((skill: SpecializedSkill) => nonEmpty(skill.specialty))
-      .map((skill: SpecializedSkill) => ({ label: skill.specialty.trim(), value: skill.value })))
+      .map((skill: SpecializedSkill) => ({ label: skill.specialty.trim(), value: totalSkillValue(skill.value, data.skills.bonuses[group.id][skill.id]) })))
   }
   entries.push(...data.skills.custom
     .filter((skill) => nonEmpty(skill.name))
-    .map((skill) => ({ label: skill.name.trim(), value: skill.value })))
+    .map((skill) => ({ label: skill.name.trim(), value: totalSkillValue(skill.value, data.skills.bonuses.custom[skill.id]) })))
   return entries
 }
 
 function buildCommands(character: CharacterRecord) {
   const skillLines = buildSkillEntries(character)
-    .filter(({ value }) => value > 0)
+    .filter(({ label, value }) => value > 0 || label === '幸運')
     .map(({ label, value }) => `1d100<=${value} 〖${label}〗`)
   const sanityLine = '1d100 〖正気度チェック（判定値はシナリオ指定）〗'
   return [...skillLines, sanityLine].join(CRLF)

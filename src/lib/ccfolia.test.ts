@@ -22,7 +22,9 @@ const character = (): CharacterRecord => ({
     statBonuses: { vitality: 1, speed: 2 },
     skills: {
       ...DEFAULT_DATA.skills,
+      luck: 42,
       common: { ...DEFAULT_DATA.skills.common, search: 65, medicine: 40 },
+      bonuses: { ...DEFAULT_DATA.skills.bonuses, common: { ...DEFAULT_DATA.skills.bonuses.common, search: 10 } },
       weapon: [{ id: 'weapon-1', specialty: '短剣', value: 55 }],
       custom: [{ id: 'custom-1', name: '古代文字', value: 80 }],
     },
@@ -52,7 +54,8 @@ describe('CCFOLIA character export', () => {
       { label: '速力', value: '5' },
       { label: '魔力', value: '6' },
       { label: 'ダメージボーナス', value: '1' },
-      { label: '探索', value: '65' },
+      { label: '探索', value: '75' },
+      { label: '幸運', value: '42' },
       { label: '短剣', value: '55' },
       { label: '古代文字', value: '80' },
     ]))
@@ -66,8 +69,9 @@ describe('CCFOLIA character export', () => {
     expect(result.data.memo).not.toContain('遺跡調査員')
     expect(result.data.memo).not.toContain('ランタン')
     expect(result.data.commands).toBe([
-      '1d100<=65 〖探索〗',
+      '1d100<=75 〖探索〗',
       '1d100<=40 〖医療〗',
+      '1d100<=42 〖幸運〗',
       '1d100<=55 〖短剣〗',
       '1d100<=80 〖古代文字〗',
       '1d100 〖正気度チェック（判定値はシナリオ指定）〗',
@@ -79,5 +83,12 @@ describe('CCFOLIA character export', () => {
 
     expect(serialized).not.toContain('\n')
     expect(JSON.parse(serialized)).toEqual(buildCocofoliaCharacter(character()))
+  })
+
+  it('keeps the luck command when luck is zero', () => {
+    const source = character()
+    source.data.skills.luck = 0
+
+    expect(buildCocofoliaCharacter(source).data.commands).toContain('1d100<=0 〖幸運〗')
   })
 })

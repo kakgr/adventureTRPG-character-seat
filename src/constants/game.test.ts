@@ -15,6 +15,11 @@ describe('skill catalog', () => {
     expect(DEFAULT_DATA.skills.magic).toEqual([])
   })
 
+  it('keeps luck outside the spendable skill catalog', () => {
+    expect(DEFAULT_DATA.skills.luck).toBe(0)
+    expect(COMMON_SKILLS.some((skill) => skill.label === '幸運')).toBe(false)
+  })
+
   it('defines an explanation for every displayed ability', () => {
     expect(Object.keys(STAT_DESCRIPTIONS)).toEqual(Object.keys(STAT_LABELS))
     expect(STAT_DESCRIPTIONS.vitality).toContain('生命力')

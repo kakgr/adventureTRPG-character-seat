@@ -102,7 +102,7 @@ h1, h2, h3, p { margin: 0; }.eyebrow { display: block; color: var(--accent); fon
 
 .skill-table-panel { border: 1px solid var(--border); background: var(--surface); }
 .skill-table-wrap, .skill-detail-table-wrap { overflow-x: auto; }
-.skill-table { width: 100%; min-width: 760px; border-collapse: collapse; table-layout: fixed; }
+.skill-table { width: 100%; min-width: 840px; border-collapse: collapse; table-layout: fixed; }
 .skill-table th { padding: 12px 14px; background: rgba(56, 232, 255, .06); color: var(--text-tertiary); text-align: left; font: 9px var(--mono); letter-spacing: .08em; }
 .skill-table th:nth-child(1) { width: 92px; }
 .skill-table th:nth-child(2) { width: 22%; }
@@ -119,6 +119,10 @@ h1, h2, h3, p { margin: 0; }.eyebrow { display: block; color: var(--accent); fon
 .skill-value-input { display: flex; align-items: center; gap: 7px; }
 .skill-value-input input { width: 70px; text-align: right; font-family: var(--mono); }
 .skill-value-input > span { color: var(--text-tertiary); font: 9px var(--mono); }
+.skill-table th:nth-child(3), .skill-table th:nth-child(4), .skill-table th:nth-child(5) { width: 105px; }
+.skill-table th:nth-child(6) { width: 70px; }
+.skill-table td:nth-child(4) input { width: 70px; text-align: right; font-family: var(--mono); }
+.skill-total-value { display: block; color: var(--accent-lime); font: 14px var(--mono); text-align: right; }
 .skill-add-actions { display: flex; flex-wrap: wrap; gap: 14px 22px; padding: 14px; border-top: 1px solid var(--border); background: rgba(255, 79, 216, .035); }
 .skill-add-actions .add-link { padding: 0; }
 .skill-add-actions .add-link:hover { color: var(--accent-cyan); }
@@ -342,6 +346,63 @@ body { background: var(--background); }
   .world-page { min-height: calc(100vh - 58px); }
 }
 
+/* Luck is a generated skill and is intentionally separate from the spendable skill table. */
+.luck-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px 16px;
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--background));
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+.luck-field strong { display: block; color: var(--text); font-size: 15px; }
+.luck-field p { margin-top: 5px; color: var(--text-tertiary); font-size: 10px; line-height: 1.6; }
+.luck-field output { min-width: 2ch; color: var(--accent-lime); font: 24px var(--mono); text-align: right; }
+
+.luck-detail-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.luck-detail-row div { display: grid; gap: 4px; }
+.luck-detail-row strong { font-size: 12px; }
+.luck-detail-row small { color: var(--text-tertiary); font-size: 9px; }
+.luck-detail-row > b { color: var(--accent); font: 15px var(--mono); }
+
+@media (max-width: 430px) {
+  .luck-field { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; }
+  .luck-field button { grid-column: 1 / -1; width: 100%; }
+  .luck-field output { font-size: 21px; }
+}
+
+/* Item notes support multiple lines without changing the stored data shape. */
+.item-row textarea {
+  width: 100%;
+  min-height: 62px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.item-row textarea:focus {
+  border-color: var(--accent);
+  background: var(--surface-raised);
+}
+
+@media (max-width: 760px) {
+  .item-row textarea:nth-child(3) {
+    grid-column: 1 / 3;
+    grid-row: 2;
+  }
+}
+
 /* World overview */
 .world-overview-page { max-width: 1240px; }
 .world-hero { margin-bottom: 46px; }
@@ -522,4 +583,18 @@ html, body, #root { min-width: 0; max-width: 100%; overflow-x: hidden; }
   .stat-row > .stat-cell:nth-child(3) { grid-area: bonus; }
   .stat-row > .stat-cell:nth-child(4) { grid-area: total; }
   .stat-total-cell { justify-items: end; }
+}
+
+/* Full-bleed world backgrounds */
+.world-page {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  min-height: calc(100vh - 64px);
+  padding-left: max(17px, calc((100% - 1280px) / 2));
+  padding-right: max(17px, calc((100% - 1280px) / 2));
+}
+
+@media (max-width: 760px) {
+  .world-page { min-height: calc(100vh - 58px); }
 }
