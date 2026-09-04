@@ -407,6 +407,7 @@ body { background: var(--background); }
 
 /* Mobile layout pass */
 html, body, #root { min-width: 0; max-width: 100%; overflow-x: hidden; }
+.mobile-menu-toggle { display: none; }
 
 @media (max-width: 760px) {
   .topbar { min-height: 58px; height: auto; padding: 9px 13px; }
@@ -416,7 +417,10 @@ html, body, #root { min-width: 0; max-width: 100%; overflow-x: hidden; }
   .user-name { display: none; }
 
   .app-body { display: block; }
-  .sidebar { width: 100%; min-width: 0; padding: 6px 7px; border-right: 0; border-bottom: 1px solid var(--border); flex-direction: row; flex-wrap: wrap; align-items: center; gap: 2px; overflow: visible; }
+  .sidebar { display: none; width: 100%; min-width: 0; padding: 6px 7px; border-right: 0; border-bottom: 1px solid var(--border); flex-direction: row; flex-wrap: wrap; align-items: center; gap: 2px; overflow: visible; }
+  .sidebar.sidebar-open { display: flex; }
+  .mobile-menu-toggle { display: inline-flex; align-items: center; justify-content: center; padding: 8px; border: 0; color: var(--text-secondary); background: transparent; }
+  .mobile-menu-toggle:hover, .mobile-menu-toggle:focus-visible { color: var(--text); }
   .sidebar > .nav-link, .world-nav-group { flex: 0 0 auto; }
   .sidebar .nav-link { width: auto; padding: 8px 7px; border-left: 0; border-bottom: 2px solid transparent; gap: 7px; font-size: 11px; white-space: nowrap; }
   .sidebar .nav-link-active { border-left-color: transparent; border-bottom-color: var(--accent); }
@@ -451,7 +455,8 @@ html, body, #root { min-width: 0; max-width: 100%; overflow-x: hidden; }
   .basic-grid { grid-template-columns: 1fr; gap: 15px; }
   .field-wide, .field-full { grid-column: auto; }
   .stat-layout { display: block; }
-  .stat-row { grid-template-columns: minmax(68px, 1fr) auto auto auto; gap: 6px; min-height: 62px; }
+  .stat-row { grid-template-columns: minmax(0, 1fr) minmax(0, 76px) minmax(0, 58px) minmax(0, 40px); gap: 6px; min-height: 62px; }
+  .stat-row > *, .stat-cell { min-width: 0; }
   .stat-cell small { font-size: 8px; }
   .stat-stepper { grid-template-columns: 22px 28px 22px; gap: 2px; }
   .stepper-button { width: 22px; height: 26px; }
@@ -487,7 +492,7 @@ html, body, #root { min-width: 0; max-width: 100%; overflow-x: hidden; }
   .brand { font-size: 11px; }
   .sidebar .nav-link { padding-inline: 6px; font-size: 10px; }
   .nav-indicator { width: 5px; height: 5px; }
-  .stat-row { grid-template-columns: minmax(60px, 1fr) auto auto auto; gap: 4px; }
+  .stat-row { grid-template-columns: minmax(0, 1fr) minmax(0, 65px) minmax(0, 51px) minmax(0, 34px); gap: 4px; }
   .stat-stepper { grid-template-columns: 20px 25px 20px; }
   .stepper-button { width: 20px; }
   .stat-bonus-cell input { width: 47px; }
