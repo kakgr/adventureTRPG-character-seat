@@ -56,17 +56,21 @@ describe('CCFOLIA character export', () => {
       { label: '短剣', value: '55' },
       { label: '古代文字', value: '80' },
     ]))
-    expect(result.data.memo).toContain('職業：遺跡調査員')
-    expect(result.data.memo).toContain('持ち物：ランタン ×2（油式）')
-    expect(result.data.memo).toContain('技能判定：1D100／技能値以下で成功')
-    expect(result.data.memo).toContain('クリティカル：1〜5／ファンブル：95〜100')
-    expect(result.data.memo).toContain('組み付け：50%＋（自分の筋力−対象の筋力）×5%')
+    expect(result.data.memo).toBe([
+      'PC：アリア・ノクス',
+      'HP：15',
+      'MP：18',
+      '正気度：6',
+      'ダメージボーナス：1',
+    ].join('\r\n'))
+    expect(result.data.memo).not.toContain('遺跡調査員')
+    expect(result.data.memo).not.toContain('ランタン')
     expect(result.data.commands).toBe([
       '1d100<=65 〖探索〗',
       '1d100<=40 〖医療〗',
       '1d100<=55 〖短剣〗',
       '1d100<=80 〖古代文字〗',
-      '1d100 〖正気度ロール（判定値はシナリオ指定）〗',
+      '1d100 〖正気度チェック（判定値はシナリオ指定）〗',
     ].join('\r\n'))
   })
 

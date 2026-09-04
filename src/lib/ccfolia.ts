@@ -35,34 +35,18 @@ const nonEmpty = (value: string | null | undefined) => value?.trim() ?? ''
 
 function buildMemo(character: CharacterRecord) {
   const { data } = character
-  const lines = [`PC：${character.name || '名前未設定'}`]
-  const profile = data.profile
+  const hp = calculateHp(data.stats, data.statBonuses)
+  const mp = calculateMp(data.stats, data.statBonuses)
+  const sanity = calculateSanity(data.stats, data.statBonuses)
+  const damageBonus = calculateDamageBonus(data.stats, data.statBonuses)
 
-  if (nonEmpty(profile.reading)) lines.push(`読み方：${profile.reading.trim()}`)
-  if (nonEmpty(profile.occupation)) lines.push(`職業：${profile.occupation.trim()}`)
-  if (profile.age !== null) lines.push(`年齢：${profile.age}`)
-  if (nonEmpty(profile.gender)) lines.push(`性別：${profile.gender.trim()}`)
-  if (nonEmpty(profile.summary)) lines.push(`一言：${profile.summary.trim()}`)
-  if (nonEmpty(profile.description)) lines.push(`プロフィール：${profile.description.trim()}`)
-
-  const items = data.items
-    .filter((item) => nonEmpty(item.name))
-    .map((item) => `${item.name.trim()} ×${item.quantity}${nonEmpty(item.description) ? `（${item.description.trim()}）` : ''}`)
-  if (items.length > 0) lines.push(`持ち物：${items.join('、')}`)
-  if (nonEmpty(data.experience.notes)) lines.push(`通過シナリオ：${data.experience.notes.trim()}`)
-  if (data.tags.length > 0) lines.push(`タグ：${data.tags.filter(nonEmpty).join('、')}`)
-
-  lines.push('技能判定：1D100／技能値以下で成功')
-  lines.push('クリティカル：1〜5／ファンブル：95〜100')
-  lines.push('組み付け：50%＋（自分の筋力−対象の筋力）×5%')
-  lines.push('組み付け継続：1ターンまたは1分程度。継続には再判定')
-  lines.push('正気度：0で発狂。成功率・減少量・回復はシナリオ指定')
-  lines.push('戦闘：速力順／攻撃→回避または防御→ダメージ')
-  lines.push('遠距離：中衛は命中率−10%、後衛は命中率−20%')
-  lines.push('ダメージ：武器・魔法の記載を参照／防御・回復：キャラクターシートを参照')
-  lines.push('HP0：死亡・ロスト／蘇生：GM判断')
-
-  return lines.join(CRLF)
+  return [
+    `PC：${character.name || '名前未設定'}`,
+    `HP：${hp}`,
+    `MP：${mp}`,
+    `正気度：${sanity}`,
+    `ダメージボーナス：${damageBonus}`,
+  ].join(CRLF)
 }
 
 function buildParams(character: CharacterRecord): CocofoliaParam[] {
@@ -113,7 +97,7 @@ function buildCommands(character: CharacterRecord) {
   const skillLines = buildSkillEntries(character)
     .filter(({ value }) => value > 0)
     .map(({ label, value }) => `1d100<=${value} 〖${label}〗`)
-  const sanityLine = '1d100 〖正気度ロール（判定値はシナリオ指定）〗'
+  const sanityLine = '1d100 〖正気度チェック（判定値はシナリオ指定）〗'
   return [...skillLines, sanityLine].join(CRLF)
 }
 
