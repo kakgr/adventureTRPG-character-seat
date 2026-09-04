@@ -58,7 +58,11 @@ describe('CCFOLIA character export', () => {
     ]))
     expect(result.data.memo).toContain('職業：遺跡調査員')
     expect(result.data.memo).toContain('持ち物：ランタン ×2（油式）')
+    expect(result.data.memo).toContain('技能判定：1D100／技能値以下で成功')
+    expect(result.data.memo).toContain('クリティカル：1〜5／ファンブル：95〜100')
+    expect(result.data.memo).toContain('組み付け：50%＋（自分の筋力−対象の筋力）×5%')
     expect(result.data.commands).toContain('1d100<=65 〖探索〗')
+    expect(result.data.commands).not.toContain('1d20<=')
   })
 
   it('serializes to compact JSON without raw line breaks', () => {
