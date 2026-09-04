@@ -498,3 +498,12 @@ html, body, #root { min-width: 0; max-width: 100%; overflow-x: hidden; }
   .stat-bonus-cell input { width: 47px; }
   .hero-resources > div { padding-left: 7px; }
 }
+
+@media (max-width: 430px) {
+  .stat-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'label total' 'initial bonus'; row-gap: 6px; min-height: 0; padding: 10px 0; }
+  .stat-row > .stat-label { grid-area: label; align-self: center; }
+  .stat-row > .stat-cell:nth-child(2) { grid-area: initial; }
+  .stat-row > .stat-cell:nth-child(3) { grid-area: bonus; }
+  .stat-row > .stat-cell:nth-child(4) { grid-area: total; }
+  .stat-total-cell { justify-items: end; }
+}
