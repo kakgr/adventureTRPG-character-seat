@@ -325,6 +325,8 @@ body { background: var(--background); }
 .formula, .formation-card { border-color: color-mix(in srgb, var(--accent) 38%, var(--background)); background: color-mix(in srgb, var(--accent) 8%, transparent); }
 .insanity-details, .skill-catalog-rule { border-color: color-mix(in srgb, var(--sub) 28%, var(--background)); background: color-mix(in srgb, var(--background) 86%, var(--main)); }
 .insanity-table div, .growth-value { border-color: color-mix(in srgb, var(--sub) 18%, var(--background)); }
+.brand-mark { overflow: hidden; padding: 0; background: var(--background); }
+.brand-mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 /* World overview */
 .world-overview-page { max-width: 1240px; }
