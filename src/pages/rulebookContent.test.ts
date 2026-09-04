@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { insanityTable, rulebookSections, skillRules, statDefinitions } from './rulebookContent'
+import { insanityTable, playerTerm, rulebookSections, skillRules, statDefinitions } from './rulebookContent'
 
 describe('rulebook content', () => {
   it('contains the first-edition core sections', () => {
@@ -35,5 +35,9 @@ describe('rulebook content', () => {
     expect(insanityTable).toHaveLength(20)
     expect(insanityTable[0].roll).toBe('1')
     expect(insanityTable[19].roll).toBe('20')
+  })
+
+  it('defines the in-world name for player characters', () => {
+    expect(playerTerm).toBe('PLたちは「渡り手」と呼ばれます。')
   })
 })

@@ -1,19 +1,20 @@
 export interface RulebookSection {
   id: string
   label: string
-  kicker: string
 }
 
 export const rulebookSections: RulebookSection[] = [
-  { id: 'overview', label: '基本方針', kicker: '01 / OVERVIEW' },
-  { id: 'character', label: '能力値と作成', kicker: '02 / CHARACTER' },
-  { id: 'checks', label: '判定', kicker: '03 / CHECKS' },
-  { id: 'combat', label: '戦闘', kicker: '04 / COMBAT' },
-  { id: 'resources', label: 'リソース', kicker: '05 / RESOURCES' },
-  { id: 'growth', label: '成長', kicker: '06 / GROWTH' },
-  { id: 'special', label: '魔術・特殊技能', kicker: '07 / SPECIAL' },
-  { id: 'gm', label: 'GM裁定', kicker: '08 / GM' },
+  { id: 'overview', label: '基本方針' },
+  { id: 'character', label: '能力値と作成' },
+  { id: 'checks', label: '判定' },
+  { id: 'combat', label: '戦闘' },
+  { id: 'resources', label: 'リソース' },
+  { id: 'growth', label: '成長' },
+  { id: 'special', label: '魔術・特殊技能' },
+  { id: 'gm', label: 'GM裁定' },
 ]
+
+export const playerTerm = 'PLたちは「渡り手」と呼ばれます。'
 
 export const statDefinitions = [
   { name: '体力', effect: 'HP' },
