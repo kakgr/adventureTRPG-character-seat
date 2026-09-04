@@ -29,7 +29,7 @@ export interface CocofoliaCharacter {
   }
 }
 
-const DEFAULT_COLOR = '#e0a15b'
+const DEFAULT_COLOR = '#d5774d'
 
 const nonEmpty = (value: string | null | undefined) => value?.trim() ?? ''
 
@@ -113,7 +113,8 @@ function buildCommands(character: CharacterRecord) {
   const skillLines = buildSkillEntries(character)
     .filter(({ value }) => value > 0)
     .map(({ label, value }) => `1d100<=${value} 〖${label}〗`)
-  return skillLines.join(CRLF)
+  const sanityLine = '1d100 〖正気度ロール（判定値はシナリオ指定）〗'
+  return [...skillLines, sanityLine].join(CRLF)
 }
 
 /**

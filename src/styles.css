@@ -1,27 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kurenaido&display=swap');
 
 :root {
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: #e7e9e8;
-  background: #1a1c1e;
+  font-family: 'Shippori Mincho', serif;
+  color: var(--main);
+  background: var(--background);
   font-synthesis: none;
-  --bg: #15161b;
-  --surface: #20222b;
-  --surface-raised: #2b2e3a;
-  --surface-soft: #252735;
-  --text: #f3f4ff;
-  --text-secondary: #b4b9d0;
-  --text-tertiary: #7e849d;
-  --border: #393e56;
-  --border-strong: #565d7d;
-  --accent: #ff4fd8;
-  --accent-cyan: #38e8ff;
-  --accent-lime: #b7ff51;
-  --accent-soft: rgba(255, 79, 216, .15);
-  --success: #b7ff51;
-  --danger: #ff7187;
-  --mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --display: 'Cormorant Garamond', Georgia, serif;
+  --background: #171a17;
+  --main: #f3ecdf;
+  --accent: #d5774d;
+  --sub: #9baea5;
+  --bg: var(--background);
+  --surface: color-mix(in srgb, var(--background) 89%, var(--main));
+  --surface-raised: color-mix(in srgb, var(--background) 78%, var(--main));
+  --surface-soft: color-mix(in srgb, var(--background) 88%, var(--sub));
+  --text: var(--main);
+  --text-secondary: color-mix(in srgb, var(--main) 70%, var(--background));
+  --text-tertiary: color-mix(in srgb, var(--main) 46%, var(--background));
+  --border: color-mix(in srgb, var(--sub) 32%, var(--background));
+  --border-strong: color-mix(in srgb, var(--sub) 58%, var(--background));
+  --accent-cyan: var(--sub);
+  --accent-lime: var(--main);
+  --accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
+  --success: var(--sub);
+  --danger: var(--accent);
+  --mono: 'DotGothic16', monospace;
+  --display: 'Zen Kurenaido', sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -290,3 +293,42 @@ h1 { font-weight: 600 !important; }
   .formation-card strong { font-size: 18px; }
   .formation-card small { font-size: 9px; }
 }
+
+/* Four-color design system: background / main / accent / sub */
+body { background: var(--background); }
+.topbar, .sidebar, .footer { background: var(--background); border-color: color-mix(in srgb, var(--sub) 26%, var(--background)); }
+.brand-mark { color: var(--background); background: var(--accent); box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 28%, transparent); }
+.sidebar-caption span { font-family: var(--display); color: var(--sub); }
+.button-primary { background: var(--accent); color: var(--background); box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 20%, transparent); }
+.button-primary:hover { background: var(--main); color: var(--background); }
+.button-dark { background: var(--main); color: var(--background); }
+.button-dark:hover { background: var(--sub); color: var(--background); }
+.button-outline:hover { background: color-mix(in srgb, var(--sub) 14%, transparent); }
+.status-error { color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, transparent); border-color: color-mix(in srgb, var(--accent) 38%, transparent); }
+.status-success, .status-info { color: var(--sub); background: color-mix(in srgb, var(--sub) 9%, transparent); border-color: color-mix(in srgb, var(--sub) 34%, transparent); }
+.world-page { background-color: var(--background); }
+.world-page .skill-table-panel, .world-page .derived-card, .world-page .detail-card { background: color-mix(in srgb, var(--background) 84%, var(--main)); border-color: color-mix(in srgb, var(--sub) 30%, var(--background)); box-shadow: 0 14px 32px color-mix(in srgb, var(--background) 35%, transparent); }
+.world-page .skill-table th { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+.world-page .skill-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.world-page .skill-table input, .world-page .field input, .world-page .field textarea, .world-page .stat-bonus-cell input { background: color-mix(in srgb, var(--background) 74%, var(--main)); border-color: color-mix(in srgb, var(--sub) 34%, var(--background)); }
+.world-page .skill-table input:focus, .world-page .field input:focus, .world-page .field textarea:focus, .world-page .stat-bonus-cell input:focus { background: color-mix(in srgb, var(--background) 64%, var(--main)); border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 18%, transparent); }
+.portrait-preview, .detail-portrait, .list-portrait { background: color-mix(in srgb, var(--background) 78%, var(--sub)); border-color: color-mix(in srgb, var(--sub) 34%, var(--background)); }
+.auth-art { background: var(--background); }
+.auth-art:before { background: linear-gradient(135deg, color-mix(in srgb, var(--sub) 12%, transparent), color-mix(in srgb, var(--background) 78%, transparent)); }
+.auth-panel { background: color-mix(in srgb, var(--background) 78%, var(--main)); border-color: color-mix(in srgb, var(--sub) 28%, var(--background)); box-shadow: 0 20px 54px color-mix(in srgb, var(--background) 30%, transparent); }
+.auth-panel .button-dark { background: var(--accent); color: var(--background); }
+.auth-panel .button-dark:hover { background: var(--main); }
+.world-page .detail-skill-value, .world-page .resource-pills b, .world-page .points-left b, .world-page .skill-total b { color: var(--accent); }
+
+.rulebook-nav { border-color: color-mix(in srgb, var(--sub) 34%, var(--background)); }
+.rulebook-nav > a:hover { border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.rulebook-section { border-color: color-mix(in srgb, var(--sub) 34%, var(--background)); }
+.rulebook-callout { border-color: color-mix(in srgb, var(--accent) 48%, var(--background)); background: linear-gradient(115deg, color-mix(in srgb, var(--accent) 12%, transparent), color-mix(in srgb, var(--sub) 6%, transparent)); box-shadow: none; }
+.rulebook-card { border-color: color-mix(in srgb, var(--sub) 28%, var(--background)); background: color-mix(in srgb, var(--background) 83%, var(--main)); box-shadow: none; }
+.rulebook-card h3 { border-color: color-mix(in srgb, var(--sub) 22%, var(--background)); }
+.stat-rule-card { border-color: color-mix(in srgb, var(--sub) 30%, var(--background)); background: color-mix(in srgb, var(--sub) 8%, transparent); }
+.critical-line span { border-color: color-mix(in srgb, var(--sub) 38%, var(--background)); }
+.critical-line span + span { border-color: color-mix(in srgb, var(--accent) 54%, var(--background)); }
+.formula, .formation-card { border-color: color-mix(in srgb, var(--accent) 38%, var(--background)); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.insanity-details, .skill-catalog-rule { border-color: color-mix(in srgb, var(--sub) 28%, var(--background)); background: color-mix(in srgb, var(--background) 86%, var(--main)); }
+.insanity-table div, .growth-value { border-color: color-mix(in srgb, var(--sub) 18%, var(--background)); }

@@ -2,9 +2,9 @@ import { WORLD_IMAGES } from '../constants/world'
 import { commonSkills, insanityTable, rulebookSections, skillRules, specializedSkills, statDefinitions } from './rulebookContent'
 
 export function RulebookPage() {
-  return <div className="page world-page rulebook-page" style={{ backgroundImage: `linear-gradient(rgba(25, 34, 31, .78), rgba(25, 34, 31, .94)), url(${WORLD_IMAGES.riverRoad})` }}>
+  return <div className="page world-page rulebook-page" style={{ backgroundImage: `linear-gradient(color-mix(in srgb, var(--background) 78%, transparent), color-mix(in srgb, var(--background) 94%, transparent)), url(${WORLD_IMAGES.riverRoad})` }}>
     <section className="rulebook-hero page-intro">
-      <div><span className="eyebrow">RULEBOOK / EDITION 01</span><h1>ルールブック</h1><p>身内向け adventureTRPG の基本ルール。細かな裁定はGMに委ねます。</p></div>
+      <div><span className="eyebrow">RULEBOOK / EDITION 01</span><h1>ルールブック</h1><p>adventureTRPG 第1版の基本ルールを一覧で確認できます。</p></div>
       <div className="rulebook-stamp"><strong>01</strong><span>FIRST EDITION</span></div>
     </section>
 
@@ -16,10 +16,9 @@ export function RulebookPage() {
 
       <main className="rulebook-content">
         <RuleSection id="overview" kicker="01 / OVERVIEW" title="基本方針">
-          <div className="rulebook-callout"><strong>このゲームの裁定は、楽しさとその場の納得感を優先します。</strong><span>ルールにない状況は、GMが参加者と相談して決定します。</span></div>
           <div className="rulebook-columns">
-            <RuleCard title="判定の基本"><p>技能判定はD100で行います。技能値以下なら成功です。</p><p>能力値は、通常の技能判定には基本的に加えません。</p></RuleCard>
-            <RuleCard title="遊び方"><p>キャラクターの行動は、宣言とRPを大切にします。こじつけを含む提案も、GMが妥当と判断すれば採用できます。</p></RuleCard>
+            <RuleCard title="判定"><p>技能判定はD100で行います。技能値以下なら成功です。</p><p>能力値は、通常の技能判定には基本的に加えません。</p></RuleCard>
+            <RuleCard title="裁定"><p>ルールにない状況は、GMがその場で判断します。必要に応じて参加者と相談できます。</p><p>行動の提案は、状況に合う技能や方法を説明して判定につなげます。</p></RuleCard>
           </div>
         </RuleSection>
 
@@ -66,7 +65,7 @@ export function RulebookPage() {
         </RuleSection>
 
         <RuleSection id="gm" kicker="08 / GM" title="GM裁定">
-          <div className="rulebook-callout"><strong>身内向けのため、細かなルールよりも卓内の合意と楽しさを優先します。</strong><span>判断に迷う場合は、GMがその場で決定します。必要なら後から調整します。</span></div>
+          <div className="rulebook-callout"><strong>未定義の状況はGMが判断します。</strong><span>判断に迷う場合は、その場で参加者と相談し、必要なら後から調整します。</span></div>
           <div className="rulebook-columns"><RuleCard title="許可されていること"><ul><li>PvP可</li><li>ルールへのこじつけ提案</li><li>状況に応じた発狂内容の決定</li><li>蘇生の可否をGMが判断</li></ul></RuleCard><RuleCard title="第1版の扱い"><p>このルールブックは、現在決まっている基本ルールをまとめた第1版です。戦闘の細部や魔術の個別データは、必要に応じて追加・更新します。</p></RuleCard></div>
         </RuleSection>
       </main>

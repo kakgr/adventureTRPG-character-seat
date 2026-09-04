@@ -45,7 +45,7 @@ export function CharacterEditorPage() {
   }
 
   if (loading) return <div className="loading-state">キャラクターを読み込んでいます…</div>
-  return <div className="page page-editor world-page world-harbor" style={{ backgroundImage: `linear-gradient(rgba(29, 35, 33, .74), rgba(29, 35, 33, .88)), url(${WORLD_IMAGES.harborCity})` }}>
+  return <div className="page page-editor world-page world-harbor" style={{ backgroundImage: `linear-gradient(color-mix(in srgb, var(--background) 74%, transparent), color-mix(in srgb, var(--background) 88%, transparent)), url(${WORLD_IMAGES.harborCity})` }}>
     <div className="editor-top"><Link to={isNew ? '/characters' : `/characters/${id}`} className="back-link"><Icon name="back" /> 一覧に戻る</Link><div className="save-state">{saving ? '保存中…' : saved ? <><Icon name="check" /> 保存しました</> : '変更を保存していません'}</div></div>
     <section className="editor-heading"><h1>{isNew ? '新しいキャラクター' : 'キャラクターを編集'}</h1><div className="resource-pills"><span>能力 <b>{Math.max(0, statRemaining)}</b> / 18</span><span>技能 <b>{Math.max(0, skillRemaining)}</b> / {INITIAL_SKILL_POINTS}</span></div></section>
     {error && <StatusMessage tone="error">{error}</StatusMessage>}

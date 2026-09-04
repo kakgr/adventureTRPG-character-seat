@@ -23,7 +23,7 @@ export function AuthPage() {
   const rejected = Boolean(user && allowed === false && !accessError)
 
   return <div className="auth-page">
-    <div className="auth-art" style={{ backgroundImage: `linear-gradient(90deg, rgba(20, 28, 29, .28), rgba(20, 28, 29, .66)), url(${WORLD_IMAGES.rainyCity})` }}><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-star">✦</div></div>
+    <div className="auth-art" style={{ backgroundImage: `linear-gradient(90deg, color-mix(in srgb, var(--background) 28%, transparent), color-mix(in srgb, var(--background) 66%, transparent)), url(${WORLD_IMAGES.rainyCity})` }}><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-star">✦</div></div>
     <section className="auth-panel">
       <div className="auth-heading"><h1>adventureTRPG</h1></div>
       {!configured && <StatusMessage tone="error">Supabaseの環境変数が未設定です。<code>.env.local</code> を設定してください。</StatusMessage>}

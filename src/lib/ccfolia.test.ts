@@ -61,8 +61,13 @@ describe('CCFOLIA character export', () => {
     expect(result.data.memo).toContain('技能判定：1D100／技能値以下で成功')
     expect(result.data.memo).toContain('クリティカル：1〜5／ファンブル：95〜100')
     expect(result.data.memo).toContain('組み付け：50%＋（自分の筋力−対象の筋力）×5%')
-    expect(result.data.commands).toContain('1d100<=65 〖探索〗')
-    expect(result.data.commands).not.toContain('1d20<=')
+    expect(result.data.commands).toBe([
+      '1d100<=65 〖探索〗',
+      '1d100<=40 〖医療〗',
+      '1d100<=55 〖短剣〗',
+      '1d100<=80 〖古代文字〗',
+      '1d100 〖正気度ロール（判定値はシナリオ指定）〗',
+    ].join('\r\n'))
   })
 
   it('serializes to compact JSON without raw line breaks', () => {

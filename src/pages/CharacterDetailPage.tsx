@@ -84,7 +84,7 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
     }
   }
 
-  return <div className={`page detail-page world-page world-rain ${publicView ? 'public-detail-page' : ''}`} style={{ backgroundImage: `linear-gradient(rgba(29, 35, 33, .74), rgba(29, 35, 33, .88)), url(${WORLD_IMAGES.rainyCity})` }}>
+  return <div className={`page detail-page world-page world-rain ${publicView ? 'public-detail-page' : ''}`} style={{ backgroundImage: `linear-gradient(color-mix(in srgb, var(--background) 74%, transparent), color-mix(in srgb, var(--background) 88%, transparent)), url(${WORLD_IMAGES.rainyCity})` }}>
     <div className="editor-top">
       <Link to={publicView && !canManage ? '/login' : '/characters'} className="back-link"><Icon name="back" /> {publicView && !canManage ? 'ログイン画面へ' : '一覧に戻る'}</Link>
       {canManage && <div className="detail-actions"><button className="button button-outline button-small" onClick={() => void copyToCocofolia()}><Icon name="copy" /> {copyState === 'copied' ? 'コピーしました' : 'ココフォリアにコピー'}</button><Link className="button button-outline button-small" to={`/characters/${displayCharacter.id}/edit`}><Icon name="edit" /> 編集</Link><button className="icon-button danger-icon" onClick={() => void remove()} disabled={deleting}><Icon name="trash" /></button></div>}
