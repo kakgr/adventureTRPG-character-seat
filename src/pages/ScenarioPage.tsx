@@ -11,5 +11,5 @@ export function ScenarioPage() {
 }
 
 function ScenarioBook({ scenario }: { scenario: (typeof scenarioSections)[number]['scenarios'][number] }) {
-  return <Link className="scenario-book" to={`/scenarios/${scenario.id}`}><div className="scenario-cover">{scenario.cover ? <img src={scenario.cover} alt="" loading="lazy" decoding="async" width="240" height="320" /> : <span>表紙未設定</span>}</div><h3>{scenario.title}</h3></Link>
+  return <Link className="scenario-book" to={`/scenarios/${scenario.id}`}><div className="scenario-cover">{scenario.cover ? <img src={scenario.cover} alt="" loading="lazy" decoding="async" width="240" height="320" /> : <span>表紙未設定</span>}<div className="scenario-cover-overlay"><span className="scenario-genre">{scenario.genre}</span><h3>{scenario.title}</h3></div></div></Link>
 }

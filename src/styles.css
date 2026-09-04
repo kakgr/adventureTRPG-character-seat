@@ -366,11 +366,14 @@ body { background: var(--background); }
 .scenario-section-heading h2 { font-size: 30px; }
 .scenario-section-heading span { color: var(--text-tertiary); font-size: 11px; }
 .scenario-book-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
-.scenario-book { min-width: 0; display: grid; gap: 11px; }
-.scenario-cover { aspect-ratio: 3 / 4; display: grid; place-items: center; overflow: hidden; border: 1px solid rgba(216, 193, 149, .28); background: rgba(29, 39, 36, .78); color: var(--text-tertiary); font-size: 11px; transition: border-color .16s, transform .16s, box-shadow .16s; }
+.scenario-book { min-width: 0; display: block; }
+.scenario-cover { position: relative; aspect-ratio: 3 / 4; display: grid; place-items: center; overflow: hidden; border: 1px solid rgba(216, 193, 149, .28); background: rgba(29, 39, 36, .78); color: var(--text-tertiary); font-size: 11px; transition: border-color .16s, transform .16s, box-shadow .16s; }
 .scenario-cover img { width: 100%; height: 100%; object-fit: cover; }
+.scenario-cover::after { content: ''; position: absolute; inset: 28% 0 0; background: linear-gradient(to bottom, transparent, rgba(8, 13, 12, .88) 78%); pointer-events: none; }
+.scenario-cover-overlay { position: absolute; z-index: 1; right: 0; bottom: 0; left: 0; padding: 44px 14px 14px; }
+.scenario-genre { display: block; margin-bottom: 5px; color: var(--accent); font: 10px/1.4 var(--mono); letter-spacing: .04em; }
+.scenario-cover-overlay h3 { color: var(--text); font-size: 18px; line-height: 1.35; text-shadow: 0 1px 8px rgba(8, 13, 12, .8); }
 .scenario-book:hover .scenario-cover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 12px 25px rgba(8, 13, 12, .22); }
-.scenario-book h3 { color: var(--text); font-size: 17px; line-height: 1.4; }
 .scenario-empty { min-height: 160px; display: grid; place-items: center; align-content: center; gap: 12px; border: 1px dashed rgba(216, 193, 149, .28); color: var(--text-tertiary); font-size: 11px; }
 .scenario-empty-book { width: 28px; height: 38px; border: 1px solid var(--accent); border-left-width: 5px; opacity: .75; }
 .scenario-detail-page { max-width: 1080px; }
