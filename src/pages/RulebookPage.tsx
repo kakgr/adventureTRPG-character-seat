@@ -25,7 +25,7 @@ export function RulebookPage() {
           <p className="rulebook-lead">初期作成では、<Keyword>能力値</Keyword>に18ポイントを自由に割り振ります。能力値に上限はなく、成長によって上昇します。</p>
           <div className="stat-rule-grid">{statDefinitions.map((stat) => <div className="stat-rule-card" key={stat.name}><span>{stat.effect}</span><strong>{stat.name}</strong></div>)}</div>
           <div className="rulebook-columns">
-            <RuleCard title="派生値" variant="mechanics"><ul><li><Keyword>HP</Keyword> ＝ 体力 × 3</li><li><Keyword>MP</Keyword> ＝ 魔力 × 3</li><li><Keyword>正気度</Keyword> ＝ 精神力 × 3</li><li><Keyword>ダメージボーナス</Keyword> ＝ ⌊(体力＋筋力) / 6⌋</li></ul></RuleCard>
+            <RuleCard title="派生値"><ul><li><Keyword>HP</Keyword> ＝ 体力 × 3</li><li><Keyword>MP</Keyword> ＝ 魔力 × 3</li><li><Keyword>正気度</Keyword> ＝ 精神力 × 3</li><li><Keyword>ダメージボーナス</Keyword> ＝ ⌊(体力＋筋力) / 6⌋</li></ul></RuleCard>
             <RuleCard title="作成時の注意"><ul><li>初期能力値はすべて1から開始</li><li>能力値ポイント18点を使い切る</li><li>能力値の成長上限は設けない</li><li>能力値は基本的に判定の修正値にしない</li></ul></RuleCard>
           </div>
         </RuleSection>
@@ -49,13 +49,13 @@ export function RulebookPage() {
         </RuleSection>
 
         <RuleSection id="resources" title="リソース">
-          <div className="resource-rule-grid"><RuleCard title="HP" variant="mechanics"><div className="formula">体力 × 3</div><p>最大値と現在値を管理します。0になると死亡・ロストです。</p><p>休息していた時間に応じて自動的に回復します。ぐっすり眠る、または半日休憩するなどすれば、半分以上を回復できます。</p></RuleCard><RuleCard title="MP" variant="mechanics"><div className="formula">魔力 × 3</div><p>最大値と現在値を管理します。0になっても、何らかの手段で回復できます。</p><p>休息していた時間に応じて自動的に回復します。ぐっすり眠る、または半日休憩するなどすれば、半分以上を回復できます。</p></RuleCard><RuleCard title="正気度" variant="mechanics"><div className="formula">精神力 × 3</div><p>最大値と現在値を管理します。精神を壊すようなイベントで判定します。</p></RuleCard></div>
+          <div className="resource-rule-grid"><RuleCard title="HP"><div className="formula">体力 × 3</div><p>最大値と現在値を管理します。0になると死亡・ロストです。</p><p>休息していた時間に応じて自動的に回復します。ぐっすり眠る、または半日休憩するなどすれば、半分以上を回復できます。</p></RuleCard><RuleCard title="MP"><div className="formula">魔力 × 3</div><p>最大値と現在値を管理します。0になっても、何らかの手段で回復できます。</p><p>休息していた時間に応じて自動的に回復します。ぐっすり眠る、または半日休憩するなどすれば、半分以上を回復できます。</p></RuleCard><RuleCard title="正気度"><div className="formula">精神力 × 3</div><p>最大値と現在値を管理します。精神を壊すようなイベントで判定します。</p></RuleCard></div>
           <div className="rulebook-callout"><strong>正気度の成功率・減少量・回復方法はシナリオ指定。</strong><span>正気度が0になると発狂します。発狂内容はその場のGM判断です。</span></div>
           <details className="insanity-details"><summary>発狂表（任意使用）</summary><p className="rulebook-note">迷ったときだけD20。効果の強さ・継続時間・終了条件はGM判断です。</p><div className="insanity-table">{insanityTable.map((entry) => <div key={entry.roll}><b>{entry.roll}</b><span>{entry.text}</span></div>)}</div></details>
         </RuleSection>
 
         <RuleSection id="growth" title="成長">
-          <div className="growth-grid"><RuleCard title="きっかけ" variant="mechanics"><p><Keyword>クリティカル</Keyword>を出したとき、または成長につながるイベントが起きたとき、GM判断で成長します。</p></RuleCard><RuleCard title="目安" variant="mechanics"><div className="growth-value"><strong>+1</strong><span>能力値 / 1シナリオ</span></div><div className="growth-value"><strong>+3</strong><span>技能値の合計 / 1シナリオ程度</span></div></RuleCard></div>
+          <div className="growth-grid"><RuleCard title="きっかけ"><p><Keyword>クリティカル</Keyword>を出したとき、または成長につながるイベントが起きたとき、GM判断で成長します。</p></RuleCard><RuleCard title="目安"><div className="growth-value"><strong>+1</strong><span>能力値 / 1シナリオ</span></div><div className="growth-value"><strong>+3</strong><span>技能値の合計 / 1シナリオ程度</span></div></RuleCard></div>
           <p className="rulebook-note">成長の有無・タイミング・具体的な配分はGMが判断します。</p>
         </RuleSection>
 

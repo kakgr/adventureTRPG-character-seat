@@ -575,9 +575,50 @@ body { background: var(--background); }
 }
 
 .rulebook-section#resources .rulebook-callout {
-  padding: 18px 20px;
-  border: 1px solid color-mix(in srgb, var(--accent) 48%, var(--background));
-  background: linear-gradient(115deg, color-mix(in srgb, var(--accent) 12%, transparent), color-mix(in srgb, var(--sub) 6%, transparent));
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+/* Keep reference information textual; reserve boxes for actual procedures. */
+.rulebook-columns { display: block; }
+.rulebook-columns .rulebook-card + .rulebook-card { margin-top: 25px; }
+.stat-rule-card {
+  min-height: 0;
+  padding: 0 0 12px;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--sub) 22%, var(--background));
+  background: transparent;
+}
+.stat-rule-card strong { align-self: auto; }
+.formation-card {
+  min-height: 0;
+  padding: 0 0 13px;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--sub) 22%, var(--background));
+  background: transparent;
+}
+.formation-card strong { align-self: auto; }
+.formula {
+  margin: 13px 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+}
+.insanity-details {
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--sub) 24%, var(--background));
+  border-bottom: 1px solid color-mix(in srgb, var(--sub) 24%, var(--background));
+  background: transparent;
+}
+.insanity-details summary { padding-inline: 0; }
+.insanity-details > p { padding-inline: 0; }
+.insanity-table { padding-inline: 0; }
+.skill-catalog-rule {
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 @media (max-width: 760px) {
