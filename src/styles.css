@@ -346,6 +346,52 @@ body { background: var(--background); }
   .world-page { min-height: calc(100vh - 58px); }
 }
 
+/* On very narrow screens keep the editor's numeric controls in the first viewport. */
+@media (max-width: 430px) {
+  .page-editor .skill-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .page-editor .skill-table thead { display: none; }
+  .page-editor .skill-table tbody { display: block; }
+  .page-editor .skill-table tbody tr:not(.skill-genre-row) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px 48px 42px 25px;
+    grid-template-areas: 'name initial bonus total action';
+    gap: 4px;
+    align-items: center;
+  }
+  .page-editor .skill-table tbody tr:not(.skill-genre-row) td {
+    min-width: 0;
+    padding: 8px 2px;
+  }
+  .page-editor .skill-table tbody tr:not(.skill-genre-row) td:nth-child(1) { display: none; }
+  .page-editor .skill-table tbody tr:not(.skill-genre-row) td:nth-child(2) { grid-area: name; }
+  .page-editor .skill-table tbody tr:not(.skill-genre-row) td:nth-child(3) { grid-area: initial; }
+  .page-editor .skill-table tbody tr:not(.skill-genre-row) td:nth-child(4) { grid-area: bonus; }
+  .page-editor .skill-table tbody tr:not(.skill-genre-row) td:nth-child(5) { grid-area: total; }
+  .page-editor .skill-table tbody tr:not(.skill-genre-row) td:nth-child(6) { grid-area: action; }
+  .page-editor .skill-table tbody tr.skill-genre-row th { display: block; padding-inline: 3px; }
+  .page-editor .skill-table .skill-value-input { display: block; }
+  .page-editor .skill-table .skill-value-input input,
+  .page-editor .skill-table td:nth-child(4) input { width: 44px; padding-inline: 4px; }
+  .page-editor .skill-table .skill-value-input > span { display: none; }
+  .page-editor .skill-table .skill-total-value { text-align: center; }
+  .page-editor .skill-table td:nth-child(6) .text-button { padding: 3px 0; font-size: 0; }
+  .page-editor .skill-table td:nth-child(6) .text-button .icon { width: 14px; }
+}
+
+@media (max-width: 330px) {
+  .page-editor .skill-table tbody tr:not(.skill-genre-row) {
+    grid-template-columns: minmax(0, 1fr) 44px 44px 38px 22px;
+    gap: 3px;
+  }
+  .page-editor .skill-table .skill-value-input input,
+  .page-editor .skill-table td:nth-child(4) input { width: 40px; }
+}
+
 /* Rulebook reading layout: prose stays open, mechanics keep a visual boundary. */
 .rulebook-card {
   padding: 0;
