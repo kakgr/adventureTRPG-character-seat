@@ -34,5 +34,16 @@ export function CharactersPage() {
 }
 
 function CharacterList({ characters }: { characters: CharacterRecord[] }) {
-  return <div className="character-list"><div className="character-list-head"><span>キャラクター</span><span>プロフィール</span><span>タグ</span><span>HP / MP / SAN</span><span>更新</span></div>{characters.map((character) => <Link to={`/characters/${character.id}`} className="character-list-row" key={character.id}><div className="list-character"><div className="list-portrait">{character.portrait_url ? <img src={character.portrait_url} alt="" /> : <span>✦</span>}</div><div><h2>{character.name || '名前未設定'}</h2>{character.data.profile.reading && <p>{character.data.profile.reading}</p>}</div></div><p className="list-profile">{character.data.profile.summary || character.data.profile.occupation}</p><div className="list-tags">{character.data.tags.slice(0, 2).map((tag) => <span className="tag" key={tag}>{tag}</span>)}{character.data.tags.length > 2 && <span className="tag tag-muted">+{character.data.tags.length - 2}</span>}</div><div className="list-status"><span><b>HP</b>{calculateHp(character.data.stats, character.data.statBonuses)}</span><span><b>MP</b>{calculateMp(character.data.stats, character.data.statBonuses)}</span><span><b>SAN</b>{calculateSanity(character.data.stats, character.data.statBonuses)}</span></div><time>{new Date(character.updated_at).toLocaleDateString('ja-JP')}</time><Icon name="arrow" /></Link>)}</div>
+  return <div className="character-card-grid">{characters.map((character) => <Link to={`/characters/${character.id}`} className="character-card" key={character.id}>
+    <div className="character-card-cover">
+      {character.portrait_url ? <img src={character.portrait_url} alt="" loading="lazy" decoding="async" width="320" height="420" /> : <span className="character-card-placeholder">✦</span>}
+      <div className="character-card-overlay"><span>{character.data.profile.occupation || '渡り手'}</span><h2>{character.name || '名前未設定'}</h2>{character.data.profile.reading && <p>{character.data.profile.reading}</p>}</div>
+    </div>
+    <div className="character-card-body">
+      <p className="character-card-summary">{character.data.profile.summary || 'プロフィール未設定'}</p>
+      <div className="character-card-tags">{character.data.tags.slice(0, 3).map((tag) => <span className="tag" key={tag}>{tag}</span>)}{character.data.tags.length > 3 && <span className="tag tag-muted">+{character.data.tags.length - 3}</span>}</div>
+      <div className="character-card-status"><span><b>HP</b>{calculateHp(character.data.stats, character.data.statBonuses)}</span><span><b>MP</b>{calculateMp(character.data.stats, character.data.statBonuses)}</span><span><b>SAN</b>{calculateSanity(character.data.stats, character.data.statBonuses)}</span></div>
+    </div>
+    <div className="character-card-footer"><time>{new Date(character.updated_at).toLocaleDateString('ja-JP')}</time><Icon name="arrow" /></div>
+  </Link>)}</div>
 }

@@ -346,6 +346,137 @@ body { background: var(--background); }
   .world-page { min-height: calc(100vh - 58px); }
 }
 
+/* Character cards */
+.character-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+.character-card {
+  min-width: 0;
+  display: block;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--sub) 30%, var(--background));
+  background: color-mix(in srgb, var(--background) 82%, var(--main));
+  transition: border-color .16s, transform .16s, box-shadow .16s;
+}
+.character-card-cover {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--background) 72%, var(--sub));
+  color: var(--accent);
+}
+.character-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.character-card-cover::after {
+  content: '';
+  position: absolute;
+  inset: 27% 0 0;
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--background) 92%, transparent) 84%);
+  pointer-events: none;
+}
+.character-card-placeholder { font-size: 42px; }
+.character-card-overlay {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 48px 14px 14px;
+}
+.character-card-overlay > span {
+  display: block;
+  margin-bottom: 5px;
+  overflow: hidden;
+  color: var(--accent);
+  font: 10px/1.4 var(--mono);
+  letter-spacing: .04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.character-card-overlay h2 {
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-size: 19px;
+  line-height: 1.35;
+  text-shadow: 0 1px 8px color-mix(in srgb, var(--background) 82%, transparent);
+}
+.character-card-overlay p {
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.character-card-body { display: grid; gap: 13px; padding: 14px; }
+.character-card-summary {
+  min-height: 3.2em;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.character-card-tags { display: flex; min-width: 0; flex-wrap: wrap; gap: 5px; }
+.character-card-tags .tag { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.character-card-status {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 11px;
+  border-top: 1px solid color-mix(in srgb, var(--sub) 21%, var(--background));
+  color: var(--text-secondary);
+  font: 11px var(--mono);
+}
+.character-card-status span { display: inline-flex; align-items: baseline; gap: 4px; }
+.character-card-status b { color: var(--accent); font-size: 9px; }
+.character-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px 13px;
+  color: var(--text-tertiary);
+}
+.character-card-footer time { font: 10px var(--mono); }
+.character-card-footer .icon { color: var(--text-tertiary); }
+.character-card:hover,
+.character-card:focus-visible {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px color-mix(in srgb, var(--background) 28%, transparent);
+}
+
+@media (max-width: 1050px) {
+  .character-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .character-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .character-card-overlay { padding: 38px 11px 11px; }
+  .character-card-overlay h2 { font-size: 16px; }
+  .character-card-body { gap: 10px; padding: 11px; }
+  .character-card-summary { font-size: 10px; }
+  .character-card-footer { padding: 0 11px 11px; }
+}
+
+@media (max-width: 430px) {
+  .character-card-grid { grid-template-columns: 1fr; gap: 16px; }
+  .character-card-cover { aspect-ratio: 4 / 3; }
+  .character-card-overlay { padding: 52px 14px 14px; }
+  .character-card-overlay h2 { font-size: 20px; }
+  .character-card-body { padding: 14px; }
+  .character-card-footer { padding: 0 14px 13px; }
+}
+
 /* On very narrow screens keep the editor's numeric controls in the first viewport. */
 @media (max-width: 430px) {
   .page-editor .skill-table {
