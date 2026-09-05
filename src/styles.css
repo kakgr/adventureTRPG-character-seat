@@ -346,6 +346,68 @@ body { background: var(--background); }
   .world-page { min-height: calc(100vh - 58px); }
 }
 
+/* Rulebook reading layout: prose stays open, mechanics keep a visual boundary. */
+.rulebook-card {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.rulebook-card h3 {
+  padding: 0;
+  margin: 0 0 10px;
+  border-bottom: 0;
+  color: var(--text);
+  font-size: 17px;
+}
+
+.rulebook-card p,
+.rulebook-card li {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 2;
+}
+
+.rulebook-card-mechanics {
+  padding: 18px 20px;
+  border: 1px solid color-mix(in srgb, var(--sub) 30%, var(--background));
+  background: color-mix(in srgb, var(--background) 84%, var(--main));
+}
+
+.rulebook-card-mechanics h3 {
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--sub) 22%, var(--background));
+  color: var(--accent);
+}
+
+.rulebook-keyword {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.rulebook-callout {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.rulebook-callout strong {
+  color: var(--accent);
+}
+
+.rulebook-section#resources .rulebook-callout {
+  padding: 18px 20px;
+  border: 1px solid color-mix(in srgb, var(--accent) 48%, var(--background));
+  background: linear-gradient(115deg, color-mix(in srgb, var(--accent) 12%, transparent), color-mix(in srgb, var(--sub) 6%, transparent));
+}
+
+@media (max-width: 760px) {
+  .rulebook-card-mechanics { padding: 15px 16px; }
+  .rulebook-card h3 { font-size: 16px; }
+}
+
 /* Luck is a generated skill and is intentionally separate from the spendable skill table. */
 .luck-field {
   display: grid;
