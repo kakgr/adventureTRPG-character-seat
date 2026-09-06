@@ -75,6 +75,18 @@ export interface Item {
   description: string
 }
 
+export type WeaponKind = 'melee' | 'gun'
+
+export interface Weapon {
+  id: string
+  name: string
+  kind: WeaponKind
+  skill: string
+  damage: string
+  durability: number
+  description: string
+}
+
 export interface Experience {
   notes: string
 }
@@ -84,6 +96,7 @@ export interface CharacterData {
   stats: Stats
   statBonuses?: StatBonuses
   skills: Skills
+  weapons: Weapon[]
   items: Item[]
   experience: Experience
   tags: string[]

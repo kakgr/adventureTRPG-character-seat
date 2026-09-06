@@ -28,6 +28,7 @@ const character = (): CharacterRecord => ({
       weapon: [{ id: 'weapon-1', specialty: '短剣', value: 55 }],
       custom: [{ id: 'custom-1', name: '古代文字', value: 80 }],
     },
+    weapons: [],
     items: [{ id: 'item-1', name: 'ランタン', quantity: 2, description: '油式' }],
     experience: { notes: '港町の事件' },
     tags: ['探索', '古代遺跡'],
@@ -90,5 +91,12 @@ describe('CCFOLIA character export', () => {
     source.data.skills.luck = 0
 
     expect(buildCocofoliaCharacter(source).data.commands).toContain('1d100<=0 〖幸運〗')
+  })
+
+  it('includes weapon durability in the memo', () => {
+    const source = character()
+    source.data.weapons = [{ id: 'weapon-1', name: '短銃', kind: 'gun', skill: '射撃・投擲', damage: '1d6', durability: 8, description: '' }]
+
+    expect(buildCocofoliaCharacter(source).data.memo).toContain('武器：短銃（銃） 技能：射撃・投擲 ダメージ：1d6 耐久値：8')
   })
 })

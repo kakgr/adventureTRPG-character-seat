@@ -4,14 +4,17 @@ export interface RulebookSection {
 }
 
 export const rulebookSections: RulebookSection[] = [
-  { id: 'overview', label: '基本方針' },
-  { id: 'character', label: '能力値と作成' },
-  { id: 'checks', label: '判定' },
-  { id: 'combat', label: '戦闘' },
-  { id: 'resources', label: 'リソース' },
+  { id: 'trpg', label: 'TRPGとは' },
+  { id: 'features', label: 'アドベンチャーTRPGの特徴' },
+  { id: 'parameters', label: 'パラメーター' },
+  { id: 'skills', label: '技能について' },
   { id: 'growth', label: '成長' },
-  { id: 'special', label: '魔術・特殊技能' },
-  { id: 'gm', label: 'GM裁定' },
+  { id: 'checks', label: '判定' },
+  { id: 'sanity', label: '正気度' },
+  { id: 'luck', label: '幸運' },
+  { id: 'combat', label: '戦闘' },
+  { id: 'weapons', label: '武器' },
+  { id: 'magic', label: '魔術' },
 ]
 
 export const playerTerm = 'PLたちは「渡り手」と呼ばれます。'

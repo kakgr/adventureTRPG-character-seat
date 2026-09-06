@@ -40,12 +40,14 @@ function buildMemo(character: CharacterRecord) {
   const sanity = calculateSanity(data.stats, data.statBonuses)
   const damageBonus = calculateDamageBonus(data.stats, data.statBonuses)
 
+  const weaponLines = data.weapons.map((weapon) => `武器：${weapon.name || '名称未設定'}（${weapon.kind === 'gun' ? '銃' : '近接武器'}） 技能：${weapon.skill || '未設定'} ダメージ：${weapon.damage || '未設定'} 耐久値：${weapon.durability}`)
   return [
     `PC：${character.name || '名前未設定'}`,
     `HP：${hp}`,
     `MP：${mp}`,
     `正気度：${sanity}`,
     `ダメージボーナス：${damageBonus}`,
+    ...weaponLines,
   ].join(CRLF)
 }
 

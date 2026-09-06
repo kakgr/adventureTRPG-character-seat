@@ -30,4 +30,10 @@ describe('character data normalization', () => {
 
     expect(result.items[0].description).toBe('一行目\n二行目')
   })
+
+  it('normalizes weapon durability and keeps weapon kind', () => {
+    const result = normalizeCharacterData({ weapons: [{ id: 'weapon-1', name: '短剣', kind: 'melee', skill: '武器', damage: '1d4', durability: -3, description: '受け流し用' }] } as never)
+
+    expect(result.weapons[0]).toEqual({ id: 'weapon-1', name: '短剣', kind: 'melee', skill: '武器', damage: '1d4', durability: 0, description: '受け流し用' })
+  })
 })

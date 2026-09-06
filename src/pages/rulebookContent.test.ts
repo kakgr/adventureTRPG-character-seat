@@ -4,14 +4,17 @@ import { insanityTable, luckRules, playerTerm, rulebookSections, skillRules, sta
 describe('rulebook content', () => {
   it('contains the first-edition core sections', () => {
     expect(rulebookSections.map((section) => section.id)).toEqual([
-      'overview',
-      'character',
-      'checks',
-      'combat',
-      'resources',
+      'trpg',
+      'features',
+      'parameters',
+      'skills',
       'growth',
-      'special',
-      'gm',
+      'checks',
+      'sanity',
+      'luck',
+      'combat',
+      'weapons',
+      'magic',
     ])
   })
 

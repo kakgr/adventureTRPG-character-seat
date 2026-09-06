@@ -1,6 +1,6 @@
 import { DEFAULT_DATA, INITIAL_STAT_BASE, MAX_SKILL_BONUS } from '../constants/game'
 import { normalizeLuck } from './characterRules'
-import type { CharacterData, Skills, StatBonuses, Stats } from '../types/character'
+import type { CharacterData, Skills, StatBonuses, Stats, Weapon, WeaponKind } from '../types/character'
 
 const finiteNumber = (value: unknown, fallback: number) => typeof value === 'number' && Number.isFinite(value) ? value : fallback
 
@@ -22,6 +22,20 @@ const normalizeStatBonuses = (source: Partial<StatBonuses> | undefined): StatBon
 
 const normalizeSkillBonus = (value: unknown) => Math.max(0, Math.min(MAX_SKILL_BONUS, typeof value === 'number' && Number.isFinite(value) ? Math.round(value) : 0))
 const normalizeSkillBonusMap = (source: Record<string, unknown> | undefined) => Object.fromEntries(Object.entries(source ?? {}).map(([id, value]) => [id, normalizeSkillBonus(value)]))
+
+const normalizeWeapon = (source: Partial<Weapon>, index: number): Weapon => ({
+  id: typeof source.id === 'string' && source.id ? source.id : `weapon-${index + 1}`,
+  name: typeof source.name === 'string' ? source.name : '',
+  kind: (source.kind === 'gun' ? 'gun' : 'melee') as WeaponKind,
+  skill: typeof source.skill === 'string' ? source.skill : '',
+  damage: typeof source.damage === 'string' ? source.damage : '',
+  durability: Math.max(0, Math.round(finiteNumber(source.durability, 0))),
+  description: typeof source.description === 'string' ? source.description : '',
+})
+
+const normalizeWeapons = (source: unknown): Weapon[] => Array.isArray(source)
+  ? source.map((weapon, index) => normalizeWeapon((weapon ?? {}) as Partial<Weapon>, index))
+  : []
 
 const normalizeSkills = (source: Partial<Skills> | undefined): Skills => ({
   common: { ...DEFAULT_DATA.skills.common, ...(source?.common ?? {}) },
@@ -49,6 +63,7 @@ export function normalizeCharacterData(source: Partial<CharacterData> | null | u
     stats: normalizeStats(data.stats),
     statBonuses: normalizeStatBonuses(data.statBonuses),
     skills: normalizeSkills(data.skills),
+    weapons: normalizeWeapons(data.weapons),
     items: Array.isArray(data.items) ? data.items : [],
     experience: { ...DEFAULT_DATA.experience, ...(data.experience ?? {}) },
     tags: Array.isArray(data.tags) ? data.tags : [],

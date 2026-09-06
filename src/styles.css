@@ -221,7 +221,7 @@ h1 { font-weight: 600 !important; }
 .rulebook-hero h1 { font-size: 48px; }
 .rulebook-hero p { max-width: 620px; line-height: 1.7; }
 .rulebook-layout { display: grid; grid-template-columns: 176px minmax(0, 1fr); gap: 44px; align-items: start; }
-.rulebook-nav { position: sticky; top: 24px; display: grid; gap: 2px; border-top: 1px solid rgba(216, 193, 149, .28); padding-top: 13px; }
+.rulebook-nav { position: sticky; top: 24px; align-self: start; max-height: calc(100vh - 48px); overflow-y: auto; display: grid; gap: 2px; border-top: 1px solid rgba(216, 193, 149, .28); padding-top: 13px; }
 .rulebook-nav > a { display: block; padding: 8px 7px; border-left: 1px solid transparent; color: var(--text-secondary); font-size: 11px; transition: color .16s, border .16s, background .16s; }
 .rulebook-nav > a:hover { color: var(--text); border-left-color: var(--accent); background: rgba(224, 161, 91, .08); }
 .rulebook-content { min-width: 0; }
@@ -274,7 +274,7 @@ h1 { font-weight: 600 !important; }
 
 @media (max-width: 1050px) {
   .rulebook-layout { grid-template-columns: 1fr; gap: 22px; }
-  .rulebook-nav { position: static; display: flex; flex-wrap: wrap; align-items: center; gap: 3px; padding: 10px 0; border-bottom: 1px solid rgba(216, 193, 149, .28); }
+  .rulebook-nav { position: sticky; top: 16px; z-index: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 3px; max-height: none; padding: 10px 0; border-bottom: 1px solid rgba(216, 193, 149, .28); background: color-mix(in srgb, var(--background) 94%, transparent); }
   .rulebook-nav > a { grid-template-columns: 23px auto; padding: 7px 8px; }
   .stat-rule-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
@@ -676,11 +676,76 @@ body { background: var(--background); }
   background: var(--surface-raised);
 }
 
+.form-help { margin: -7px 0 14px; color: var(--text-tertiary); font-size: 10px; line-height: 1.7; }
+.weapons-editor { display: grid; gap: 9px; }
+.weapon-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.2fr) 105px minmax(120px, 1fr) 100px 92px minmax(150px, 1.35fr) 28px;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.weapon-row input,
+.weapon-row select,
+.weapon-row textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--surface);
+  padding: 9px 10px;
+  outline: none;
+  color: var(--text);
+}
+.weapon-row select { min-width: 0; }
+.weapon-row textarea { resize: vertical; min-height: 42px; line-height: 1.5; }
+.weapon-row input:focus,
+.weapon-row select:focus,
+.weapon-row textarea:focus { border-color: var(--accent); background: var(--surface-raised); }
+.weapon-durability { display: grid; gap: 4px; color: var(--text-tertiary); font-size: 9px; }
+.weapon-durability input { padding-block: 7px; }
+.detail-weapons { display: grid; gap: 0; }
+.detail-weapon { display: grid; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.detail-weapon-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.detail-weapon-heading b { font-size: 12px; }
+.detail-weapon-heading span { color: var(--accent); font: 9px var(--mono); }
+.detail-weapon-meta { display: flex; flex-wrap: wrap; gap: 7px 16px; color: var(--text-secondary); font-size: 10px; }
+.detail-weapon-meta b { color: var(--text); font: 11px var(--mono); }
+.detail-weapon small { color: var(--text-tertiary); font-size: 10px; white-space: pre-wrap; }
+
 @media (max-width: 760px) {
   .item-row textarea:nth-child(3) {
     grid-column: 1 / 3;
     grid-row: 2;
   }
+
+  .weapon-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px;
+    grid-template-areas:
+      'name type action'
+      'skill damage action'
+      'durability notes action';
+  }
+  .weapon-row > :nth-child(1) { grid-area: name; }
+  .weapon-row > :nth-child(2) { grid-area: type; }
+  .weapon-row > :nth-child(3) { grid-area: skill; }
+  .weapon-row > :nth-child(4) { grid-area: damage; }
+  .weapon-row > :nth-child(5) { grid-area: durability; }
+  .weapon-row > :nth-child(6) { grid-area: notes; }
+  .weapon-row > :nth-child(7) { grid-area: action; }
+}
+
+@media (max-width: 430px) {
+  .weapon-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'name type'
+      'skill skill'
+      'damage durability'
+      'notes notes'
+      'action action';
+  }
+  .weapon-row > :nth-child(7) { justify-self: end; }
 }
 
 /* World overview */

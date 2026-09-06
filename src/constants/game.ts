@@ -117,6 +117,7 @@ export const DEFAULT_DATA: CharacterData = {
     magic: [],
     custom: [],
   },
+  weapons: [],
   items: [],
   experience: { notes: '' },
   tags: [],
