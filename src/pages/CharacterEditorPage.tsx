@@ -4,11 +4,13 @@ import { COMMON_SKILL_GENRES, COMMON_SKILLS, DEFAULT_DATA, INITIAL_SKILL_POINTS,
 import { characterService } from '../lib/characters'
 import { clearCharacterDraft, loadCharacterDraft, saveCharacterDraft } from '../lib/characterDraft'
 import { calculateDamageBonus, calculateHp, calculateMp, calculateSanity, isInitialDataValid, remainingSkillPoints, remainingStatPoints, rollLuck, totalSkillValue, updateSkillBonus, updateStat } from '../lib/characterRules'
+import { updateCurrency } from '../lib/currency'
+import { normalizeNumberInput } from '../lib/numberInput'
 import { useAuth } from '../hooks/useAuth'
 import { Icon } from '../components/Icons'
 import { StatusMessage } from '../components/StatusMessage'
 import { NumericInput } from '../components/NumericInput'
-import type { CharacterData, CharacterRecord, SpecializedSkillId, StatId, WeaponKind } from '../types/character'
+import type { CharacterData, CharacterRecord, CurrencyDenomination, SpecializedSkillId, StatId, WeaponKind } from '../types/character'
 import { WORLD_IMAGES } from '../constants/world'
 
 const freshData = (): CharacterData => {
@@ -104,6 +106,7 @@ export function CharacterEditorPage() {
       <section className="form-section"><SectionTitle title="能力値"/><div className="stat-layout"><div className="stat-list">{(Object.keys(STAT_LABELS) as StatId[]).map((statId) => <StatRow key={statId} id={statId} value={data.stats[statId]} bonus={data.statBonuses?.[statId] ?? 0} onChange={(delta) => update({ ...data, stats: updateStat(data.stats, statId, delta, isNew) })} onBonusChange={(bonus) => update({ ...data, statBonuses: { ...data.statBonuses, [statId]: bonus } })} />)}</div><div className="derived-card"><div className="derived-row"><span>HP</span><strong>{calculateHp(data.stats, data.statBonuses)}</strong></div><div className="derived-row"><span>MP</span><strong>{calculateMp(data.stats, data.statBonuses)}</strong></div><div className="derived-row"><span>正気度</span><strong>{calculateSanity(data.stats, data.statBonuses)}</strong></div><div className="derived-row"><span>ダメージボーナス</span><strong>{calculateDamageBonus(data.stats, data.statBonuses)}</strong></div><div className={`points-left ${statRemaining === 0 ? 'points-done' : ''}`}><span>残り能力ポイント</span><b>{Math.max(0, statRemaining)} <small>/ 18</small></b></div></div></div></section>
       <section className="form-section"><SectionTitle title="技能"/><LuckField value={data.skills.luck} onChange={(luck) => update({ ...data, skills: { ...data.skills, luck } })} /><div className="skill-total"><span>残り技能ポイント</span><b className={skillRemaining < 0 ? 'negative' : ''}>{skillRemaining} <small>/ {INITIAL_SKILL_POINTS}</small></b></div><SkillTable data={data} update={update} /></section>
       <section className="form-section"><SectionTitle title="武器"/><WeaponsEditor data={data} update={update} /></section>
+      <section className="form-section"><SectionTitle title="所持金"/><CurrencyEditor currency={data.currency} onChange={(currency) => update({ ...data, currency })} /></section>
       <section className="form-section"><SectionTitle title="持ち物"/><ItemsEditor data={data} update={update} /></section>
       <section className="form-section compact-section"><SectionTitle title="通過シナリオ"/><div className="experience-grid"><label className="field field-full"><textarea aria-label="通過シナリオ" rows={8} value={data.experience.notes ?? ''} onChange={(e) => update({ ...data, experience: { ...data.experience, notes: e.target.value } })} /></label></div></section>
       <section className="form-section"><SectionTitle title="タグ"/><TagsEditor data={data} update={update} /></section>
@@ -139,6 +142,23 @@ function WeaponsEditor({ data, update }: { data: CharacterData; update: (next: C
   const add = () => update({ ...data, weapons: [...data.weapons, { id: newId(), name: '', kind: 'melee', skill: '', damage: '', durability: 1, description: '' }] })
   const updateWeapon = (id: string, changes: Partial<CharacterData['weapons'][number]>) => update({ ...data, weapons: data.weapons.map((weapon) => weapon.id === id ? { ...weapon, ...changes } : weapon) })
   return <div className="weapons-editor"><p className="form-help">受け流しに使えるのは近接武器と銃です。武器ごとに耐久値を設定してください。</p>{data.weapons.length === 0 && <p className="muted-copy">まだ武器がありません。</p>}{data.weapons.map((weapon) => <div className="weapon-row" key={weapon.id}><input aria-label="武器名" required value={weapon.name} onChange={(e) => updateWeapon(weapon.id, { name: e.target.value })} placeholder="武器名" /><select aria-label="武器種別" value={weapon.kind} onChange={(e) => updateWeapon(weapon.id, { kind: e.target.value as WeaponKind })}><option value="melee">近接武器</option><option value="gun">銃</option></select><input aria-label="使用技能" value={weapon.skill} onChange={(e) => updateWeapon(weapon.id, { skill: e.target.value })} placeholder="使用技能" /><input aria-label="ダメージ" value={weapon.damage} onChange={(e) => updateWeapon(weapon.id, { damage: e.target.value })} placeholder="ダメージ" /><label className="weapon-durability"><span>耐久値</span><input aria-label="耐久値" required type="number" min="0" value={weapon.durability} onChange={(e) => updateWeapon(weapon.id, { durability: Math.max(0, Number(e.target.value)) })} /></label><textarea aria-label="武器の備考" rows={2} value={weapon.description} onChange={(e) => updateWeapon(weapon.id, { description: e.target.value })} placeholder="備考" /><button type="button" className="icon-button danger-icon" aria-label="武器を削除" onClick={() => update({ ...data, weapons: data.weapons.filter((item) => item.id !== weapon.id) })}><Icon name="trash" /></button></div>)}<button type="button" className="add-link" onClick={add}><Icon name="plus" /> 武器を追加</button></div>
+}
+
+function CurrencyEditor({ currency, onChange }: { currency: CharacterData['currency']; onChange: (currency: CharacterData['currency']) => void }) {
+  const entries: Array<{ id: CurrencyDenomination; label: string }> = [
+    { id: 'platinum', label: 'プラチナ' },
+    { id: 'gold', label: 'ゴールド' },
+    { id: 'silver', label: 'シルバー' },
+    { id: 'copper', label: 'カッパー' },
+  ]
+  return <div className="currency-editor"><p className="form-help">100カッパーで1シルバー、100シルバーで1ゴールド、100ゴールドで1プラチナへ自動で繰り上がります。</p><div className="currency-grid">{entries.map(({ id, label }) => <label className="currency-field" key={id}><span>{label}</span><CurrencyInput aria-label={label} value={currency[id]} onChange={(value) => onChange(updateCurrency(currency, id, value))} /></label>)}</div></div>
+}
+
+function CurrencyInput({ value, onChange, 'aria-label': ariaLabel }: { value: number; onChange: (value: number) => void; 'aria-label': string }) {
+  const [draft, setDraft] = useState(String(value))
+  const [editing, setEditing] = useState(false)
+  useEffect(() => { if (!editing) setDraft(String(value)) }, [editing, value])
+  return <input aria-label={ariaLabel} type="number" min={0} max={999999999} value={draft} onFocus={() => setEditing(true)} onChange={(event) => setDraft(event.target.value)} onBlur={() => { setEditing(false); const normalized = normalizeNumberInput(draft, 0, 999999999); setDraft(String(normalized)); onChange(normalized) }} />
 }
 
 function ItemsEditor({ data, update }: { data: CharacterData; update: (next: CharacterData) => void }) { const add = () => update({ ...data, items: [...data.items, { id: newId(), name: '', quantity: 1, description: '' }] }); return <div className="items-editor">{data.items.length === 0 && <p className="muted-copy">まだ持ち物がありません。</p>}{data.items.map((item) => <div className="item-row" key={item.id}><input aria-label="持ち物名" value={item.name} onChange={(e) => update({ ...data, items: data.items.map((i) => i.id === item.id ? { ...i, name: e.target.value } : i) })} placeholder="アイテム名" /><input aria-label="個数" type="number" min="1" value={item.quantity} onChange={(e) => update({ ...data, items: data.items.map((i) => i.id === item.id ? { ...i, quantity: Math.max(1, Number(e.target.value)) } : i) })} /><textarea aria-label="持ち物の説明" rows={2} value={item.description} onChange={(e) => update({ ...data, items: data.items.map((i) => i.id === item.id ? { ...i, description: e.target.value } : i) })} placeholder="備考" /><button type="button" className="icon-button danger-icon" onClick={() => update({ ...data, items: data.items.filter((i) => i.id !== item.id) })}><Icon name="trash" /></button></div>)}<button type="button" className="add-link" onClick={add}><Icon name="plus" /> 持ち物を追加</button></div> }

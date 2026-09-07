@@ -12,6 +12,7 @@ export const rulebookSections: RulebookSection[] = [
   { id: 'checks', label: '判定' },
   { id: 'sanity', label: '正気度' },
   { id: 'luck', label: '幸運' },
+  { id: 'money', label: 'お金について' },
   { id: 'combat', label: '戦闘' },
   { id: 'weapons', label: '武器' },
   { id: 'magic', label: '魔術' },
@@ -43,9 +44,23 @@ export const luckRules = {
   reroll: '何度でも振り直し可能',
 } as const
 
+export const currencyRules = {
+  copper: '1カッパー = 1円',
+  platinum: '1プラチナ = 100万円',
+  conversion: '100カッパー = 1シルバー、100シルバー = 1ゴールド、100ゴールド = 1プラチナ',
+} as const
+
+export const magicMpRules = {
+  principle: '制約が多いほどMP使用量が減り、汎用的であるほどMPを使う。',
+  alchemyExample: '汎用性が非常に高い錬金術は燃費が悪い。',
+  gunExample: '攻撃にしか使えない銃は燃費がいい。',
+} as const
+
+export const resourceRecoveryRule = 'HP/MPは十分な休息を取ることで回復するほか、ポーションの類を使用することでも回復できます。'
+
 export const commonSkills = [
   '運動', '格闘', '回避', '隠密', '洞察', '探索', '交渉',
-  '威圧', '技術', '医療', 'サバイバル', '操縦', '感応',
+  '威圧', '器用', '医療', 'サバイバル', '操縦', '魔力感知',
 ]
 
 export const specializedSkills = ['武器', '射撃・投擲', '専門知識', '魔術']

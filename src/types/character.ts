@@ -87,6 +87,15 @@ export interface Weapon {
   description: string
 }
 
+export type CurrencyDenomination = 'platinum' | 'gold' | 'silver' | 'copper'
+
+export interface Currency {
+  platinum: number
+  gold: number
+  silver: number
+  copper: number
+}
+
 export interface Experience {
   notes: string
 }
@@ -97,6 +106,7 @@ export interface CharacterData {
   statBonuses?: StatBonuses
   skills: Skills
   weapons: Weapon[]
+  currency: Currency
   items: Item[]
   experience: Experience
   tags: string[]

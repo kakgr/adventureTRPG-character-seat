@@ -1,5 +1,5 @@
 import { WORLD_IMAGES } from '../constants/world'
-import { commonSkills, insanityTable, luckRules, playerTerm, rulebookSections, skillRules, specializedSkills, statDefinitions } from './rulebookContent'
+import { commonSkills, currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, skillRules, specializedSkills, statDefinitions } from './rulebookContent'
 
 export function RulebookPage() {
   return <div className="page world-page rulebook-page" style={{ backgroundImage: `linear-gradient(color-mix(in srgb, var(--background) 78%, transparent), color-mix(in srgb, var(--background) 94%, transparent)), url(${WORLD_IMAGES.riverRoad})` }}>
@@ -30,7 +30,7 @@ export function RulebookPage() {
           <p className="rulebook-lead">初期作成では、<Keyword>能力値</Keyword>に18ポイントを自由に割り振ります。能力値に上限はなく、成長によって上昇します。</p>
           <div className="stat-rule-grid">{statDefinitions.map((stat) => <div className="stat-rule-card" key={stat.name}><span>{stat.effect}</span><strong>{stat.name}</strong></div>)}</div>
           <RuleCard title="作成時の注意"><ul><li>初期能力値はすべて1から開始</li><li>能力値ポイント18点を使い切る</li><li><Keyword>能力値</Keyword>は基本的に通常の技能判定へ加えない</li></ul></RuleCard>
-          <div className="resource-rule-grid"><RuleCard title="HP"><div className="formula">体力 × 3</div><p>最大値と現在値を管理します。0になると死亡・ロストです。休息していた時間に応じて自動的に回復し、ぐっすり眠る、または半日休憩するなどすれば半分以上を回復できます。</p></RuleCard><RuleCard title="MP"><div className="formula">魔力 × 3</div><p>最大値と現在値を管理します。休息していた時間に応じて自動的に回復し、ぐっすり眠る、または半日休憩するなどすれば半分以上を回復できます。</p></RuleCard><RuleCard title="正気度"><div className="formula">精神力 × 3</div><p>最大値と現在値を管理します。精神を壊すようなイベントで減少します。</p></RuleCard></div>
+          <div className="resource-rule-grid"><RuleCard title="HP"><div className="formula">体力 × 3</div><p>最大値と現在値を管理します。0になると死亡・ロストです。休息していた時間に応じて自動的に回復し、ぐっすり眠る、または半日休憩するなどすれば半分以上を回復できます。</p><p>{resourceRecoveryRule}</p></RuleCard><RuleCard title="MP"><div className="formula">魔力 × 3</div><p>最大値と現在値を管理します。休息していた時間に応じて自動的に回復し、ぐっすり眠る、または半日休憩するなどすれば半分以上を回復できます。</p><p>{resourceRecoveryRule}</p></RuleCard><RuleCard title="正気度"><div className="formula">精神力 × 3</div><p>最大値と現在値を管理します。精神を壊すようなイベントで減少します。</p></RuleCard></div>
           <RuleCard title="その他の派生値"><p><Keyword>ダメージボーナス</Keyword> ＝ ⌊(体力＋筋力) / 6⌋。<Keyword>速力</Keyword>は戦闘の行動順に使います。</p></RuleCard>
         </RuleSection>
 
@@ -66,6 +66,11 @@ export function RulebookPage() {
           <RuleCard title="幸運の決定" variant="mechanics"><div className="rulebook-number"><strong>{luckRules.minimum}〜{luckRules.maximum}</strong><span>乱数で決定</span></div><p><Keyword>幸運</Keyword>は技能ポイントを使わず、0〜90の乱数で決定します。キャラクター作成時は何度でも振り直せます。</p></RuleCard>
         </RuleSection>
 
+        <RuleSection id="money" title="お金について">
+          <p className="rulebook-lead">世界で使われる通貨は、カッパー、シルバー、ゴールド、プラチナの4種類です。</p>
+          <RuleCard title="通貨の単位" variant="mechanics"><p><Keyword>{currencyRules.copper}</Keyword>。100カッパーで1シルバー、100シルバーで1ゴールド、100ゴールドで1プラチナになります。</p><p><Keyword>{currencyRules.platinum}</Keyword>です。</p></RuleCard>
+        </RuleSection>
+
         <RuleSection id="combat" title="戦闘">
           <div className="formation-grid">{['前衛', '中衛', '後衛'].map((position, index) => <div className="formation-card" key={position}><span>0{index + 1}</span><strong>{position}</strong><small>{index === 0 ? '近接攻撃' : index === 1 ? '遠距離 −10%' : '遠距離 −20%'}</small></div>)}</div>
           <RuleCard title="配置と行動順"><ul><li>味方・敵ともに<Keyword>前衛／中衛／後衛</Keyword>へ配置</li><li>開始時に自分の配置を宣言</li><li>味方・敵をまとめて<Keyword>速力</Keyword>の速い順に行動</li><li>同速なら筋力、場所に応じた技能、RPで決定</li><li><Keyword>配置変更</Keyword>は1ターンを消費</li></ul></RuleCard>
@@ -82,6 +87,7 @@ export function RulebookPage() {
         <RuleSection id="magic" title="魔術">
           <RuleCard title="魔術の扱い"><p><Keyword>魔術</Keyword>は、対応する道具がなければ発動できません。使用時には<Keyword>MP</Keyword>を消費して効果を発揮します。</p><p>魔術を使用する道具には、<Keyword>杖</Keyword>、<Keyword>魔道具</Keyword>、<Keyword>銃</Keyword>などが含まれます。</p><p>魔術ごとの効果・消費量・判定方法は、シナリオや魔術の記載を参照します。記載がない場合は、GMと相談して決定します。</p></RuleCard>
           <RuleCard title="銃と魔術"><p><Keyword>銃</Keyword>は、MPを消費して弾を発射します。通常の弾薬を使う銃とは異なり、魔術として扱う銃の発射にはMPが必要です。</p></RuleCard>
+          <RuleCard title="MP消費の考え方" variant="mechanics"><p><Keyword>{magicMpRules.principle}</Keyword></p><p>{magicMpRules.alchemyExample}一方、{magicMpRules.gunExample}</p></RuleCard>
           <RuleCard title="特殊技能"><p><Keyword>特殊技能</Keyword>の使用方法や効果は、GMと相談して決めます。専門知識、武器、射撃・投擲、魔術なども、必要に応じて個別に定義します。</p></RuleCard>
         </RuleSection>
       </main>

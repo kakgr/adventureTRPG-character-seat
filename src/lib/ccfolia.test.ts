@@ -30,6 +30,7 @@ const character = (): CharacterRecord => ({
     },
     weapons: [],
     items: [{ id: 'item-1', name: 'ランタン', quantity: 2, description: '油式' }],
+    currency: { platinum: 1, gold: 2, silver: 3, copper: 4 },
     experience: { notes: '港町の事件' },
     tags: ['探索', '古代遺跡'],
   },
@@ -66,6 +67,7 @@ describe('CCFOLIA character export', () => {
       'MP：18',
       '正気度：6',
       'ダメージボーナス：1',
+      '所持金：プラチナ 1 / ゴールド 2 / シルバー 3 / カッパー 4',
     ].join('\r\n'))
     expect(result.data.memo).not.toContain('遺跡調査員')
     expect(result.data.memo).not.toContain('ランタン')

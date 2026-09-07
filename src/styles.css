@@ -712,6 +712,14 @@ body { background: var(--background); }
 .detail-weapon-meta { display: flex; flex-wrap: wrap; gap: 7px 16px; color: var(--text-secondary); font-size: 10px; }
 .detail-weapon-meta b { color: var(--text); font: 11px var(--mono); }
 .detail-weapon small { color: var(--text-tertiary); font-size: 10px; white-space: pre-wrap; }
+.currency-editor { display: grid; gap: 12px; }
+.currency-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; max-width: 680px; }
+.currency-field { display: grid; gap: 6px; color: var(--text-secondary); font-size: 10px; }
+.currency-field input { width: 100%; text-align: right; font-family: var(--mono); }
+.detail-currency { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.detail-currency div { display: grid; gap: 5px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.detail-currency span { color: var(--text-tertiary); font-size: 10px; }
+.detail-currency b { color: var(--accent); font: 17px var(--mono); }
 
 @media (max-width: 760px) {
   .item-row textarea:nth-child(3) {
@@ -733,6 +741,8 @@ body { background: var(--background); }
   .weapon-row > :nth-child(5) { grid-area: durability; }
   .weapon-row > :nth-child(6) { grid-area: notes; }
   .weapon-row > :nth-child(7) { grid-area: action; }
+  .currency-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: none; }
+  .detail-currency { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 430px) {
@@ -763,9 +773,17 @@ body { background: var(--background); }
 .glossary-genre-list { display: grid; gap: 0; }
 .glossary-genre { scroll-margin-top: 25px; border-top: 1px solid rgba(216, 193, 149, .28); padding: 30px 0 39px; }
 .glossary-genre:first-child { border-top: 0; padding-top: 0; }
+.glossary-index-list { display: grid; max-width: 760px; border-top: 1px solid rgba(216, 193, 149, .28); }
+.glossary-index-link { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 19px 0; border-bottom: 1px solid rgba(216, 193, 149, .23); color: var(--text); }
+.glossary-index-link:hover { color: var(--accent); }
+.glossary-index-link > span { display: grid; gap: 5px; }
+.glossary-index-link strong { font-size: 18px; font-weight: 500; }
+.glossary-index-link small { color: var(--text-tertiary); font: 10px var(--mono); }
+.glossary-index-link .icon { width: 17px; flex: 0 0 auto; }
+.glossary-genre-page { border-top: 0; padding-top: 0; }
 .glossary-entry-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
 .glossary-entry { scroll-margin-top: 25px; padding: 15px 0; border-bottom: 1px solid rgba(216, 193, 149, .23); }
-.glossary-entry h3 { color: var(--text); font-size: 18px; }
+.glossary-entry h2, .glossary-entry h3 { color: var(--text); font-size: 18px; }
 .glossary-entry p { margin-top: 6px; color: var(--text-tertiary); font-size: 10px; }
 .world-nav-group { display: grid; }
 .world-nav-toggle { width: 100%; position: relative; text-align: left; font: inherit; border: 0; background: transparent; color: inherit; }

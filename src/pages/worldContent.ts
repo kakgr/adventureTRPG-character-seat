@@ -17,6 +17,7 @@ export const worldGlossaryGenres: WorldGlossaryGenre[] = [
     entries: [
       { id: 'magic-power', term: '魔力', description: '物質全てに宿るエネルギー。人など一部の生物は操る力を持っている。' },
       { id: 'sorcery', term: '魔術', description: '道具を使って自在に魔力を制御する術のこと。イメージが複雑なものほど難しくなる。' },
+      { id: 'alchemy', term: '錬金術', description: '等価交換そのものであり、新しい物を生み出すことはできない。使用する規模によってMPの使用量が変わり、小さいものから巨大な変更まで可能だ。主に地面の形状を変更させて自分の使いやすい形に変えたり、所持しているものの形を変えることができる。' },
       { id: 'machine', term: '機械', description: '魔力を使って自動で動く道具。産業革命の根本であり、今や全てのものに使われている。' },
       { id: 'gun', term: '銃', description: '魔力を使うことで間接攻撃ができる武器。様々な種類があるが、特徴として他の魔術と違い簡単な訓練ですぐ撃てる良さがある。' },
     ],

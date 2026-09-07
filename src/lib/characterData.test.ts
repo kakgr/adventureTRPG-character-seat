@@ -36,4 +36,10 @@ describe('character data normalization', () => {
 
     expect(result.weapons[0]).toEqual({ id: 'weapon-1', name: '短剣', kind: 'melee', skill: '武器', damage: '1d4', durability: 0, description: '受け流し用' })
   })
+
+  it('fills and normalizes currency for existing characters', () => {
+    const result = normalizeCharacterData({ currency: { platinum: 0, gold: 0, silver: 100, copper: 4 } } as never)
+
+    expect(result.currency).toEqual({ platinum: 0, gold: 1, silver: 0, copper: 4 })
+  })
 })

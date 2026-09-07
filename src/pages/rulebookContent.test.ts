@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { insanityTable, luckRules, playerTerm, rulebookSections, skillRules, statDefinitions } from './rulebookContent'
+import { currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, skillRules, statDefinitions } from './rulebookContent'
 
 describe('rulebook content', () => {
   it('contains the first-edition core sections', () => {
@@ -12,6 +12,7 @@ describe('rulebook content', () => {
       'checks',
       'sanity',
       'luck',
+      'money',
       'combat',
       'weapons',
       'magic',
@@ -36,6 +37,19 @@ describe('rulebook content', () => {
 
   it('defines luck as a rerollable random skill', () => {
     expect(luckRules).toEqual({ minimum: 0, maximum: 90, points: 0, reroll: '何度でも振り直し可能' })
+  })
+
+  it('defines currency values and magic MP efficiency rules', () => {
+    expect(currencyRules).toEqual(expect.objectContaining({ copper: '1カッパー = 1円', platinum: '1プラチナ = 100万円' }))
+    expect(magicMpRules).toEqual(expect.objectContaining({
+      principle: '制約が多いほどMP使用量が減り、汎用的であるほどMPを使う。',
+      alchemyExample: '汎用性が非常に高い錬金術は燃費が悪い。',
+      gunExample: '攻撃にしか使えない銃は燃費がいい。',
+    }))
+  })
+
+  it('allows HP and MP recovery through potions as well as rest', () => {
+    expect(resourceRecoveryRule).toBe('HP/MPは十分な休息を取ることで回復するほか、ポーションの類を使用することでも回復できます。')
   })
 
   it('provides an optional insanity table', () => {

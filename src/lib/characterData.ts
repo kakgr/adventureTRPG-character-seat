@@ -1,5 +1,6 @@
 import { DEFAULT_DATA, INITIAL_STAT_BASE, MAX_SKILL_BONUS } from '../constants/game'
 import { normalizeLuck } from './characterRules'
+import { normalizeCurrency } from './currency'
 import type { CharacterData, Skills, StatBonuses, Stats, Weapon, WeaponKind } from '../types/character'
 
 const finiteNumber = (value: unknown, fallback: number) => typeof value === 'number' && Number.isFinite(value) ? value : fallback
@@ -64,6 +65,7 @@ export function normalizeCharacterData(source: Partial<CharacterData> | null | u
     statBonuses: normalizeStatBonuses(data.statBonuses),
     skills: normalizeSkills(data.skills),
     weapons: normalizeWeapons(data.weapons),
+    currency: normalizeCurrency(data.currency),
     items: Array.isArray(data.items) ? data.items : [],
     experience: { ...DEFAULT_DATA.experience, ...(data.experience ?? {}) },
     tags: Array.isArray(data.tags) ? data.tags : [],

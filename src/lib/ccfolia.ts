@@ -39,6 +39,7 @@ function buildMemo(character: CharacterRecord) {
   const mp = calculateMp(data.stats, data.statBonuses)
   const sanity = calculateSanity(data.stats, data.statBonuses)
   const damageBonus = calculateDamageBonus(data.stats, data.statBonuses)
+  const currencyLine = `所持金：プラチナ ${data.currency.platinum} / ゴールド ${data.currency.gold} / シルバー ${data.currency.silver} / カッパー ${data.currency.copper}`
 
   const weaponLines = data.weapons.map((weapon) => `武器：${weapon.name || '名称未設定'}（${weapon.kind === 'gun' ? '銃' : '近接武器'}） 技能：${weapon.skill || '未設定'} ダメージ：${weapon.damage || '未設定'} 耐久値：${weapon.durability}`)
   return [
@@ -47,6 +48,7 @@ function buildMemo(character: CharacterRecord) {
     `MP：${mp}`,
     `正気度：${sanity}`,
     `ダメージボーナス：${damageBonus}`,
+    currencyLine,
     ...weaponLines,
   ].join(CRLF)
 }

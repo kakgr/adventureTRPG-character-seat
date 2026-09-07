@@ -8,6 +8,13 @@ describe('skill catalog', () => {
     ]))
   })
 
+  it('uses the updated names for technology and attunement skills', () => {
+    expect(COMMON_SKILLS).toEqual(expect.arrayContaining([
+      { id: 'technology', label: '器用', hint: '機械・工作' },
+      { id: 'attunement', label: '魔力感知', hint: '気配・超常感知' },
+    ]))
+  })
+
   it('includes magic as an addable skill category', () => {
     expect(SPECIALIZED_SKILLS).toEqual(expect.arrayContaining([
       { id: 'magic', label: '魔術' },

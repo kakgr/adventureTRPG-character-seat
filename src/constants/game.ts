@@ -36,11 +36,11 @@ export const COMMON_SKILLS: Array<{ id: CommonSkillId; label: string; hint: stri
   { id: 'search', label: '探索', hint: '調べる・探す' },
   { id: 'negotiation', label: '交渉', hint: '説得・取引' },
   { id: 'intimidation', label: '威圧', hint: '脅す・圧する' },
-  { id: 'technology', label: '技術', hint: '機械・工作' },
+  { id: 'technology', label: '器用', hint: '機械・工作' },
   { id: 'medicine', label: '医療', hint: '治療・応急手当' },
   { id: 'survival', label: 'サバイバル', hint: '野外活動・追跡' },
   { id: 'piloting', label: '操縦', hint: '乗り物を動かす' },
-  { id: 'attunement', label: '感応', hint: '気配・超常感知' },
+  { id: 'attunement', label: '魔力感知', hint: '気配・超常感知' },
 ]
 
 export const SPECIALIZED_SKILLS = [
@@ -118,6 +118,7 @@ export const DEFAULT_DATA: CharacterData = {
     custom: [],
   },
   weapons: [],
+  currency: { platinum: 0, gold: 0, silver: 0, copper: 0 },
   items: [],
   experience: { notes: '' },
   tags: [],

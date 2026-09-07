@@ -104,6 +104,8 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
 
       <section className="detail-card"><CardHeading icon="weapon" title="武器"/><div className="detail-weapons">{data.weapons.length ? data.weapons.map((weapon) => <div className="detail-weapon" key={weapon.id}><div className="detail-weapon-heading"><b>{weapon.name || '名称未設定'}</b><span>{weapon.kind === 'gun' ? '銃' : '近接武器'}</span></div><div className="detail-weapon-meta"><span>使用技能 <b>{weapon.skill || '未設定'}</b></span><span>ダメージ <b>{weapon.damage || '未設定'}</b></span><span>耐久値 <b>{weapon.durability}</b></span></div>{weapon.description && <small>{weapon.description}</small>}</div>) : <p className="muted-copy">武器はまだ登録されていません。</p>}</div></section>
 
+      <section className="detail-card"><CardHeading icon="coin" title="所持金"/><div className="detail-currency"><div><span>プラチナ</span><b>{data.currency.platinum}</b></div><div><span>ゴールド</span><b>{data.currency.gold}</b></div><div><span>シルバー</span><b>{data.currency.silver}</b></div><div><span>カッパー</span><b>{data.currency.copper}</b></div></div></section>
+
       <section className="detail-card"><CardHeading icon="bag" title="持ち物"/><div className="detail-items">{data.items.length ? data.items.map((item) => <div className="detail-item" key={item.id}><b>{item.name || '名称未設定'}</b><span>× {item.quantity}</span><small>{item.description}</small></div>) : <p className="muted-copy">持ち物はまだありません。</p>}</div></section>
 
       <section className="detail-card"><CardHeading icon="spark" title="プロフィール"/><div className="profile-facts"><div><span>年齢</span><b>{data.profile.age ?? '—'}</b></div><div><span>性別</span><b>{data.profile.gender || '—'}</b></div><div><span>職業</span><b>{data.profile.occupation || '—'}</b></div></div>{data.profile.description && <p className="description">{data.profile.description}</p>}{data.experience.notes && <div className="experience-notes"><span>通過シナリオ</span><p>{data.experience.notes}</p></div>}</section>
@@ -111,4 +113,4 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
   </div>
 }
 
-function CardHeading({ icon, title }: { icon: 'spark' | 'book' | 'bag' | 'weapon'; title: string }) { return <div className="card-heading"><Icon name={icon} /><h2>{title}</h2></div> }
+function CardHeading({ icon, title }: { icon: 'spark' | 'book' | 'bag' | 'weapon' | 'coin'; title: string }) { return <div className="card-heading"><Icon name={icon} /><h2>{title}</h2></div> }
