@@ -55,7 +55,7 @@ export const worldGlossaryGenres: WorldGlossaryGenre[] = [
     entries: [
       { id: 'laas-continent', term: 'ラース大陸', category: '自然地名', subcategory: '自然地形', description: '中央海から西側にある大陸で、縦に長く様々な気候帯を持っている。三大陸の中で最も人口が多く、安全圏が広い。' },
       { id: 'central-sea', term: '中央海', category: '自然地名', subcategory: '自然地形', description: '3つの大陸に挟まれた海。場所がちょうどいいため何かと基準にされがち。' },
-      { id: 'bart-town', term: 'バルトの街', category: '人文地名', subcategory: '都市・国家', description: 'ラース大陸東部の沿岸に位置し、漁業と貿易の出入り口として発展した港町。この世界でも屈指の安全圏であり、周辺地域の様々なものが集結する場所になった。' },
+      { id: 'bart-town', term: 'バルトの街', category: '人文地名', subcategory: '都市・国家', description: 'ラース大陸東部の沿岸に位置し、漁業と貿易の出入り口として発展した港町。この世界でも屈指の安全圏であり、周辺地域の様々なものが集結する場所になった。サダム連合国を構成する都市国家の一つ。' },
       { id: 'sadam-union', term: 'サダム連合国', category: '人文地名', subcategory: '都市・国家', description: 'ラース大陸東部の沿岸都市が結成した国。豊かな海の資源と貿易によって栄えている。北部には広い危険域があり、防衛線を構築している。' },
     ],
   },
