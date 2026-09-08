@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import { Icon } from './Icons'
 import { getDisplayName } from '../lib/userDisplay'
 import { worldGlossaryGenres } from '../pages/worldContent'
+import { UpdateNews } from './UpdateNews'
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { user, signOut } = useAuth()
@@ -19,6 +20,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <Link to="/characters" className="brand"><span className="brand-mark"><img src={`${import.meta.env.BASE_URL}a-icon.png`} alt="" /></span><span>adventureTRPG</span></Link>
       <div className="topbar-right">
         {!isEditor && <Link className="button button-primary button-small" to="/characters/new"><Icon name="plus" /> 新しいシート</Link>}
+        <UpdateNews />
         <span className="user-name">{getDisplayName(user?.user_metadata)}</span>
         <button className="icon-button" onClick={() => void handleSignOut()} title="ログアウト"><Icon name="logout" /></button>
         <button type="button" className="mobile-menu-toggle" aria-label={mobileMenuOpen ? 'メニューを閉じる' : 'メニューを開く'} aria-expanded={mobileMenuOpen} aria-controls="primary-navigation" onClick={() => setMobileMenuOpen((open) => !open)}><Icon name="menu" /></button>

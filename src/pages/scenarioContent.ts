@@ -42,9 +42,9 @@ export const scenarioSections: ScenarioSection[] = [
       },
       {
         id: 'vaaru-isan-no-nazo',
-        title: 'ヴァール家の遺品の謎',
+        title: 'ヴォルト家の遺品の謎',
         cover: `${import.meta.env.BASE_URL}scenarios/vaaru-isan.webp`,
-        synopsis: '探偵のあなたはヴァール家の家主ベルト・ヴァールの残した手紙の解読を依頼された。無事謎を解き、依頼を完了できるか？(探偵必須)',
+        synopsis: '探偵のあなたはヴォルト家の家主ベルト・ヴォルトの残した手紙の解読を依頼された。無事謎を解き、依頼を完了できるか？(探偵必須)',
         genre: 'チュートリアル・ミステリー',
         playTime: '30分〜1時間',
         players: '1〜3人',

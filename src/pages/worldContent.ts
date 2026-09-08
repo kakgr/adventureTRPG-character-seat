@@ -31,6 +31,11 @@ export const worldGlossaryGenres: WorldGlossaryGenre[] = [
     ],
   },
   {
+    id: 'geography',
+    title: '地理',
+    entries: [],
+  },
+  {
     id: 'people',
     title: '人物・役割',
     entries: [{ id: 'wanderers', term: '渡り手', description: 'PCのこと。CoCでいう探索者、エモクロアでいう共鳴者。' }],

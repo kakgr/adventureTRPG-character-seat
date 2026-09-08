@@ -3,8 +3,8 @@ import { worldGlossaryGenres } from './worldContent'
 
 describe('world content', () => {
   it('groups the defined glossary terms by genre', () => {
-    expect(worldGlossaryGenres.map((genre) => genre.id)).toEqual(['magic-technology', 'pollution-anomalies', 'people'])
-    expect(worldGlossaryGenres.map((genre) => genre.title)).toEqual(['魔力・魔術・機械', '汚染・異形', '人物・役割'])
+    expect(worldGlossaryGenres.map((genre) => genre.id)).toEqual(['magic-technology', 'pollution-anomalies', 'geography', 'people'])
+    expect(worldGlossaryGenres.map((genre) => genre.title)).toEqual(['魔力・魔術・機械', '汚染・異形', '地理', '人物・役割'])
     expect(worldGlossaryGenres.flatMap((genre) => genre.entries).map((entry) => entry.term)).toEqual(['魔力', '魔術', '錬金術', '機械', '銃', '汚染', '異形', '渡り手'])
     expect(worldGlossaryGenres.flatMap((genre) => genre.entries).map((entry) => entry.description)).toEqual([
       '物質全てに宿るエネルギー。人など一部の生物は操る力を持っている。',
@@ -16,5 +16,9 @@ describe('world content', () => {
       '汚染によって生まれた生物。または汚染によって変異した生物。様々な種類がおり、凶暴で基本的に有害。',
       'PCのこと。CoCでいう探索者、エモクロアでいう共鳴者。',
     ])
+  })
+
+  it('keeps the geography glossary genre ready for future entries', () => {
+    expect(worldGlossaryGenres.find((genre) => genre.id === 'geography')).toEqual({ id: 'geography', title: '地理', entries: [] })
   })
 })
