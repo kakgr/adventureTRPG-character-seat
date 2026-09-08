@@ -785,6 +785,8 @@ body { background: var(--background); }
 .glossary-index-link .icon { width: 17px; flex: 0 0 auto; }
 .glossary-genre-page { border-top: 0; padding-top: 0; }
 .glossary-entry-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.glossary-entry-groups { display: grid; gap: 32px; max-width: 960px; }.glossary-entry-group { border-top: 1px solid rgba(216, 193, 149, .28); padding-top: 18px; }.glossary-entry-group:first-child { border-top: 0; padding-top: 0; }.glossary-group-heading { display: flex; align-items: baseline; gap: 12px; margin-bottom: 7px; }.glossary-group-heading h2 { color: var(--text); font-size: 21px; font-weight: 500; }.glossary-group-count { margin-left: auto; color: var(--text-tertiary); font: 10px var(--mono); }
+.glossary-subgroup + .glossary-subgroup { margin-top: 20px; }.glossary-subgroup-heading { margin: 12px 0 2px; color: var(--text-secondary); font-size: 12px; font-weight: 500; }.glossary-group-empty { padding: 15px 0; color: var(--text-tertiary); font-size: 11px; }
 .glossary-entry { scroll-margin-top: 25px; padding: 15px 0; border-bottom: 1px solid rgba(216, 193, 149, .23); }
 .glossary-entry h2, .glossary-entry h3 { color: var(--text); font-size: 18px; }
 .glossary-entry p { margin-top: 6px; color: var(--text-tertiary); font-size: 10px; }

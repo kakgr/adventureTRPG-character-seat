@@ -53,4 +53,20 @@ export const scenarioSections: ScenarioSection[] = [
     ],
   },
   { id: 'main', title: 'メインシナリオ', scenarios: [] },
+  {
+    id: 'sub',
+    title: 'サブシナリオ',
+    scenarios: [
+      {
+        id: 'machiaruki',
+        title: '街歩き',
+        cover: `${import.meta.env.BASE_URL}scenarios/machiaruki.jpg`,
+        synopsis: '街を歩きながら、自由な会話と交流を楽しむ小さな物語。',
+        genre: 'RP',
+        playTime: '20分〜',
+        players: '1人〜',
+        recommendedSkills: [],
+      },
+    ],
+  },
 ]
