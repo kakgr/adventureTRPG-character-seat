@@ -58,6 +58,13 @@ export const magicMpRules = {
 
 export const resourceRecoveryRule = 'HP/MPは十分な休息を取ることで回復するほか、ポーションの類を使用することでも回復できます。'
 
+export const statusConditionRule = {
+  principle: '状態異常は特定の効果を示すものではなく、広域的な状態を示します。',
+  structure: '状態異常は継続ターン数と効果で構成します。',
+  oneTurn: '1ターン継続する場合は、次のターンの間ずっと継続します。',
+  persistent: '回復しなければ、永続する場合もあります。',
+} as const
+
 export const commonSkills = [
   '運動', '格闘', '回避', '隠密', '洞察', '探索', '交渉',
   '威圧', '器用', '医療', 'サバイバル', '操縦', '魔力感知',

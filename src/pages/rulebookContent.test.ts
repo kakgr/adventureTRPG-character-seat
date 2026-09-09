@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, skillRules, statDefinitions } from './rulebookContent'
+import { currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, skillRules, statDefinitions, statusConditionRule } from './rulebookContent'
 
 describe('rulebook content', () => {
   it('contains the first-edition core sections', () => {
@@ -50,6 +50,15 @@ describe('rulebook content', () => {
 
   it('allows HP and MP recovery through potions as well as rest', () => {
     expect(resourceRecoveryRule).toBe('HP/MPは十分な休息を取ることで回復するほか、ポーションの類を使用することでも回復できます。')
+  })
+
+  it('defines status conditions by broad effect and duration', () => {
+    expect(statusConditionRule).toEqual({
+      principle: '状態異常は特定の効果を示すものではなく、広域的な状態を示します。',
+      structure: '状態異常は継続ターン数と効果で構成します。',
+      oneTurn: '1ターン継続する場合は、次のターンの間ずっと継続します。',
+      persistent: '回復しなければ、永続する場合もあります。',
+    })
   })
 
   it('provides an optional insanity table', () => {

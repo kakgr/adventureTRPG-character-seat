@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = '1.0.0'
+export const CURRENT_VERSION = '1.0.1'
 export const MAX_UPDATE_NEWS = 5
 
 export type UpdateNewsItem = {
@@ -10,6 +10,11 @@ export type UpdateNewsItem = {
 export const updateNews: UpdateNewsItem[] = [
   {
     version: CURRENT_VERSION,
+    title: '状態異常の追加',
+    description: 'ルールブックの戦闘セクションに状態異常を追加しました。',
+  },
+  {
+    version: '1.0.0',
     title: '正式版へ移行しました',
     description: 'テスト版から完全版へ移行しました。用語帳に地理を追加し、サブシナリオ「街歩き」を追加しました。',
   },

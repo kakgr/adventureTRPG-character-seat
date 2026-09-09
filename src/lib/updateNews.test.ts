@@ -2,15 +2,15 @@ import { describe, expect, it } from 'vitest'
 import { CURRENT_VERSION, MAX_UPDATE_NEWS, getVisibleUpdateNews, updateNews } from './updateNews'
 
 describe('update news', () => {
-  it('現在のバージョンを1.0.0として公開する', () => {
-    expect(CURRENT_VERSION).toBe('1.0.0')
+  it('現在のバージョンを1.0.1として公開する', () => {
+    expect(CURRENT_VERSION).toBe('1.0.1')
   })
 
-  it('最初のニュースで正式版への移行と主な追加内容を知らせる', () => {
+  it('最初のニュースで状態異常の追加を知らせる', () => {
     expect(updateNews[0]).toMatchObject({
-      version: '1.0.0',
-      title: '正式版へ移行しました',
-      description: 'テスト版から完全版へ移行しました。用語帳に地理を追加し、サブシナリオ「街歩き」を追加しました。',
+      version: '1.0.1',
+      title: '状態異常の追加',
+      description: 'ルールブックの戦闘セクションに状態異常を追加しました。',
     })
   })
 

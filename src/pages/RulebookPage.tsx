@@ -1,5 +1,5 @@
 import { WORLD_IMAGES } from '../constants/world'
-import { commonSkills, currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, skillRules, specializedSkills, statDefinitions } from './rulebookContent'
+import { commonSkills, currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, skillRules, specializedSkills, statDefinitions, statusConditionRule } from './rulebookContent'
 
 export function RulebookPage() {
   return <div className="page world-page rulebook-page" style={{ backgroundImage: `linear-gradient(color-mix(in srgb, var(--background) 78%, transparent), color-mix(in srgb, var(--background) 94%, transparent)), url(${WORLD_IMAGES.riverRoad})` }}>
@@ -76,6 +76,7 @@ export function RulebookPage() {
           <RuleCard title="配置と行動順"><ul><li>味方・敵ともに<Keyword>前衛／中衛／後衛</Keyword>へ配置</li><li>開始時に自分の配置を宣言</li><li>味方・敵をまとめて<Keyword>速力</Keyword>の速い順に行動</li><li>同速なら筋力、場所に応じた技能、RPで決定</li><li><Keyword>配置変更</Keyword>は1ターンを消費</li></ul></RuleCard>
           <RuleCard title="ターン"><ul><li>自分の<Keyword>ターン</Keyword>の最初に行動を宣言</li><li><Keyword>攻撃</Keyword>、回避専念、回復など自由に選択</li><li>攻撃以外の行動はGM裁量</li><li>戦闘終了まで各ターンを繰り返す</li></ul></RuleCard>
           <RuleCard title="攻撃の流れ" variant="mechanics"><ol><li><Keyword>攻撃側</Keyword>が技能判定</li><li>対象が<Keyword>回避</Keyword>または<Keyword>防御</Keyword></li><li>攻撃が通れば<Keyword>ダメージ処理</Keyword></li></ol><p>近接攻撃は前衛からのみ。遠距離攻撃は中衛で命中率−10%、後衛で−20%。回避は回避技能、防御はキャラクターシートの防御数値を参照します。</p></RuleCard>
+          <RuleCard title="状態異常"><p><Keyword>{statusConditionRule.principle}</Keyword></p><p>{statusConditionRule.structure}</p><p>{statusConditionRule.oneTurn}{statusConditionRule.persistent}</p></RuleCard>
           <RuleCard title="受け流し" variant="mechanics"><p>攻撃を受ける際、<Keyword>近接武器または銃</Keyword>を装備していれば、その武器に設定した技能で判定できます。</p><p>判定に成功すると、受けるダメージの半分（端数切り捨て）を武器の<Keyword>耐久値</Keyword>へ移し、残りをHPから減らします。失敗した場合は、通常どおり全ダメージを受けます。</p><p>耐久値が0になった武器は、修理されるまで受け流しには使えません。</p></RuleCard>
         </RuleSection>
 
