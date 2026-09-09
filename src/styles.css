@@ -561,6 +561,13 @@ body { background: var(--background); }
   color: var(--accent);
 }
 
+/* Keep one line of breathing room where boxed mechanics meet prose. */
+.rulebook-section > .rulebook-lead + .rulebook-card-mechanics,
+.rulebook-section > .rulebook-card:not(.rulebook-card-mechanics) + .rulebook-card-mechanics,
+.rulebook-section > .rulebook-card-mechanics + .rulebook-card:not(.rulebook-card-mechanics) {
+  margin-top: 24px;
+}
+
 .rulebook-keyword {
   color: var(--accent);
   font-weight: 700;
