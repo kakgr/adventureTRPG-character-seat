@@ -1,9 +1,17 @@
-import { DEFAULT_DATA, INITIAL_STAT_BASE, MAX_SKILL_BONUS } from '../constants/game'
-import { normalizeLuck } from './characterRules'
-import { normalizeCurrency } from './currency'
-import type { CharacterData, Skills, StatBonuses, Stats, Weapon, WeaponKind } from '../types/character'
+import { DEFAULT_DATA, INITIAL_STAT_BASE, MAX_SKILL_BONUS } from "../constants/game";
+import { normalizeLuck } from "./characterRules";
+import { normalizeCurrency } from "./currency";
+import type {
+  CharacterData,
+  Skills,
+  StatBonuses,
+  Stats,
+  Weapon,
+  WeaponKind,
+} from "../types/character";
 
-const finiteNumber = (value: unknown, fallback: number) => typeof value === 'number' && Number.isFinite(value) ? value : fallback
+const finiteNumber = (value: unknown, fallback: number) =>
+  typeof value === "number" && Number.isFinite(value) ? value : fallback;
 
 const normalizeStats = (source: Partial<Stats> | undefined): Stats => ({
   vitality: finiteNumber(source?.vitality, INITIAL_STAT_BASE),
@@ -11,7 +19,7 @@ const normalizeStats = (source: Partial<Stats> | undefined): Stats => ({
   magic: finiteNumber(source?.magic, INITIAL_STAT_BASE),
   speed: finiteNumber(source?.speed, INITIAL_STAT_BASE),
   mental: finiteNumber(source?.mental, INITIAL_STAT_BASE),
-})
+});
 
 const normalizeStatBonuses = (source: Partial<StatBonuses> | undefined): StatBonuses => ({
   vitality: finiteNumber(source?.vitality, 0),
@@ -19,30 +27,44 @@ const normalizeStatBonuses = (source: Partial<StatBonuses> | undefined): StatBon
   magic: finiteNumber(source?.magic, 0),
   speed: finiteNumber(source?.speed, 0),
   mental: finiteNumber(source?.mental, 0),
-})
+});
 
-const normalizeSkillBonus = (value: unknown) => Math.max(0, Math.min(MAX_SKILL_BONUS, typeof value === 'number' && Number.isFinite(value) ? Math.round(value) : 0))
-const normalizeSkillBonusMap = (source: Record<string, unknown> | undefined) => Object.fromEntries(Object.entries(source ?? {}).map(([id, value]) => [id, normalizeSkillBonus(value)]))
+const normalizeSkillBonus = (value: unknown) =>
+  Math.max(
+    0,
+    Math.min(
+      MAX_SKILL_BONUS,
+      typeof value === "number" && Number.isFinite(value) ? Math.round(value) : 0,
+    ),
+  );
+const normalizeSkillBonusMap = (source: Record<string, unknown> | undefined) =>
+  Object.fromEntries(
+    Object.entries(source ?? {}).map(([id, value]) => [id, normalizeSkillBonus(value)]),
+  );
 
 const normalizeWeapon = (source: Partial<Weapon>, index: number): Weapon => ({
-  id: typeof source.id === 'string' && source.id ? source.id : `weapon-${index + 1}`,
-  name: typeof source.name === 'string' ? source.name : '',
-  kind: (source.kind === 'gun' ? 'gun' : 'melee') as WeaponKind,
-  skill: typeof source.skill === 'string' ? source.skill : '',
-  damage: typeof source.damage === 'string' ? source.damage : '',
+  id: typeof source.id === "string" && source.id ? source.id : `weapon-${index + 1}`,
+  name: typeof source.name === "string" ? source.name : "",
+  kind: (source.kind === "gun" ? "gun" : "melee") as WeaponKind,
+  skill: typeof source.skill === "string" ? source.skill : "",
+  damage: typeof source.damage === "string" ? source.damage : "",
   durability: Math.max(0, Math.round(finiteNumber(source.durability, 0))),
-  description: typeof source.description === 'string' ? source.description : '',
-})
+  description: typeof source.description === "string" ? source.description : "",
+});
 
-const normalizeWeapons = (source: unknown): Weapon[] => Array.isArray(source)
-  ? source.map((weapon, index) => normalizeWeapon((weapon ?? {}) as Partial<Weapon>, index))
-  : []
+const normalizeWeapons = (source: unknown): Weapon[] =>
+  Array.isArray(source)
+    ? source.map((weapon, index) => normalizeWeapon((weapon ?? {}) as Partial<Weapon>, index))
+    : [];
 
 const normalizeSkills = (source: Partial<Skills> | undefined): Skills => ({
   common: { ...DEFAULT_DATA.skills.common, ...(source?.common ?? {}) },
   luck: normalizeLuck(source?.luck),
   bonuses: {
-    common: { ...DEFAULT_DATA.skills.bonuses.common, ...normalizeSkillBonusMap(source?.bonuses?.common) },
+    common: {
+      ...DEFAULT_DATA.skills.bonuses.common,
+      ...normalizeSkillBonusMap(source?.bonuses?.common),
+    },
     weapon: normalizeSkillBonusMap(source?.bonuses?.weapon),
     ranged: normalizeSkillBonusMap(source?.bonuses?.ranged),
     knowledge: normalizeSkillBonusMap(source?.bonuses?.knowledge),
@@ -54,11 +76,13 @@ const normalizeSkills = (source: Partial<Skills> | undefined): Skills => ({
   knowledge: Array.isArray(source?.knowledge) ? source.knowledge : [],
   magic: Array.isArray(source?.magic) ? source.magic : [],
   custom: Array.isArray(source?.custom) ? source.custom : [],
-})
+});
 
 /** 旧6能力値データも読み込めるよう、新しい5能力値モデルへそろえる。 */
-export function normalizeCharacterData(source: Partial<CharacterData> | null | undefined): CharacterData {
-  const data = source ?? {}
+export function normalizeCharacterData(
+  source: Partial<CharacterData> | null | undefined,
+): CharacterData {
+  const data = source ?? {};
   return {
     profile: { ...DEFAULT_DATA.profile, ...(data.profile ?? {}) },
     stats: normalizeStats(data.stats),
@@ -69,5 +93,5 @@ export function normalizeCharacterData(source: Partial<CharacterData> | null | u
     items: Array.isArray(data.items) ? data.items : [],
     experience: { ...DEFAULT_DATA.experience, ...(data.experience ?? {}) },
     tags: Array.isArray(data.tags) ? data.tags : [],
-  }
+  };
 }

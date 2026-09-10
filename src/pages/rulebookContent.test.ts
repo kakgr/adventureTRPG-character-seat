@@ -1,77 +1,104 @@
-import { describe, expect, it } from 'vitest'
-import { currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, secretKeywordRule, skillRules, statDefinitions, statusConditionRule } from './rulebookContent'
+import { describe, expect, it } from "vitest";
+import {
+  currencyRules,
+  insanityTable,
+  luckRules,
+  magicMpRules,
+  playerTerm,
+  resourceRecoveryRule,
+  rulebookSections,
+  secretKeywordRule,
+  skillRules,
+  statDefinitions,
+  statusConditionRule,
+} from "./rulebookContent";
 
-describe('rulebook content', () => {
-  it('contains the first-edition core sections', () => {
+describe("rulebook content", () => {
+  it("contains the first-edition core sections", () => {
     expect(rulebookSections.map((section) => section.id)).toEqual([
-      'trpg',
-      'features',
-      'parameters',
-      'skills',
-      'growth',
-      'checks',
-      'sanity',
-      'luck',
-      'money',
-      'combat',
-      'weapons',
-      'magic',
-    ])
-  })
+      "trpg",
+      "features",
+      "parameters",
+      "skills",
+      "growth",
+      "checks",
+      "sanity",
+      "luck",
+      "money",
+      "combat",
+      "weapons",
+      "magic",
+    ]);
+  });
 
-  it('defines the confirmed stat roles and skill check rules', () => {
+  it("defines the confirmed stat roles and skill check rules", () => {
     expect(statDefinitions).toEqual([
-      { name: '体力', effect: 'HP' },
-      { name: '筋力', effect: 'ダメージボーナス' },
-      { name: '魔力', effect: 'MP' },
-      { name: '速力', effect: '行動順' },
-      { name: '精神力', effect: '正気度' },
-    ])
-    expect(skillRules).toEqual(expect.objectContaining({
-      maximum: 100,
-      success: '技能値以下で成功',
-      critical: '1〜5',
-      fumble: '95〜100',
-    }))
-  })
+      { name: "体力", effect: "HP" },
+      { name: "筋力", effect: "ダメージボーナス" },
+      { name: "魔力", effect: "MP" },
+      { name: "速力", effect: "行動順" },
+      { name: "精神力", effect: "正気度" },
+    ]);
+    expect(skillRules).toEqual(
+      expect.objectContaining({
+        maximum: 100,
+        success: "技能値以下で成功",
+        critical: "1〜5",
+        fumble: "95〜100",
+      }),
+    );
+  });
 
-  it('defines luck as a rerollable random skill', () => {
-    expect(luckRules).toEqual({ minimum: 0, maximum: 90, points: 0, reroll: '何度でも振り直し可能' })
-  })
+  it("defines luck as a rerollable random skill", () => {
+    expect(luckRules).toEqual({
+      minimum: 0,
+      maximum: 90,
+      points: 0,
+      reroll: "何度でも振り直し可能",
+    });
+  });
 
-  it('defines currency values and magic MP efficiency rules', () => {
-    expect(currencyRules).toEqual(expect.objectContaining({ copper: '1カッパー = 1円', platinum: '1プラチナ = 100万円' }))
-    expect(magicMpRules).toEqual(expect.objectContaining({
-      principle: '制約が多いほどMP使用量が減り、汎用的であるほどMPを使う。',
-      alchemyExample: '汎用性が非常に高い錬金術は燃費が悪い。',
-      gunExample: '攻撃にしか使えない銃は燃費がいい。',
-    }))
-  })
+  it("defines currency values and magic MP efficiency rules", () => {
+    expect(currencyRules).toEqual(
+      expect.objectContaining({ copper: "1カッパー = 1円", platinum: "1プラチナ = 100万円" }),
+    );
+    expect(magicMpRules).toEqual(
+      expect.objectContaining({
+        principle: "制約が多いほどMP使用量が減り、汎用的であるほどMPを使う。",
+        alchemyExample: "汎用性が非常に高い錬金術は燃費が悪い。",
+        gunExample: "攻撃にしか使えない銃は燃費がいい。",
+      }),
+    );
+  });
 
-  it('allows HP and MP recovery through potions as well as rest', () => {
-    expect(resourceRecoveryRule).toBe('HP/MPは十分な休息を取ることで回復するほか、ポーションの類を使用することでも回復できます。')
-  })
+  it("allows HP and MP recovery through potions as well as rest", () => {
+    expect(resourceRecoveryRule).toBe(
+      "HP/MPは十分な休息を取ることで回復するほか、ポーションの類を使用することでも回復できます。",
+    );
+  });
 
-  it('defines status conditions by broad effect and duration', () => {
+  it("defines status conditions by broad effect and duration", () => {
     expect(statusConditionRule).toEqual({
-      principle: '状態異常は特定の効果を示すものではなく、広域的な状態を示します。',
-      structure: '状態異常は継続ターン数と効果で構成します。',
-      oneTurn: '1ターン継続する場合は、次のターンの間ずっと継続します。',
-      persistent: '回復しなければ、永続する場合もあります。',
-    })
-  })
+      principle: "状態異常は特定の効果を示すものではなく、広域的な状態を示します。",
+      structure: "状態異常は継続ターン数と効果で構成します。",
+      oneTurn: "1ターン継続する場合は、次のターンの間ずっと継続します。",
+      persistent: "回復しなければ、永続する場合もあります。",
+    });
+  });
 
-  it('defines secret keywords as indirect scenario clues', () => {
-    expect(secretKeywordRule).toBe('シナリオ中に直接描写されないキーワード。そのシナリオにそのまま関与することは少ないが、何らかの伏線や今後を有利にする情報であることが多い。PLは違和感を感じる部分へ積極的に行動を起こした方が良いだろう。')
-  })
+  it("defines secret keywords as indirect scenario clues", () => {
+    expect(secretKeywordRule).toBe(
+      "シナリオ中に直接描写されないキーワード。そのシナリオにそのまま関与することは少ないが、何らかの伏線や今後を有利にする情報であることが多い。PLは違和感を感じる部分へ積極的に行動を起こした方が良いだろう。",
+    );
+  });
 
-  it('provides an optional insanity table', () => {
-    expect(insanityTable).toHaveLength(20)
-    expect(insanityTable[0].roll).toBe('1')
-    expect(insanityTable[19].roll).toBe('20')
-  })
+  it("provides an optional insanity table", () => {
+    expect(insanityTable).toHaveLength(20);
+    expect(insanityTable[0].roll).toBe("1");
+    expect(insanityTable[19].roll).toBe("20");
+  });
 
-  it('defines the in-world name for player characters', () => {
-    expect(playerTerm).toBe('PLたちは「渡り手」と呼ばれます。')
-  })
-})
+  it("defines the in-world name for player characters", () => {
+    expect(playerTerm).toBe("PLたちは「渡り手」と呼ばれます。");
+  });
+});

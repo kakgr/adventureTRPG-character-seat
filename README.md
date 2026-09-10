@@ -95,15 +95,15 @@ VITE_SUPABASE_PUBLISHABLE_KEY
 
 `public.characters` に以下を保存します。
 
-| カラム | 型 | 内容 |
-| --- | --- | --- |
-| `id` | uuid | キャラクターID |
-| `user_id` | uuid | `auth.users.id` |
-| `name` | text | 一覧で使うキャラクター名 |
-| `data` | jsonb | 能力値・技能・プロフィール等 |
-| `portrait_path` | text nullable | Storageのファイルパス |
-| `is_public` | boolean | 詳細URLを公開するか（既定値はtrue） |
-| `created_at` / `updated_at` | timestamptz | 作成・更新日時 |
+| カラム                      | 型            | 内容                                |
+| --------------------------- | ------------- | ----------------------------------- |
+| `id`                        | uuid          | キャラクターID                      |
+| `user_id`                   | uuid          | `auth.users.id`                     |
+| `name`                      | text          | 一覧で使うキャラクター名            |
+| `data`                      | jsonb         | 能力値・技能・プロフィール等        |
+| `portrait_path`             | text nullable | Storageのファイルパス               |
+| `is_public`                 | boolean       | 詳細URLを公開するか（既定値はtrue） |
+| `created_at` / `updated_at` | timestamptz   | 作成・更新日時                      |
 
 ## JSON構造
 
