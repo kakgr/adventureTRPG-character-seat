@@ -840,6 +840,7 @@ body { background: var(--background); }
 .scenario-info-list div { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .scenario-info-list dt { color: var(--text-tertiary); font-size: 11px; }
 .scenario-info-list dd { margin: 0; color: var(--text); font-size: 12px; text-align: right; }
+.scenario-special-requirement { grid-column: 1 / -1; }.scenario-special-requirement dd { max-width: 520px; text-align: left; line-height: 1.7; }
 
 @media (max-width: 760px) {
   .scenario-book-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }

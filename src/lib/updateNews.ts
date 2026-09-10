@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = '1.0.1'
+export const CURRENT_VERSION = '1.1.1'
 export const MAX_UPDATE_NEWS = 5
 
 export type UpdateNewsItem = {
@@ -10,6 +10,11 @@ export type UpdateNewsItem = {
 export const updateNews: UpdateNewsItem[] = [
   {
     version: CURRENT_VERSION,
+    title: 'シークレットキーワードの追加',
+    description: 'ルールブックにシークレットキーワードを追加しました。',
+  },
+  {
+    version: '1.0.1',
     title: '状態異常の追加',
     description: 'ルールブックの戦闘セクションに状態異常を追加しました。',
   },

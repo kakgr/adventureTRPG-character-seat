@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, skillRules, statDefinitions, statusConditionRule } from './rulebookContent'
+import { currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, secretKeywordRule, skillRules, statDefinitions, statusConditionRule } from './rulebookContent'
 
 describe('rulebook content', () => {
   it('contains the first-edition core sections', () => {
@@ -59,6 +59,10 @@ describe('rulebook content', () => {
       oneTurn: '1ターン継続する場合は、次のターンの間ずっと継続します。',
       persistent: '回復しなければ、永続する場合もあります。',
     })
+  })
+
+  it('defines secret keywords as indirect scenario clues', () => {
+    expect(secretKeywordRule).toBe('シナリオ中に直接描写されないキーワード。そのシナリオにそのまま関与することは少ないが、何らかの伏線や今後を有利にする情報であることが多い。PLは違和感を感じる部分へ積極的に行動を起こした方が良いだろう。')
   })
 
   it('provides an optional insanity table', () => {

@@ -7,6 +7,7 @@ export type Scenario = {
   playTime: string
   players: string
   recommendedSkills: string[]
+  specialRequirement?: string
 }
 
 export type ScenarioSection = {
@@ -52,7 +53,23 @@ export const scenarioSections: ScenarioSection[] = [
       },
     ],
   },
-  { id: 'main', title: 'メインシナリオ', scenarios: [] },
+  {
+    id: 'main',
+    title: 'メインシナリオ',
+    scenarios: [
+      {
+        id: 'main-scenario-01',
+        title: '？？？？',
+        cover: `${import.meta.env.BASE_URL}scenarios/main-scenario-01.png`,
+        synopsis: '？？？？',
+        genre: 'メイン・探索・戦闘',
+        playTime: '3時間〜4時間',
+        players: '未定',
+        recommendedSkills: ['隠密', '戦闘系'],
+        specialRequirement: 'サブシナリオ「街歩き」にて特定のフラグが立っているPCに秘匿情報',
+      },
+    ],
+  },
   {
     id: 'sub',
     title: 'サブシナリオ',

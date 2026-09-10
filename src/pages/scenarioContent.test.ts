@@ -18,6 +18,19 @@ describe('scenario content', () => {
       players: '1人〜',
       recommendedSkills: [],
     })
+
+    const mainScenario = scenarioSections.find((section) => section.id === 'main')?.scenarios[0]
+    expect(mainScenario).toMatchObject({
+      id: 'main-scenario-01',
+      title: '？？？？',
+      synopsis: '？？？？',
+      cover: expect.stringContaining('scenarios/main-scenario-01.png'),
+      genre: 'メイン・探索・戦闘',
+      playTime: '3時間〜4時間',
+      players: '未定',
+      recommendedSkills: ['隠密', '戦闘系'],
+      specialRequirement: 'サブシナリオ「街歩き」にて特定のフラグが立っているPCに秘匿情報',
+    })
   })
 
   it('keeps each scenario focused on information shown before the story', () => {

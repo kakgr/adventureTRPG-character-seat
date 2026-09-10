@@ -2,15 +2,15 @@ import { describe, expect, it } from 'vitest'
 import { CURRENT_VERSION, MAX_UPDATE_NEWS, getVisibleUpdateNews, updateNews } from './updateNews'
 
 describe('update news', () => {
-  it('現在のバージョンを1.0.1として公開する', () => {
-    expect(CURRENT_VERSION).toBe('1.0.1')
+  it('現在のバージョンを1.1.1として公開する', () => {
+    expect(CURRENT_VERSION).toBe('1.1.1')
   })
 
-  it('最初のニュースで状態異常の追加を知らせる', () => {
+  it('最初のニュースでシークレットキーワードの追加を知らせる', () => {
     expect(updateNews[0]).toMatchObject({
-      version: '1.0.1',
-      title: '状態異常の追加',
-      description: 'ルールブックの戦闘セクションに状態異常を追加しました。',
+      version: '1.1.1',
+      title: 'シークレットキーワードの追加',
+      description: 'ルールブックにシークレットキーワードを追加しました。',
     })
   })
 

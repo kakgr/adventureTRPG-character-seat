@@ -1,5 +1,5 @@
 import { WORLD_IMAGES } from '../constants/world'
-import { commonSkills, currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, skillRules, specializedSkills, statDefinitions, statusConditionRule } from './rulebookContent'
+import { commonSkills, currencyRules, insanityTable, luckRules, magicMpRules, playerTerm, resourceRecoveryRule, rulebookSections, secretKeywordRule, skillRules, specializedSkills, statDefinitions, statusConditionRule } from './rulebookContent'
 
 export function RulebookPage() {
   return <div className="page world-page rulebook-page" style={{ backgroundImage: `linear-gradient(color-mix(in srgb, var(--background) 78%, transparent), color-mix(in srgb, var(--background) 94%, transparent)), url(${WORLD_IMAGES.riverRoad})` }}>
@@ -24,6 +24,7 @@ export function RulebookPage() {
             <RuleCard title="渡り手"><p>{playerTerm}</p><p>渡り手は、汚染された土地や異形と関わりながら、さまざまな場所を旅します。</p></RuleCard>
             <RuleCard title="裁定"><p>ルールにない状況は、<Keyword>GM</Keyword>がその場で判断します。必要に応じて参加者と相談し、物語が進むことを優先します。</p><p>PvP、蘇生、発狂内容なども、シナリオと卓の方針に合わせて決定します。</p></RuleCard>
           </div>
+          <RuleCard title="シークレットキーワード"><p>{secretKeywordRule}</p></RuleCard>
         </RuleSection>
 
         <RuleSection id="parameters" title="パラメーター">

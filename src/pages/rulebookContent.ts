@@ -20,6 +20,8 @@ export const rulebookSections: RulebookSection[] = [
 
 export const playerTerm = 'PLたちは「渡り手」と呼ばれます。'
 
+export const secretKeywordRule = 'シナリオ中に直接描写されないキーワード。そのシナリオにそのまま関与することは少ないが、何らかの伏線や今後を有利にする情報であることが多い。PLは違和感を感じる部分へ積極的に行動を起こした方が良いだろう。'
+
 export const statDefinitions = [
   { name: '体力', effect: 'HP' },
   { name: '筋力', effect: 'ダメージボーナス' },
