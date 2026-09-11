@@ -264,15 +264,13 @@ export function RulebookPage() {
 
           <RuleSection id="money" title="お金について">
             <p className="rulebook-lead">
-              世界で使われる通貨は、カッパー、シルバー、ゴールド、プラチナの4種類です。
+              所持金は、カッパーを基準にした一つの合計値で管理します。
             </p>
-            <RuleCard title="通貨の単位" variant="mechanics">
+            <RuleCard title="所持金の単位" variant="mechanics">
               <p>
-                <Keyword>{currencyRules.copper}</Keyword>
-                。100カッパーで1シルバー、100シルバーで1ゴールド、100ゴールドで1プラチナになります。
-              </p>
-              <p>
-                <Keyword>{currencyRules.platinum}</Keyword>です。
+                単位は<Keyword>{currencyRules.unit}</Keyword>のみを使用し、
+                <Keyword>{currencyRules.amount}</Keyword>。
+                <Keyword>{currencyRules.copper}</Keyword>を基準とし、表示される数値はそのままカッパー（円）相当額です。
               </p>
             </RuleCard>
           </RuleSection>

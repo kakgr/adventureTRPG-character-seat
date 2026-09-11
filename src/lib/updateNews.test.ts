@@ -2,15 +2,16 @@ import { describe, expect, it } from "vitest";
 import { CURRENT_VERSION, MAX_UPDATE_NEWS, getVisibleUpdateNews, updateNews } from "./updateNews";
 
 describe("update news", () => {
-  it("現在のバージョンを1.1.1として公開する", () => {
-    expect(CURRENT_VERSION).toBe("1.1.1");
+  it("現在のバージョンを1.2.0として公開する", () => {
+    expect(CURRENT_VERSION).toBe("1.2.0");
   });
 
-  it("最初のニュースでシークレットキーワードの追加を知らせる", () => {
+  it("最初のニュースで1.2.0の更新内容を知らせる", () => {
     expect(updateNews[0]).toMatchObject({
-      version: "1.1.1",
-      title: "シークレットキーワードの追加",
-      description: "ルールブックにシークレットキーワードを追加しました。",
+      version: "1.2.0",
+      title: "お金と装備品を更新しました",
+      description:
+        "・お金を統一の数値に変更しました。\n・ココフォリアで直接お金の数値を確認/変更できるようにしました。\n・装備品欄を追加し、武器欄を統合しました。\n・装備品欄から最大6つ装備を選んで装備する形になりました。",
     });
   });
 

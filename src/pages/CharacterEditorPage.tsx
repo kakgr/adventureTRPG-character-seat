@@ -16,6 +16,7 @@ import {
 } from "../constants/game";
 import { characterService } from "../lib/characters";
 import { clearCharacterDraft, loadCharacterDraft, saveCharacterDraft } from "../lib/characterDraft";
+import { sortEquipmentByEquipped } from "../lib/characterData";
 import {
   calculateDamageBonus,
   calculateHp,
@@ -29,7 +30,6 @@ import {
   updateSkillBonus,
   updateStat,
 } from "../lib/characterRules";
-import { updateCurrency } from "../lib/currency";
 import { normalizeNumberInput } from "../lib/numberInput";
 import { useAuth } from "../hooks/useAuth";
 import { Icon } from "../components/Icons";
@@ -38,7 +38,7 @@ import { NumericInput } from "../components/NumericInput";
 import type {
   CharacterData,
   CharacterRecord,
-  CurrencyDenomination,
+  EquipmentCategory,
   SpecializedSkillId,
   StatId,
   WeaponKind,
@@ -381,8 +381,12 @@ export function CharacterEditorPage() {
           <SkillTable data={data} update={update} />
         </section>
         <section className="form-section">
-          <SectionTitle title="武器" />
-          <WeaponsEditor data={data} update={update} />
+          <SectionTitle title="装備品" />
+          <EquipmentEditor data={data} update={update} />
+        </section>
+        <section className="form-section compact-section">
+          <SectionTitle title="装備" />
+          <EquippedEquipmentEditor data={data} update={update} />
         </section>
         <section className="form-section">
           <SectionTitle title="所持金" />
@@ -809,7 +813,7 @@ function updateSkill(
   update(build(nextValue));
 }
 
-function WeaponsEditor({
+function EquipmentEditor({
   data,
   update,
 }: {
@@ -819,12 +823,13 @@ function WeaponsEditor({
   const add = () =>
     update({
       ...data,
-      weapons: [
-        ...data.weapons,
+      equipment: [
+        ...data.equipment,
         {
           id: newId(),
           name: "",
-          kind: "melee",
+          category: "weapon",
+          weaponKind: "melee",
           skill: "",
           damage: "",
           durability: 1,
@@ -832,74 +837,129 @@ function WeaponsEditor({
         },
       ],
     });
-  const updateWeapon = (id: string, changes: Partial<CharacterData["weapons"][number]>) =>
+  const updateEquipment = (id: string, changes: Partial<CharacterData["equipment"][number]>) =>
     update({
       ...data,
-      weapons: data.weapons.map((weapon) =>
-        weapon.id === id ? { ...weapon, ...changes } : weapon,
+      equipment: data.equipment.map((item) =>
+        item.id === id ? { ...item, ...changes } : item,
       ),
     });
+  const toggleEquipped = (id: string, checked: boolean) => {
+    if (checked && !data.equippedEquipmentIds.includes(id)) {
+      if (data.equippedEquipmentIds.length >= 6) return;
+      update({ ...data, equippedEquipmentIds: [...data.equippedEquipmentIds, id] });
+      return;
+    }
+    update({
+      ...data,
+      equippedEquipmentIds: data.equippedEquipmentIds.filter((equipmentId) => equipmentId !== id),
+    });
+  };
+  const orderedEquipment = sortEquipmentByEquipped(
+    data.equipment,
+    data.equippedEquipmentIds,
+  );
   return (
-    <div className="weapons-editor">
+    <div className="equipment-editor">
       <p className="form-help">
-        受け流しに使えるのは近接武器と銃です。武器ごとに耐久値を設定してください。
+        武器・防具・アクセサリーを登録し、チェックしたものを最大6つまで装備できます。
       </p>
-      {data.weapons.length === 0 && <p className="muted-copy">まだ武器がありません。</p>}
-      {data.weapons.map((weapon) => (
-        <div className="weapon-row" key={weapon.id}>
+      {data.equipment.length === 0 && <p className="muted-copy">まだ装備品がありません。</p>}
+      {orderedEquipment.map((item) => (
+        <div className="equipment-row" key={item.id}>
+          <div className="equipment-fields">
           <input
-            aria-label="武器名"
+            aria-label="装備品名"
             required
-            value={weapon.name}
-            onChange={(e) => updateWeapon(weapon.id, { name: e.target.value })}
-            placeholder="武器名"
+            value={item.name}
+            onChange={(e) => updateEquipment(item.id, { name: e.target.value })}
+            placeholder="装備品名"
           />
           <select
-            aria-label="武器種別"
-            value={weapon.kind}
-            onChange={(e) => updateWeapon(weapon.id, { kind: e.target.value as WeaponKind })}
+            aria-label="装備品種別"
+            value={item.category}
+            onChange={(e) =>
+              updateEquipment(item.id, { category: e.target.value as EquipmentCategory })
+            }
           >
-            <option value="melee">近接武器</option>
-            <option value="gun">銃</option>
+            <option value="weapon">武器</option>
+            <option value="armor">防具</option>
+            <option value="accessory">アクセサリー</option>
           </select>
-          <input
-            aria-label="使用技能"
-            value={weapon.skill}
-            onChange={(e) => updateWeapon(weapon.id, { skill: e.target.value })}
-            placeholder="使用技能"
-          />
-          <input
-            aria-label="ダメージ"
-            value={weapon.damage}
-            onChange={(e) => updateWeapon(weapon.id, { damage: e.target.value })}
-            placeholder="ダメージ"
-          />
-          <label className="weapon-durability">
-            <span>耐久値</span>
-            <input
-              aria-label="耐久値"
-              required
-              type="number"
-              min="0"
-              value={weapon.durability}
+          {item.category === "weapon" && (
+            <select
+              aria-label="武器種別"
+              value={item.weaponKind ?? "melee"}
               onChange={(e) =>
-                updateWeapon(weapon.id, { durability: Math.max(0, Number(e.target.value)) })
+                updateEquipment(item.id, { weaponKind: e.target.value as WeaponKind })
               }
-            />
-          </label>
+            >
+              <option value="melee">近接武器</option>
+              <option value="gun">銃</option>
+              <option value="staff">杖/魔道具</option>
+            </select>
+          )}
+          {item.category === "weapon" && item.weaponKind !== "staff" && (
+            <>
+              <input
+                aria-label="使用技能"
+                value={item.skill ?? ""}
+                onChange={(e) => updateEquipment(item.id, { skill: e.target.value })}
+                placeholder="使用技能"
+              />
+              <input
+                aria-label="ダメージ"
+                value={item.damage ?? ""}
+                onChange={(e) => updateEquipment(item.id, { damage: e.target.value })}
+                placeholder="ダメージ"
+              />
+            </>
+          )}
+          {(item.category !== "weapon" || item.weaponKind !== "staff") && (
+            <label className="equipment-durability">
+              <span>耐久値</span>
+              <NumericInput
+                aria-label="耐久値"
+                min={0}
+                max={999999999}
+                value={item.durability ?? 0}
+                onChange={(value) => updateEquipment(item.id, { durability: value })}
+              />
+            </label>
+          )}
           <textarea
-            aria-label="武器の備考"
+            aria-label="装備品の説明"
             rows={2}
-            value={weapon.description}
-            onChange={(e) => updateWeapon(weapon.id, { description: e.target.value })}
-            placeholder="備考"
+            value={item.description}
+            onChange={(e) => updateEquipment(item.id, { description: e.target.value })}
+            placeholder="説明・備考"
           />
+          </div>
+          <label className="equipment-toggle">
+            <input
+              type="checkbox"
+              aria-label={`${item.name || "名称未設定"}を装備に入れる`}
+              checked={data.equippedEquipmentIds.includes(item.id)}
+              disabled={
+                !data.equippedEquipmentIds.includes(item.id) &&
+                data.equippedEquipmentIds.length >= 6
+              }
+              onChange={(e) => toggleEquipped(item.id, e.target.checked)}
+            />
+            <span>装備中</span>
+          </label>
           <button
             type="button"
             className="icon-button danger-icon"
-            aria-label="武器を削除"
+            aria-label="装備品を削除"
             onClick={() =>
-              update({ ...data, weapons: data.weapons.filter((item) => item.id !== weapon.id) })
+              update({
+                ...data,
+                equipment: data.equipment.filter((equipment) => equipment.id !== item.id),
+                equippedEquipmentIds: data.equippedEquipmentIds.filter(
+                  (equipmentId) => equipmentId !== item.id,
+                ),
+              })
             }
           >
             <Icon name="trash" />
@@ -907,8 +967,48 @@ function WeaponsEditor({
         </div>
       ))}
       <button type="button" className="add-link" onClick={add}>
-        <Icon name="plus" /> 武器を追加
+        <Icon name="plus" /> 装備品を追加
       </button>
+    </div>
+  );
+}
+
+const EQUIPMENT_CATEGORY_LABELS: Record<EquipmentCategory, string> = {
+  weapon: "武器",
+  armor: "防具",
+  accessory: "アクセサリー",
+};
+
+function EquippedEquipmentEditor({
+  data,
+  update,
+}: {
+  data: CharacterData;
+  update: (next: CharacterData) => void;
+}) {
+  const equipped = data.equipment.filter((item) => data.equippedEquipmentIds.includes(item.id));
+  const remove = (id: string) =>
+    update({
+      ...data,
+      equippedEquipmentIds: data.equippedEquipmentIds.filter((equipmentId) => equipmentId !== id),
+    });
+
+  return (
+    <div className="equipped-editor">
+      <p className="form-help">装備中：{equipped.length} / 6</p>
+      {equipped.length === 0 ? (
+        <p className="muted-copy">装備中の装備品はありません。</p>
+      ) : (
+        equipped.map((item) => (
+          <div className="equipped-row" key={item.id}>
+            <b>{item.name || "名称未設定"}</b>
+            <span>{EQUIPMENT_CATEGORY_LABELS[item.category]}</span>
+            <button type="button" className="text-button" onClick={() => remove(item.id)}>
+              外す
+            </button>
+          </div>
+        ))
+      )}
     </div>
   );
 }
@@ -920,29 +1020,15 @@ function CurrencyEditor({
   currency: CharacterData["currency"];
   onChange: (currency: CharacterData["currency"]) => void;
 }) {
-  const entries: Array<{ id: CurrencyDenomination; label: string }> = [
-    { id: "platinum", label: "プラチナ" },
-    { id: "gold", label: "ゴールド" },
-    { id: "silver", label: "シルバー" },
-    { id: "copper", label: "カッパー" },
-  ];
   return (
     <div className="currency-editor">
       <p className="form-help">
-        100カッパーで1シルバー、100シルバーで1ゴールド、100ゴールドで1プラチナへ自動で繰り上がります。
+        所持金は1カッパー＝1円を基準にした合計値で管理します。
       </p>
-      <div className="currency-grid">
-        {entries.map(({ id, label }) => (
-          <label className="currency-field" key={id}>
-            <span>{label}</span>
-            <CurrencyInput
-              aria-label={label}
-              value={currency[id]}
-              onChange={(value) => onChange(updateCurrency(currency, id, value))}
-            />
-          </label>
-        ))}
-      </div>
+      <label className="currency-field">
+        <span>所持金</span>
+        <CurrencyInput aria-label="所持金" value={currency} onChange={onChange} />
+      </label>
     </div>
   );
 }

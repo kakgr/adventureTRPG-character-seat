@@ -727,10 +727,17 @@ p {
 .editor-form {
   display: grid;
   gap: 0;
+  width: 100%;
+  min-width: 0;
 }
 .form-section {
+  min-width: 0;
   border-top: 1px solid var(--border);
   padding: 27px 0 36px;
+}
+.editor-form > .form-actions,
+.editor-form > .form-hint {
+  min-width: 0;
 }
 .compact-section {
   padding-bottom: 27px;
@@ -3154,24 +3161,27 @@ body {
   font-size: 10px;
   line-height: 1.7;
 }
-.weapons-editor {
+.equipment-editor {
   display: grid;
   gap: 9px;
 }
-.weapon-row {
+.equipment-row {
   display: grid;
-  grid-template-columns: minmax(140px, 1.2fr) 105px minmax(120px, 1fr) 100px 92px minmax(
-      150px,
-      1.35fr
-    ) 28px;
+  grid-template-columns: minmax(0, 1fr) 72px 28px;
   gap: 8px;
-  align-items: center;
+  align-items: start;
   padding: 10px 0;
   border-bottom: 1px solid var(--border);
 }
-.weapon-row input,
-.weapon-row select,
-.weapon-row textarea {
+.equipment-fields {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.2fr) 105px 105px 100px 92px minmax(150px, 1.35fr);
+  gap: 8px;
+  align-items: center;
+}
+.equipment-fields input,
+.equipment-fields select,
+.equipment-fields textarea {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 3px;
@@ -3180,34 +3190,74 @@ body {
   outline: none;
   color: var(--text);
 }
-.weapon-row select {
+.equipment-fields select {
   min-width: 0;
 }
-.weapon-row textarea {
+.equipment-fields textarea {
+  grid-column: 1 / -1;
   resize: vertical;
   min-height: 42px;
   line-height: 1.5;
 }
-.weapon-row input:focus,
-.weapon-row select:focus,
-.weapon-row textarea:focus {
+.equipment-fields input:focus,
+.equipment-fields select:focus,
+.equipment-fields textarea:focus {
   border-color: var(--accent);
   background: var(--surface-raised);
 }
-.weapon-durability {
+.equipment-durability {
   display: grid;
   gap: 4px;
   color: var(--text-tertiary);
   font-size: 9px;
 }
-.weapon-durability input {
+.equipment-durability input {
   padding-block: 7px;
 }
-.detail-weapons {
+.equipment-toggle {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-height: 54px;
+  padding: 5px 7px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 9px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.equipment-toggle input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+.equipped-editor {
+  display: grid;
+  gap: 0;
+  max-width: 560px;
+}
+.equipped-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 44px;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.equipped-row span {
+  color: var(--accent);
+  font-size: 10px;
+}
+.equipped-row .text-button {
+  justify-self: end;
+}
+.detail-equipment {
   display: grid;
   gap: 0;
 }
-.detail-weapon {
+.detail-equipment-item {
   display: grid;
   gap: 8px;
   padding: 12px 0;
@@ -3237,7 +3287,7 @@ body {
   color: var(--text);
   font: 11px var(--mono);
 }
-.detail-weapon small {
+.detail-equipment-item small {
   color: var(--text-tertiary);
   font-size: 10px;
   white-space: pre-wrap;
@@ -3245,12 +3295,7 @@ body {
 .currency-editor {
   display: grid;
   gap: 12px;
-}
-.currency-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  max-width: 680px;
+  max-width: 320px;
 }
 .currency-field {
   display: grid;
@@ -3264,13 +3309,12 @@ body {
   font-family: var(--mono);
 }
 .detail-currency {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  display: block;
 }
 .detail-currency div {
   display: grid;
   gap: 5px;
+  max-width: 280px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
 }
@@ -3289,54 +3333,19 @@ body {
     grid-row: 2;
   }
 
-  .weapon-row {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px;
-    grid-template-areas:
-      "name type action"
-      "skill damage action"
-      "durability notes action";
-  }
-  .weapon-row > :nth-child(1) {
-    grid-area: name;
-  }
-  .weapon-row > :nth-child(2) {
-    grid-area: type;
-  }
-  .weapon-row > :nth-child(3) {
-    grid-area: skill;
-  }
-  .weapon-row > :nth-child(4) {
-    grid-area: damage;
-  }
-  .weapon-row > :nth-child(5) {
-    grid-area: durability;
-  }
-  .weapon-row > :nth-child(6) {
-    grid-area: notes;
-  }
-  .weapon-row > :nth-child(7) {
-    grid-area: action;
-  }
-  .currency-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: none;
-  }
-  .detail-currency {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 430px) {
-  .weapon-row {
+  .equipment-row {
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "name type"
-      "skill skill"
-      "damage durability"
-      "notes notes"
-      "action action";
   }
-  .weapon-row > :nth-child(7) {
+  .equipment-fields {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-column: 1 / -1;
+  }
+  .equipment-fields textarea {
+    grid-column: 1 / -1;
+  }
+  .equipment-toggle {
+    grid-column: 2;
+    grid-row: 2;
     justify-self: end;
   }
 }

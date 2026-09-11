@@ -48,9 +48,9 @@ export const luckRules = {
 } as const;
 
 export const currencyRules = {
+  unit: "カッパー",
   copper: "1カッパー = 1円",
-  platinum: "1プラチナ = 100万円",
-  conversion: "100カッパー = 1シルバー、100シルバー = 1ゴールド、100ゴールド = 1プラチナ",
+  amount: "所持金はカッパー単位の合計値で管理",
 } as const;
 
 export const magicMpRules = {

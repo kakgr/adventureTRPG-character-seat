@@ -75,8 +75,22 @@ export interface Item {
   description: string;
 }
 
-export type WeaponKind = "melee" | "gun";
+export type WeaponKind = "melee" | "gun" | "staff";
 
+export type EquipmentCategory = "weapon" | "armor" | "accessory";
+
+export interface EquipmentItem {
+  id: string;
+  name: string;
+  category: EquipmentCategory;
+  description: string;
+  weaponKind?: WeaponKind;
+  skill?: string;
+  damage?: string;
+  durability?: number;
+}
+
+/** 旧保存形式の武器。読み込み時にEquipmentItemへ変換する。 */
 export interface Weapon {
   id: string;
   name: string;
@@ -87,9 +101,11 @@ export interface Weapon {
   description: string;
 }
 
-export type CurrencyDenomination = "platinum" | "gold" | "silver" | "copper";
+/** 1カッパー＝1円を基準にした所持金の合計値。 */
+export type Currency = number;
 
-export interface Currency {
+/** 既存キャラクターに保存されている旧通貨形式。読み込み時のみ利用する。 */
+export interface LegacyCurrency {
   platinum: number;
   gold: number;
   silver: number;
@@ -105,7 +121,8 @@ export interface CharacterData {
   stats: Stats;
   statBonuses?: StatBonuses;
   skills: Skills;
-  weapons: Weapon[];
+  equipment: EquipmentItem[];
+  equippedEquipmentIds: string[];
   currency: Currency;
   items: Item[];
   experience: Experience;

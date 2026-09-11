@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeCharacterData } from "./characterData";
+import { normalizeCharacterData, sortEquipmentByEquipped } from "./characterData";
 
 describe("character data normalization", () => {
   it("fills the new magic stat when loading an old six-stat record", () => {
@@ -35,7 +35,7 @@ describe("character data normalization", () => {
     expect(result.items[0].description).toBe("一行目\n二行目");
   });
 
-  it("normalizes weapon durability and keeps weapon kind", () => {
+  it("migrates legacy weapons into equipment and keeps weapon details", () => {
     const result = normalizeCharacterData({
       weapons: [
         {
@@ -50,22 +50,102 @@ describe("character data normalization", () => {
       ],
     } as never);
 
-    expect(result.weapons[0]).toEqual({
+    expect(result.equipment[0]).toEqual({
       id: "weapon-1",
       name: "短剣",
-      kind: "melee",
+      category: "weapon",
+      description: "受け流し用",
+      weaponKind: "melee",
       skill: "武器",
       damage: "1d4",
       durability: 0,
-      description: "受け流し用",
     });
+    expect(result.equippedEquipmentIds).toEqual(["weapon-1"]);
   });
 
-  it("fills and normalizes currency for existing characters", () => {
+  it("limits equipped equipment to six existing items", () => {
+    const equipment = Array.from({ length: 7 }, (_, index) => ({
+      id: `equipment-${index + 1}`,
+      name: `装備${index + 1}`,
+      category: "accessory",
+      description: "",
+    }));
+
+    const result = normalizeCharacterData({
+      equipment,
+      equippedEquipmentIds: [...equipment.map((item) => item.id), "missing"],
+    } as never);
+
+    expect(result.equippedEquipmentIds).toEqual(
+      equipment.slice(0, 6).map((item) => item.id),
+    );
+  });
+
+  it("normalizes staff equipment without weapon stats and keeps armor durability", () => {
+    const result = normalizeCharacterData({
+      equipment: [
+        {
+          id: "staff-1",
+          name: "古杖",
+          category: "weapon",
+          weaponKind: "staff",
+          skill: "使わない",
+          damage: "使わない",
+          durability: 9,
+          description: "魔力を増幅する。",
+        },
+        {
+          id: "armor-1",
+          name: "革鎧",
+          category: "armor",
+          durability: 12,
+          description: "",
+        },
+      ],
+    } as never);
+
+    expect(result.equipment).toEqual([
+      {
+        id: "staff-1",
+        name: "古杖",
+        category: "weapon",
+        weaponKind: "staff",
+        description: "魔力を増幅する。",
+      },
+      {
+        id: "armor-1",
+        name: "革鎧",
+        category: "armor",
+        durability: 12,
+        description: "",
+      },
+    ]);
+  });
+
+  it("converts the legacy currency object for existing characters", () => {
     const result = normalizeCharacterData({
       currency: { platinum: 0, gold: 0, silver: 100, copper: 4 },
     } as never);
 
-    expect(result.currency).toEqual({ platinum: 0, gold: 1, silver: 0, copper: 4 });
+    expect(result.currency).toBe(10004);
+  });
+
+  it("sorts equipped equipment first while keeping each group stable", () => {
+    const equipment = [
+      { id: "a", name: "A", category: "accessory" as const, description: "" },
+      { id: "b", name: "B", category: "armor" as const, description: "" },
+      { id: "c", name: "C", category: "weapon" as const, description: "" },
+    ];
+
+    expect(sortEquipmentByEquipped(equipment, ["c", "a"]).map((item) => item.id)).toEqual([
+      "a",
+      "c",
+      "b",
+    ]);
+    expect(sortEquipmentByEquipped(equipment, ["c"]).map((item) => item.id)).toEqual([
+      "c",
+      "a",
+      "b",
+    ]);
   });
 });

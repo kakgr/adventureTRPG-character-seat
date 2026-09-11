@@ -60,7 +60,11 @@ describe("rulebook content", () => {
 
   it("defines currency values and magic MP efficiency rules", () => {
     expect(currencyRules).toEqual(
-      expect.objectContaining({ copper: "1カッパー = 1円", platinum: "1プラチナ = 100万円" }),
+      {
+        unit: "カッパー",
+        copper: "1カッパー = 1円",
+        amount: "所持金はカッパー単位の合計値で管理",
+      },
     );
     expect(magicMpRules).toEqual(
       expect.objectContaining({

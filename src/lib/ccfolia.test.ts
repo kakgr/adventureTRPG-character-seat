@@ -31,9 +31,10 @@ const character = (): CharacterRecord => ({
       weapon: [{ id: "weapon-1", specialty: "短剣", value: 55 }],
       custom: [{ id: "custom-1", name: "古代文字", value: 80 }],
     },
-    weapons: [],
+    equipment: [],
+    equippedEquipmentIds: [],
     items: [{ id: "item-1", name: "ランタン", quantity: 2, description: "油式" }],
-    currency: { platinum: 1, gold: 2, silver: 3, copper: 4 },
+    currency: { platinum: 1, gold: 2, silver: 3, copper: 4 } as never,
     experience: { notes: "港町の事件" },
     tags: ["探索", "古代遺跡"],
   },
@@ -53,6 +54,7 @@ describe("CCFOLIA character export", () => {
       { label: "HP", value: 15, max: 15 },
       { label: "MP", value: 18, max: 18 },
       { label: "正気度", value: 6, max: 6 },
+      { label: "所持金", value: 1020304, max: 0 },
     ]);
     expect(result.data.params).toEqual(
       expect.arrayContaining([
@@ -73,7 +75,7 @@ describe("CCFOLIA character export", () => {
         "MP：18",
         "正気度：6",
         "ダメージボーナス：1",
-        "所持金：プラチナ 1 / ゴールド 2 / シルバー 3 / カッパー 4",
+        "所持金：1020304",
       ].join("\r\n"),
     );
     expect(result.data.memo).not.toContain("遺跡調査員");
@@ -106,11 +108,12 @@ describe("CCFOLIA character export", () => {
 
   it("includes weapon durability in the memo", () => {
     const source = character();
-    source.data.weapons = [
+    source.data.equipment = [
       {
         id: "weapon-1",
         name: "短銃",
-        kind: "gun",
+        category: "weapon",
+        weaponKind: "gun",
         skill: "射撃・投擲",
         damage: "1d6",
         durability: 8,
@@ -120,6 +123,33 @@ describe("CCFOLIA character export", () => {
 
     expect(buildCocofoliaCharacter(source).data.memo).toContain(
       "武器：短銃（銃） 技能：射撃・投擲 ダメージ：1d6 耐久値：8",
+    );
+  });
+
+  it("exports staff and non-weapon equipment without irrelevant fields", () => {
+    const source = character();
+    source.data.equipment = [
+      {
+        id: "staff-1",
+        name: "魔道具",
+        category: "weapon",
+        weaponKind: "staff",
+        description: "魔力を増幅する。",
+      },
+      {
+        id: "armor-1",
+        name: "革鎧",
+        category: "armor",
+        durability: 12,
+        description: "軽い鎧。",
+      },
+    ];
+
+    expect(buildCocofoliaCharacter(source).data.memo).toContain(
+      "装備品：魔道具（武器・杖/魔道具） 説明：魔力を増幅する。",
+    );
+    expect(buildCocofoliaCharacter(source).data.memo).toContain(
+      "装備品：革鎧（防具） 耐久値：12 説明：軽い鎧。",
     );
   });
 });

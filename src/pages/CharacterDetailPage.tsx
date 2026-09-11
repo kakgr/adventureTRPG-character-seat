@@ -21,10 +21,16 @@ import {
 import { useAuth } from "../hooks/useAuth";
 import { Icon } from "../components/Icons";
 import { StatusMessage } from "../components/StatusMessage";
-import type { CharacterRecord, PublicCharacterRecord, SpecializedSkill } from "../types/character";
+import type {
+  CharacterRecord,
+  EquipmentItem,
+  PublicCharacterRecord,
+  SpecializedSkill,
+} from "../types/character";
 import type { SkillGenreId } from "../constants/game";
 import { WORLD_IMAGES } from "../constants/world";
 import { buildCocofoliaCharacter, serializeCocofoliaCharacter } from "../lib/ccfolia";
+import { sortEquipmentByEquipped } from "../lib/characterData";
 
 const STAT_SHORT_LABELS: Record<keyof typeof STAT_LABELS, string> = {
   vitality: "VIT",
@@ -88,6 +94,7 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
 
   const displayCharacter = ownerCharacter ?? character;
   const { data } = displayCharacter;
+  const orderedEquipment = sortEquipmentByEquipped(data.equipment, data.equippedEquipmentIds);
   const skillGroups = (Object.keys(SKILL_GENRE_LABELS) as SkillGenreId[])
     .map((genre) => ({
       genre,
@@ -301,54 +308,19 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
           </div>
         </section>
 
-        <section className="detail-card">
-          <CardHeading icon="weapon" title="武器" />
-          <div className="detail-weapons">
-            {data.weapons.length ? (
-              data.weapons.map((weapon) => (
-                <div className="detail-weapon" key={weapon.id}>
-                  <div className="detail-weapon-heading">
-                    <b>{weapon.name || "名称未設定"}</b>
-                    <span>{weapon.kind === "gun" ? "銃" : "近接武器"}</span>
-                  </div>
-                  <div className="detail-weapon-meta">
-                    <span>
-                      使用技能 <b>{weapon.skill || "未設定"}</b>
-                    </span>
-                    <span>
-                      ダメージ <b>{weapon.damage || "未設定"}</b>
-                    </span>
-                    <span>
-                      耐久値 <b>{weapon.durability}</b>
-                    </span>
-                  </div>
-                  {weapon.description && <small>{weapon.description}</small>}
-                </div>
-              ))
-            ) : (
-              <p className="muted-copy">武器はまだ登録されていません。</p>
-            )}
-          </div>
-        </section>
+        <EquipmentDetail title="装備品" items={orderedEquipment} emptyText="装備品はまだ登録されていません。" />
+        <EquipmentDetail
+          title="装備"
+          items={orderedEquipment.filter((item) => data.equippedEquipmentIds.includes(item.id))}
+          emptyText="装備中の装備品はありません。"
+        />
 
         <section className="detail-card">
           <CardHeading icon="coin" title="所持金" />
           <div className="detail-currency">
             <div>
-              <span>プラチナ</span>
-              <b>{data.currency.platinum}</b>
-            </div>
-            <div>
-              <span>ゴールド</span>
-              <b>{data.currency.gold}</b>
-            </div>
-            <div>
-              <span>シルバー</span>
-              <b>{data.currency.silver}</b>
-            </div>
-            <div>
-              <span>カッパー</span>
-              <b>{data.currency.copper}</b>
+              <span>合計（カッパー換算）</span>
+              <b>{data.currency}</b>
             </div>
           </div>
         </section>
@@ -396,6 +368,69 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
         </section>
       </div>
     </div>
+  );
+}
+
+const EQUIPMENT_CATEGORY_LABELS: Record<EquipmentItem["category"], string> = {
+  weapon: "武器",
+  armor: "防具",
+  accessory: "アクセサリー",
+};
+
+function EquipmentDetail({
+  title,
+  items,
+  emptyText,
+}: {
+  title: string;
+  items: EquipmentItem[];
+  emptyText: string;
+}) {
+  return (
+    <section className="detail-card">
+      <CardHeading icon="weapon" title={title} />
+      <div className="detail-equipment">
+        {items.length ? (
+          items.map((item) => (
+            <div className="detail-equipment-item" key={item.id}>
+              <div className="detail-weapon-heading">
+                <b>{item.name || "名称未設定"}</b>
+                <span>{EQUIPMENT_CATEGORY_LABELS[item.category]}</span>
+              </div>
+              {item.category === "weapon" && item.weaponKind !== "staff" && (
+                <div className="detail-weapon-meta">
+                  <span>
+                    種別 <b>{item.weaponKind === "gun" ? "銃" : "近接武器"}</b>
+                  </span>
+                  <span>
+                    使用技能 <b>{item.skill || "未設定"}</b>
+                  </span>
+                  <span>
+                    ダメージ <b>{item.damage || "未設定"}</b>
+                  </span>
+                  <span>
+                    耐久値 <b>{item.durability ?? 0}</b>
+                  </span>
+                </div>
+              )}
+              {item.category === "weapon" && item.weaponKind === "staff" && (
+                <div className="detail-weapon-meta">
+                  <span>種別 <b>杖/魔道具</b></span>
+                </div>
+              )}
+              {item.category !== "weapon" && (
+                <div className="detail-weapon-meta">
+                  <span>耐久値 <b>{item.durability ?? 0}</b></span>
+                </div>
+              )}
+              {item.description && <small>{item.description}</small>}
+            </div>
+          ))
+        ) : (
+          <p className="muted-copy">{emptyText}</p>
+        )}
+      </div>
+    </section>
   );
 }
 

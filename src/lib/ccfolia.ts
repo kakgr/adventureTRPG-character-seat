@@ -7,6 +7,7 @@ import {
   totalStatValue,
 } from "./characterRules";
 import { COMMON_SKILLS, SPECIALIZED_SKILLS, STAT_LABELS } from "../constants/game";
+import { normalizeCurrency } from "./currency";
 import type {
   CharacterRecord,
   SpecializedSkill,
@@ -51,11 +52,15 @@ function buildMemo(character: CharacterRecord) {
   const mp = calculateMp(data.stats, data.statBonuses);
   const sanity = calculateSanity(data.stats, data.statBonuses);
   const damageBonus = calculateDamageBonus(data.stats, data.statBonuses);
-  const currencyLine = `所持金：プラチナ ${data.currency.platinum} / ゴールド ${data.currency.gold} / シルバー ${data.currency.silver} / カッパー ${data.currency.copper}`;
+  const currency = normalizeCurrency(data.currency);
+  const currencyLine = `所持金：${currency}`;
 
-  const weaponLines = data.weapons.map(
-    (weapon) =>
-      `武器：${weapon.name || "名称未設定"}（${weapon.kind === "gun" ? "銃" : "近接武器"}） 技能：${weapon.skill || "未設定"} ダメージ：${weapon.damage || "未設定"} 耐久値：${weapon.durability}`,
+  const equipmentLines = data.equipment.map((item) =>
+    item.category === "weapon"
+      ? item.weaponKind === "staff"
+        ? `装備品：${item.name || "名称未設定"}（武器・杖/魔道具）${item.description ? ` 説明：${item.description}` : ""}`
+        : `武器：${item.name || "名称未設定"}（${item.weaponKind === "gun" ? "銃" : "近接武器"}） 技能：${item.skill || "未設定"} ダメージ：${item.damage || "未設定"} 耐久値：${item.durability ?? 0}`
+      : `装備品：${item.name || "名称未設定"}（${item.category === "armor" ? "防具" : "アクセサリー"}） 耐久値：${item.durability ?? 0}${item.description ? ` 説明：${item.description}` : ""}`,
   );
   return [
     `PC：${character.name || "名前未設定"}`,
@@ -64,7 +69,7 @@ function buildMemo(character: CharacterRecord) {
     `正気度：${sanity}`,
     `ダメージボーナス：${damageBonus}`,
     currencyLine,
-    ...weaponLines,
+    ...equipmentLines,
   ].join(CRLF);
 }
 
@@ -157,6 +162,7 @@ export function buildCocofoliaCharacter(
   const hp = calculateHp(data.stats, data.statBonuses);
   const mp = calculateMp(data.stats, data.statBonuses);
   const sanity = calculateSanity(data.stats, data.statBonuses);
+  const currency = normalizeCurrency(data.currency);
 
   return {
     kind: "character",
@@ -171,6 +177,7 @@ export function buildCocofoliaCharacter(
         { label: "HP", value: hp, max: hp },
         { label: "MP", value: mp, max: mp },
         { label: "正気度", value: sanity, max: sanity },
+        { label: "所持金", value: currency, max: 0 },
       ],
       params: [
         ...buildParams(character),
