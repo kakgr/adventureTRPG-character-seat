@@ -93,6 +93,74 @@ export const worldGlossaryGenres: WorldGlossaryGenre[] = [
     ],
   },
   {
+    id: "status-effects",
+    title: "状態異常・特殊効果",
+    entries: [
+      {
+        id: "wet",
+        term: "湿潤",
+        category: "状態異常",
+        description: "特殊な効果はありません。",
+      },
+      {
+        id: "cold",
+        term: "寒冷",
+        category: "状態異常",
+        description: "特殊な効果はありません。",
+      },
+      {
+        id: "frozen",
+        term: "凍結",
+        category: "状態異常",
+        description:
+          "湿潤状態の時に寒冷を付与する、または寒冷状態の時に湿潤を付与すると発生する。次のターンの間、対象の攻撃に追加で70%の命中判定を行わせる。",
+      },
+      {
+        id: "bound",
+        term: "拘束",
+        category: "状態異常",
+        description: "指定したターン数の間、対象は行動不能になる。",
+      },
+      {
+        id: "electric-rift",
+        term: "電裂（でんれつ）",
+        category: "状態異常",
+        description: "指定したターン数の間、対象に与えられるダメージが1増える。",
+      },
+      {
+        id: "burn",
+        term: "火傷",
+        category: "状態異常",
+        description: "2ターンの間、ターンの初めにダメージを1受ける。",
+      },
+      {
+        id: "aim",
+        term: "照準",
+        category: "状態異常",
+        description: "指定したターン数の間、対象への攻撃命中率が味方全員90%になる。",
+      },
+      {
+        id: "bleeding",
+        term: "出血",
+        category: "状態異常",
+        description: "5ターンの間、ターンの初めに1ダメージを受ける。治療などで簡単に治せる。",
+      },
+      {
+        id: "ice-break",
+        term: "氷砕き",
+        category: "特殊効果",
+        description:
+          "「凍結」状態の相手に追加で1D2ダメージを与える。ダメージを与えた後、「凍結」状態はなくなる。",
+      },
+      {
+        id: "piercing",
+        term: "貫通",
+        category: "特殊効果",
+        description: "対象の防御力が指定値以下の場合、最低でも1ダメージを与える。",
+      },
+    ],
+  },
+  {
     id: "geography",
     title: "地理",
     categories: ["自然地名", "人文地名"],

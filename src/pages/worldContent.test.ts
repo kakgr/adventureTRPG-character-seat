@@ -6,12 +6,14 @@ describe("world content", () => {
     expect(worldGlossaryGenres.map((genre) => genre.id)).toEqual([
       "magic-technology",
       "pollution-anomalies",
+      "status-effects",
       "geography",
       "people",
     ]);
     expect(worldGlossaryGenres.map((genre) => genre.title)).toEqual([
       "魔力・魔術・機械",
       "汚染・異形",
+      "状態異常・特殊効果",
       "地理",
       "人物・役割",
     ]);
@@ -25,6 +27,16 @@ describe("world content", () => {
       "銃",
       "汚染",
       "異形",
+      "湿潤",
+      "寒冷",
+      "凍結",
+      "拘束",
+      "電裂（でんれつ）",
+      "火傷",
+      "照準",
+      "出血",
+      "氷砕き",
+      "貫通",
       "ラース大陸",
       "中央海",
       "バルトの街",
@@ -41,6 +53,16 @@ describe("world content", () => {
       "魔力を使うことで間接攻撃ができる武器。様々な種類があるが、特徴として他の魔術と違い簡単な訓練ですぐ撃てる良さがある。",
       "魔力が結晶化し、物質に変異する現象のこと。ほとんどのものに対して有害であり、濃度が高くなるとその地域は危険域になる。",
       "汚染によって生まれた生物。または汚染によって変異した生物。様々な種類がおり、凶暴で基本的に有害。",
+      "特殊な効果はありません。",
+      "特殊な効果はありません。",
+      "湿潤状態の時に寒冷を付与する、または寒冷状態の時に湿潤を付与すると発生する。次のターンの間、対象の攻撃に追加で70%の命中判定を行わせる。",
+      "指定したターン数の間、対象は行動不能になる。",
+      "指定したターン数の間、対象に与えられるダメージが1増える。",
+      "2ターンの間、ターンの初めにダメージを1受ける。",
+      "指定したターン数の間、対象への攻撃命中率が味方全員90%になる。",
+      "5ターンの間、ターンの初めに1ダメージを受ける。治療などで簡単に治せる。",
+      "「凍結」状態の相手に追加で1D2ダメージを与える。ダメージを与えた後、「凍結」状態はなくなる。",
+      "対象の防御力が指定値以下の場合、最低でも1ダメージを与える。",
       "中央海から西側にある大陸で、縦に長く様々な気候帯を持っている。三大陸の中で最も人口が多く、安全圏が広い。",
       "3つの大陸に挟まれた海。場所がちょうどいいため何かと基準にされがち。",
       "ラース大陸東部の沿岸に位置し、漁業と貿易の出入り口として発展した港町。この世界でも屈指の安全圏であり、周辺地域の様々なものが集結する場所になった。サダム連合国を構成する都市国家の一つ。",
@@ -68,6 +90,26 @@ describe("world content", () => {
       { title: "魔力", terms: ["魔力"] },
       { title: "魔術", terms: ["魔術", "錬金術"] },
       { title: "機械", terms: ["機械", "銃"] },
+    ]);
+  });
+
+  it("adds status conditions and special effects to the glossary", () => {
+    const glossary = worldGlossaryGenres.find((genre) => genre.id === "status-effects");
+    expect(glossary).toMatchObject({
+      id: "status-effects",
+      title: "状態異常・特殊効果",
+    });
+    expect(
+      groupGlossaryEntries(glossary?.entries ?? []).map((group) => ({
+        title: group.title,
+        terms: group.entries.map((entry) => entry.term),
+      })),
+    ).toEqual([
+      {
+        title: "状態異常",
+        terms: ["湿潤", "寒冷", "凍結", "拘束", "電裂（でんれつ）", "火傷", "照準", "出血"],
+      },
+      { title: "特殊効果", terms: ["氷砕き", "貫通"] },
     ]);
   });
 
