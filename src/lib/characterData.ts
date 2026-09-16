@@ -59,31 +59,34 @@ const normalizeWeapons = (source: unknown): Weapon[] =>
     ? source.map((weapon, index) => normalizeWeapon((weapon ?? {}) as Partial<Weapon>, index))
     : [];
 
-const normalizeEquipmentCategory = (value: unknown): EquipmentCategory =>
-  value === "weapon" || value === "armor" || value === "accessory" ? value : "accessory";
+const normalizeReferenceId = (value: unknown) =>
+  typeof value === "string" && /^\d{0,5}$/.test(value) ? value : "";
 
-const normalizeWeaponKind = (value: unknown): WeaponKind =>
-  value === "gun" ? "gun" : value === "staff" ? "staff" : "melee";
+const normalizeEquipmentCategory = (value: unknown, weaponKind?: unknown): EquipmentCategory => {
+  if (["melee", "gun", "bow", "magicTool", "armor", "shield", "accessory"].includes(value as string))
+    return value as EquipmentCategory;
+  if (value === "weapon") return weaponKind === "staff" ? "magicTool" : weaponKind === "gun" ? "gun" : "melee";
+  return value === "armor" ? "armor" : "accessory";
+};
 
 const normalizeEquipmentItem = (source: unknown, index: number): EquipmentItem => {
   const value = (source ?? {}) as Partial<EquipmentItem>;
-  const category = normalizeEquipmentCategory(value.category);
+  const category = normalizeEquipmentCategory(value.category, (value as { weaponKind?: unknown }).weaponKind);
   const item: EquipmentItem = {
     id: typeof value.id === "string" && value.id ? value.id : `equipment-${index + 1}`,
+    referenceId: normalizeReferenceId(value.referenceId),
     name: typeof value.name === "string" ? value.name : "",
     category,
     description: typeof value.description === "string" ? value.description : "",
   };
-  if (category === "weapon") {
-    item.weaponKind = normalizeWeaponKind(value.weaponKind);
-    if (item.weaponKind !== "staff") {
-      item.skill = typeof value.skill === "string" ? value.skill : "";
-      item.damage = typeof value.damage === "string" ? value.damage : "";
-      item.durability = Math.max(0, Math.round(finiteNumber(value.durability, 0)));
-    }
-  } else {
-    item.durability = Math.max(0, Math.round(finiteNumber(value.durability, 0)));
+  if (["melee", "gun", "bow"].includes(category)) {
+    item.skillReferenceId = normalizeReferenceId(value.skillReferenceId);
+    item.damage = typeof value.damage === "string" ? value.damage : "";
+    item.attacks = Math.max(0, Math.round(finiteNumber(value.attacks, 0)));
+    item.mpCost = Math.max(0, Math.round(finiteNumber(value.mpCost, 0)));
   }
+  if (category === "armor" || category === "shield") item.defense = Math.max(0, Math.round(finiteNumber(value.defense, 0)));
+  if (category === "shield") item.durability = Math.max(0, Math.round(finiteNumber(value.durability, 0)));
   return item;
 };
 
@@ -91,13 +94,13 @@ const normalizeEquipment = (source: unknown, legacyWeapons: unknown): EquipmentI
   if (Array.isArray(source)) return source.map(normalizeEquipmentItem);
   return normalizeWeapons(legacyWeapons).map((weapon) => ({
     id: weapon.id,
+    referenceId: "",
     name: weapon.name,
-    category: "weapon" as const,
+    category: weapon.kind === "gun" ? "gun" as const : weapon.kind === "staff" ? "magicTool" as const : "melee" as const,
     description: weapon.description,
-    weaponKind: weapon.kind,
-    skill: weapon.skill,
     damage: weapon.damage,
-    durability: weapon.durability,
+    attacks: 0,
+    mpCost: 0,
   }));
 };
 
@@ -144,11 +147,11 @@ const normalizeSkills = (source: Partial<Skills> | undefined): Skills => ({
     magic: normalizeSkillBonusMap(source?.bonuses?.magic),
     custom: normalizeSkillBonusMap(source?.bonuses?.custom),
   },
-  weapon: Array.isArray(source?.weapon) ? source.weapon : [],
-  ranged: Array.isArray(source?.ranged) ? source.ranged : [],
-  knowledge: Array.isArray(source?.knowledge) ? source.knowledge : [],
-  magic: Array.isArray(source?.magic) ? source.magic : [],
-  custom: Array.isArray(source?.custom) ? source.custom : [],
+  weapon: Array.isArray(source?.weapon) ? source.weapon.map(skill => ({...skill, referenceId: normalizeReferenceId(skill.referenceId)})) : [],
+  ranged: Array.isArray(source?.ranged) ? source.ranged.map(skill => ({...skill, referenceId: normalizeReferenceId(skill.referenceId)})) : [],
+  knowledge: Array.isArray(source?.knowledge) ? source.knowledge.map(skill => ({...skill, referenceId: normalizeReferenceId(skill.referenceId)})) : [],
+  magic: Array.isArray(source?.magic) ? source.magic.map(skill => ({...skill, referenceId: normalizeReferenceId(skill.referenceId)})) : [],
+  custom: Array.isArray(source?.custom) ? source.custom.map(skill => ({...skill, referenceId: normalizeReferenceId(skill.referenceId)})) : [],
 });
 
 /** 旧6能力値データも読み込めるよう、新しい5能力値モデルへそろえる。 */

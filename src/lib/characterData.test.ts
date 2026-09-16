@@ -52,13 +52,13 @@ describe("character data normalization", () => {
 
     expect(result.equipment[0]).toEqual({
       id: "weapon-1",
+      referenceId: "",
       name: "短剣",
-      category: "weapon",
+      category: "melee",
       description: "受け流し用",
-      weaponKind: "melee",
-      skill: "武器",
       damage: "1d4",
-      durability: 0,
+      attacks: 0,
+      mpCost: 0,
     });
     expect(result.equippedEquipmentIds).toEqual(["weapon-1"]);
   });
@@ -81,7 +81,7 @@ describe("character data normalization", () => {
     );
   });
 
-  it("normalizes staff equipment without weapon stats and keeps armor durability", () => {
+  it("normalizes magic tools and migrates armor durability away", () => {
     const result = normalizeCharacterData({
       equipment: [
         {
@@ -107,16 +107,17 @@ describe("character data normalization", () => {
     expect(result.equipment).toEqual([
       {
         id: "staff-1",
+        referenceId: "",
         name: "古杖",
-        category: "weapon",
-        weaponKind: "staff",
+        category: "magicTool",
         description: "魔力を増幅する。",
       },
       {
         id: "armor-1",
+        referenceId: "",
         name: "革鎧",
         category: "armor",
-        durability: 12,
+        defense: 0,
         description: "",
       },
     ]);
@@ -132,9 +133,9 @@ describe("character data normalization", () => {
 
   it("sorts equipped equipment first while keeping each group stable", () => {
     const equipment = [
-      { id: "a", name: "A", category: "accessory" as const, description: "" },
-      { id: "b", name: "B", category: "armor" as const, description: "" },
-      { id: "c", name: "C", category: "weapon" as const, description: "" },
+      { id: "a", referenceId: "", name: "A", category: "accessory" as const, description: "" },
+      { id: "b", referenceId: "", name: "B", category: "armor" as const, description: "" },
+      { id: "c", referenceId: "", name: "C", category: "melee" as const, description: "" },
     ];
 
     expect(sortEquipmentByEquipped(equipment, ["c", "a"]).map((item) => item.id)).toEqual([

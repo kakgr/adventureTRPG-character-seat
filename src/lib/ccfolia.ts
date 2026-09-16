@@ -55,13 +55,15 @@ function buildMemo(character: CharacterRecord) {
   const currency = normalizeCurrency(data.currency);
   const currencyLine = `所持金：${currency}`;
 
-  const equipmentLines = data.equipment.map((item) =>
-    item.category === "weapon"
-      ? item.weaponKind === "staff"
-        ? `装備品：${item.name || "名称未設定"}（武器・杖/魔道具）${item.description ? ` 説明：${item.description}` : ""}`
-        : `武器：${item.name || "名称未設定"}（${item.weaponKind === "gun" ? "銃" : "近接武器"}） 技能：${item.skill || "未設定"} ダメージ：${item.damage || "未設定"} 耐久値：${item.durability ?? 0}`
-      : `装備品：${item.name || "名称未設定"}（${item.category === "armor" ? "防具" : "アクセサリー"}） 耐久値：${item.durability ?? 0}${item.description ? ` 説明：${item.description}` : ""}`,
-  );
+  const labels = { melee: "近接武器", gun: "銃", bow: "弓", magicTool: "魔道具", armor: "防具", shield: "盾", accessory: "アクセサリー" } as const;
+  const equipmentLines = data.equipment.map((item) => {
+    const id = item.referenceId ? ` ID：${item.referenceId}` : "";
+    const description = item.description ? ` 説明：${item.description}` : "";
+    if (["melee", "gun", "bow"].includes(item.category)) return `装備品：${item.name || "名称未設定"}（${labels[item.category]}）${id} ダメージ：${item.damage || "未設定"} 攻撃回数：${item.attacks ?? 0} MP使用量：${item.mpCost ?? 0}${description}`;
+    if (item.category === "shield") return `装備品：${item.name || "名称未設定"}（盾）${id} 防御力：${item.defense ?? 0} 耐久値：${item.durability ?? 0}${description}`;
+    if (item.category === "armor") return `装備品：${item.name || "名称未設定"}（防具） 防御力：${item.defense ?? 0}${description}`;
+    return `装備品：${item.name || "名称未設定"}（${labels[item.category]}）${id}${description}`;
+  });
   return [
     `PC：${character.name || "名前未設定"}`,
     `HP：${hp}`,

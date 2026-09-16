@@ -38,12 +38,14 @@ export type StatBonuses = Partial<Record<StatId, number>>;
 
 export interface SpecializedSkill {
   id: string;
+  referenceId?: string;
   specialty: string;
   value: number;
 }
 
 export interface CustomSkill {
   id: string;
+  referenceId?: string;
   name: string;
   value: number;
 }
@@ -77,16 +79,19 @@ export interface Item {
 
 export type WeaponKind = "melee" | "gun" | "staff";
 
-export type EquipmentCategory = "weapon" | "armor" | "accessory";
+export type EquipmentCategory = "melee" | "gun" | "bow" | "magicTool" | "armor" | "shield" | "accessory";
 
 export interface EquipmentItem {
   id: string;
+  referenceId?: string;
   name: string;
   category: EquipmentCategory;
   description: string;
-  weaponKind?: WeaponKind;
-  skill?: string;
+  skillReferenceId?: string;
   damage?: string;
+  attacks?: number;
+  mpCost?: number;
+  defense?: number;
   durability?: number;
 }
 

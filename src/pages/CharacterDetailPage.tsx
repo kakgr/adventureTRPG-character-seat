@@ -30,6 +30,7 @@ import type {
 import type { SkillGenreId } from "../constants/game";
 import { WORLD_IMAGES } from "../constants/world";
 import { buildCocofoliaCharacter, serializeCocofoliaCharacter } from "../lib/ccfolia";
+import { buildBattleExport, serializeBattleExport } from "../lib/battleExport";
 import { sortEquipmentByEquipped } from "../lib/characterData";
 
 const STAT_SHORT_LABELS: Record<keyof typeof STAT_LABELS, string> = {
@@ -50,6 +51,7 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
   const [error, setError] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+  const [battleCopyState, setBattleCopyState] = useState<"idle" | "copied" | "error">("idle");
 
   useEffect(() => {
     if (!id) return;
@@ -159,6 +161,11 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
       setCopyState("error");
     }
   };
+  const copyToBattle = async () => {
+    if (!canManage || (!ownerCharacter && publicView)) return;
+    try { await navigator.clipboard.writeText(serializeBattleExport(buildBattleExport(displayCharacter as CharacterRecord))); setBattleCopyState("copied"); window.setTimeout(() => setBattleCopyState("idle"), 2400); }
+    catch { setBattleCopyState("error"); }
+  };
 
   return (
     <div
@@ -179,6 +186,9 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
             >
               <Icon name="copy" />{" "}
               {copyState === "copied" ? "コピーしました" : "ココフォリアにコピー"}
+            </button>
+            <button className="button button-outline button-small" onClick={() => void copyToBattle()}>
+              <Icon name="copy" /> {battleCopyState === "copied" ? "コピーしました" : "戦闘卓用にコピー"}
             </button>
             <Link
               className="button button-outline button-small"
@@ -201,11 +211,13 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
           コピーに失敗しました。ブラウザの権限を確認してください。
         </StatusMessage>
       )}
+      {battleCopyState === "error" && <StatusMessage tone="error">戦闘卓用データを作成できません。装備中の武器・盾・アクセサリーのIDと使用技能を確認してください。</StatusMessage>}
       {copyState === "copied" && (
         <p className="copy-help">
           ココフォリアの盤面をクリックして貼り付けてください。立ち絵はココフォリア側で設定します。
         </p>
       )}
+      {battleCopyState === "copied" && <p className="copy-help">戦闘補助サイトの参加画面で「キャラクターJSON」へ貼り付けてください。</p>}
       <section className="detail-hero">
         <div className="detail-portrait">
           {character.portrait_url ? <img src={character.portrait_url} alt="" /> : <span>✦</span>}
@@ -372,8 +384,12 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
 }
 
 const EQUIPMENT_CATEGORY_LABELS: Record<EquipmentItem["category"], string> = {
-  weapon: "武器",
+  melee: "近接武器",
+  gun: "銃",
+  bow: "弓",
+  magicTool: "魔道具",
   armor: "防具",
+  shield: "盾",
   accessory: "アクセサリー",
 };
 
@@ -397,30 +413,20 @@ function EquipmentDetail({
                 <b>{item.name || "名称未設定"}</b>
                 <span>{EQUIPMENT_CATEGORY_LABELS[item.category]}</span>
               </div>
-              {item.category === "weapon" && item.weaponKind !== "staff" && (
+              {(["melee", "gun", "bow"] as const).includes(item.category as "melee" | "gun" | "bow") && (
                 <div className="detail-weapon-meta">
-                  <span>
-                    種別 <b>{item.weaponKind === "gun" ? "銃" : "近接武器"}</b>
-                  </span>
-                  <span>
-                    使用技能 <b>{item.skill || "未設定"}</b>
-                  </span>
+                  <span>ID <b>{item.referenceId || "未設定"}</b></span>
                   <span>
                     ダメージ <b>{item.damage || "未設定"}</b>
                   </span>
-                  <span>
-                    耐久値 <b>{item.durability ?? 0}</b>
-                  </span>
+                  <span>攻撃回数 <b>{item.attacks ?? 0}</b></span>
+                  <span>MP使用量 <b>{item.mpCost ?? 0}</b></span>
                 </div>
               )}
-              {item.category === "weapon" && item.weaponKind === "staff" && (
+              {(item.category === "armor" || item.category === "shield") && (
                 <div className="detail-weapon-meta">
-                  <span>種別 <b>杖/魔道具</b></span>
-                </div>
-              )}
-              {item.category !== "weapon" && (
-                <div className="detail-weapon-meta">
-                  <span>耐久値 <b>{item.durability ?? 0}</b></span>
+                  <span>防御力 <b>{item.defense ?? 0}</b></span>
+                  {item.category === "shield" && <span>耐久値 <b>{item.durability ?? 0}</b></span>}
                 </div>
               )}
               {item.description && <small>{item.description}</small>}

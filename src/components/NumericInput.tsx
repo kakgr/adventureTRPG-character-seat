@@ -34,7 +34,6 @@ export function NumericInput({
       onChange={(event) => {
         const raw = event.target.value;
         setDraft(raw);
-        onChange(normalizeNumberInput(raw, min, max));
       }}
       onBlur={() => {
         setEditing(false);

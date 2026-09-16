@@ -41,7 +41,6 @@ import type {
   EquipmentCategory,
   SpecializedSkillId,
   StatId,
-  WeaponKind,
 } from "../types/character";
 import { WORLD_IMAGES } from "../constants/world";
 
@@ -50,6 +49,7 @@ const freshData = (): CharacterData => {
   return { ...data, skills: { ...data.skills, luck: rollLuck() } };
 };
 const newId = () => crypto.randomUUID();
+const scopedId = (raw: string, prefix: string) => { const digits = raw.replace(/\D/g, "").slice(0, 5); return !digits || digits.startsWith(prefix) ? digits : prefix; };
 const getDraftStorage = (): Storage | null => {
   if (typeof window === "undefined") return null;
   try {
@@ -261,22 +261,7 @@ export function CharacterEditorPage() {
             </label>
             <label className="field">
               年齢
-              <input
-                type="number"
-                min="0"
-                max="999"
-                value={data.profile.age ?? ""}
-                onChange={(e) =>
-                  update({
-                    ...data,
-                    profile: {
-                      ...data.profile,
-                      age: e.target.value === "" ? null : Math.max(0, Number(e.target.value)),
-                    },
-                  })
-                }
-                placeholder="—"
-              />
+              <NumericInput aria-label="年齢" min={0} max={999} value={data.profile.age ?? 0} onChange={(age) => update({ ...data, profile: { ...data.profile, age } })} />
             </label>
             <label className="field">
               性別
@@ -517,11 +502,14 @@ type SkillTableRow = {
   genre: keyof typeof SKILL_GENRE_LABELS;
   category: string;
   label: string;
+  referenceId?: string;
+  showReferenceId?: boolean;
   hint?: string;
   value: number;
   bonus: number;
   editableLabel: boolean;
   onLabelChange?: (value: string) => void;
+  onReferenceIdChange?: (value: string) => void;
   onValueChange: (value: number) => void;
   onBonusChange: (value: number) => void;
   onDelete?: () => void;
@@ -567,6 +555,8 @@ function SkillTable({
         key: skill.id,
         category: group.label,
         label: skill.specialty,
+        referenceId: skill.referenceId,
+        showReferenceId: ["weapon", "ranged", "magic"].includes(group.id),
         value: skill.value,
         bonus: data.skills.bonuses[group.id][skill.id] ?? 0,
         editableLabel: true,
@@ -580,6 +570,8 @@ function SkillTable({
               ),
             },
           }),
+        onReferenceIdChange: (referenceId: string) =>
+          update({ ...data, skills: { ...data.skills, [group.id]: data.skills[group.id].map((item) => item.id === skill.id ? { ...item, referenceId: scopedId(referenceId, group.id === "weapon" ? "0" : group.id === "ranged" ? "1" : "2") } : item) } }),
         onValueChange: (value: number) =>
           updateSkill(data, update, value, skill.value, (nextSkillValue) => ({
             ...data,
@@ -619,6 +611,7 @@ function SkillTable({
       key: skill.id,
       category: "カスタム",
       label: skill.name,
+      referenceId: skill.referenceId,
       value: skill.value,
       bonus: data.skills.bonuses.custom[skill.id] ?? 0,
       editableLabel: true,
@@ -632,6 +625,8 @@ function SkillTable({
             ),
           },
         }),
+      onReferenceIdChange: (referenceId: string) =>
+        update({ ...data, skills: { ...data.skills, custom: data.skills.custom.map((item) => item.id === skill.id ? { ...item, referenceId: referenceId.replace(/\D/g, "").slice(0, 5) } : item) } }),
       onValueChange: (value: number) =>
         updateSkill(data, update, value, skill.value, (nextSkillValue) => ({
           ...data,
@@ -675,7 +670,7 @@ function SkillTable({
       ...data,
       skills: {
         ...data.skills,
-        [id]: [...data.skills[id], { id: skillId, specialty: "", value: 0 }],
+        [id]: [...data.skills[id], { id: skillId, referenceId: "", specialty: "", value: 0 }],
         bonuses: { ...data.skills.bonuses, [id]: { ...data.skills.bonuses[id], [skillId]: 0 } },
       },
     });
@@ -686,7 +681,7 @@ function SkillTable({
       ...data,
       skills: {
         ...data.skills,
-        custom: [...data.skills.custom, { id: skillId, name: "", value: 0 }],
+        custom: [...data.skills.custom, { id: skillId, referenceId: "", name: "", value: 0 }],
         bonuses: {
           ...data.skills.bonuses,
           custom: { ...data.skills.bonuses.custom, [skillId]: 0 },
@@ -702,6 +697,7 @@ function SkillTable({
             <tr>
               <th>区分</th>
               <th>技能名</th>
+              <th>ID</th>
               <th>初期値</th>
               <th>追加値</th>
               <th>合計</th>
@@ -738,12 +734,15 @@ function SkillTableBody({ title, rows }: { title: string; rows: SkillTableRow[] 
   return (
     <tbody>
       <tr className="skill-genre-row">
-        <th colSpan={6}>{title}</th>
+        <th colSpan={7}>{title}</th>
       </tr>
       {rows.map((row) => (
         <tr key={row.key}>
           <td>
             <span className="skill-category-chip">{row.category}</span>
+          </td>
+          <td>
+            {row.showReferenceId ? <input aria-label={`${row.category}技能ID`} inputMode="numeric" value={row.referenceId ?? ""} onChange={(event) => row.onReferenceIdChange?.(event.target.value)} placeholder="5桁ID" maxLength={5} /> : "—"}
           </td>
           <td>
             {row.editableLabel ? (
@@ -827,12 +826,12 @@ function EquipmentEditor({
         ...data.equipment,
         {
           id: newId(),
+          referenceId: "",
           name: "",
-          category: "weapon",
-          weaponKind: "melee",
-          skill: "",
+          category: "melee",
           damage: "",
-          durability: 1,
+          attacks: 1,
+          mpCost: 0,
           description: "",
         },
       ],
@@ -862,7 +861,7 @@ function EquipmentEditor({
   return (
     <div className="equipment-editor">
       <p className="form-help">
-        武器・防具・アクセサリーを登録し、チェックしたものを最大6つまで装備できます。
+        近接武器・銃・弓・魔道具・防具・盾・アクセサリーを登録し、チェックしたものを最大6つまで装備できます。
       </p>
       {data.equipment.length === 0 && <p className="muted-copy">まだ装備品がありません。</p>}
       {orderedEquipment.map((item) => (
@@ -882,51 +881,44 @@ function EquipmentEditor({
               updateEquipment(item.id, { category: e.target.value as EquipmentCategory })
             }
           >
-            <option value="weapon">武器</option>
+            <option value="melee">近接武器</option>
+            <option value="gun">銃</option>
+            <option value="bow">弓</option>
+            <option value="magicTool">魔道具</option>
             <option value="armor">防具</option>
+            <option value="shield">盾</option>
             <option value="accessory">アクセサリー</option>
           </select>
-          {item.category === "weapon" && (
-            <select
-              aria-label="武器種別"
-              value={item.weaponKind ?? "melee"}
-              onChange={(e) =>
-                updateEquipment(item.id, { weaponKind: e.target.value as WeaponKind })
-              }
-            >
-              <option value="melee">近接武器</option>
-              <option value="gun">銃</option>
-              <option value="staff">杖/魔道具</option>
-            </select>
-          )}
-          {item.category === "weapon" && item.weaponKind !== "staff" && (
+          {(["melee", "gun", "bow"] as EquipmentCategory[]).includes(item.category) && (
             <>
-              <input
-                aria-label="使用技能"
-                value={item.skill ?? ""}
-                onChange={(e) => updateEquipment(item.id, { skill: e.target.value })}
-                placeholder="使用技能"
-              />
+              <select aria-label="使用技能" value={item.skillReferenceId ?? ""} onChange={(e) => updateEquipment(item.id, { skillReferenceId: e.target.value })}>
+                <option value="">使用技能を選択</option>
+                {(item.category === "melee" ? data.skills.weapon : data.skills.ranged).filter(skill => skill.referenceId).map(skill => <option key={skill.id} value={skill.referenceId}>{skill.specialty}（{skill.referenceId}）</option>)}
+              </select>
               <input
                 aria-label="ダメージ"
                 value={item.damage ?? ""}
                 onChange={(e) => updateEquipment(item.id, { damage: e.target.value })}
                 placeholder="ダメージ"
               />
+              <label className="equipment-durability"><span>攻撃回数</span><NumericInput aria-label="攻撃回数" min={0} max={999} value={item.attacks ?? 0} onChange={(value) => updateEquipment(item.id, { attacks: value })} /></label>
+              <label className="equipment-durability"><span>MP使用量</span><NumericInput aria-label="MP使用量" min={0} max={999999999} value={item.mpCost ?? 0} onChange={(value) => updateEquipment(item.id, { mpCost: value })} /></label>
             </>
           )}
-          {(item.category !== "weapon" || item.weaponKind !== "staff") && (
+          {(item.category === "armor" || item.category === "shield") && (
             <label className="equipment-durability">
-              <span>耐久値</span>
+              <span>防御力</span>
               <NumericInput
-                aria-label="耐久値"
+                aria-label="防御力"
                 min={0}
                 max={999999999}
-                value={item.durability ?? 0}
-                onChange={(value) => updateEquipment(item.id, { durability: value })}
+                value={item.defense ?? 0}
+                onChange={(value) => updateEquipment(item.id, { defense: value })}
               />
             </label>
           )}
+          {item.category === "shield" && <label className="equipment-durability"><span>耐久値</span><NumericInput aria-label="耐久値" min={0} max={999999999} value={item.durability ?? 0} onChange={(value) => updateEquipment(item.id, { durability: value })} /></label>}
+          {item.category !== "armor" && item.category !== "magicTool" && <input aria-label="装備ID" inputMode="numeric" value={item.referenceId ?? ""} onChange={(e) => updateEquipment(item.id, { referenceId: scopedId(e.target.value, ["melee", "gun", "bow"].includes(item.category) ? "3" : item.category === "shield" ? "4" : "5") })} placeholder={(["melee", "gun", "bow"].includes(item.category) ? "3xxxx" : item.category === "shield" ? "4xxxx" : "5xxxx")} maxLength={5} />}
           <textarea
             aria-label="装備品の説明"
             rows={2}
@@ -974,8 +966,12 @@ function EquipmentEditor({
 }
 
 const EQUIPMENT_CATEGORY_LABELS: Record<EquipmentCategory, string> = {
-  weapon: "武器",
+  melee: "近接武器",
+  gun: "銃",
+  bow: "弓",
+  magicTool: "魔道具",
   armor: "防具",
+  shield: "盾",
   accessory: "アクセサリー",
 };
 
@@ -1096,20 +1092,7 @@ function ItemsEditor({
             }
             placeholder="アイテム名"
           />
-          <input
-            aria-label="個数"
-            type="number"
-            min="1"
-            value={item.quantity}
-            onChange={(e) =>
-              update({
-                ...data,
-                items: data.items.map((i) =>
-                  i.id === item.id ? { ...i, quantity: Math.max(1, Number(e.target.value)) } : i,
-                ),
-              })
-            }
-          />
+          <NumericInput aria-label="個数" min={0} max={999999999} value={item.quantity} onChange={(quantity) => update({ ...data, items: data.items.map((i) => i.id === item.id ? { ...i, quantity } : i) })} />
           <textarea
             aria-label="持ち物の説明"
             rows={2}

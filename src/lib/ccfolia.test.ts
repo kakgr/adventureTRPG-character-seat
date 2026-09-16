@@ -106,23 +106,23 @@ describe("CCFOLIA character export", () => {
     expect(buildCocofoliaCharacter(source).data.commands).toContain("1d100<=0 〖幸運〗");
   });
 
-  it("includes weapon durability in the memo", () => {
+  it("includes combat equipment values in the memo", () => {
     const source = character();
     source.data.equipment = [
       {
         id: "weapon-1",
         name: "短銃",
-        category: "weapon",
-        weaponKind: "gun",
-        skill: "射撃・投擲",
+        referenceId: "10001",
+        category: "gun",
         damage: "1d6",
-        durability: 8,
+        attacks: 1,
+        mpCost: 0,
         description: "",
       },
     ];
 
     expect(buildCocofoliaCharacter(source).data.memo).toContain(
-      "武器：短銃（銃） 技能：射撃・投擲 ダメージ：1d6 耐久値：8",
+      "装備品：短銃（銃） ID：10001 ダメージ：1d6 攻撃回数：1 MP使用量：0",
     );
   });
 
@@ -132,24 +132,24 @@ describe("CCFOLIA character export", () => {
       {
         id: "staff-1",
         name: "魔道具",
-        category: "weapon",
-        weaponKind: "staff",
+        referenceId: "",
+        category: "magicTool",
         description: "魔力を増幅する。",
       },
       {
         id: "armor-1",
         name: "革鎧",
         category: "armor",
-        durability: 12,
+        defense: 12,
         description: "軽い鎧。",
       },
     ];
 
     expect(buildCocofoliaCharacter(source).data.memo).toContain(
-      "装備品：魔道具（武器・杖/魔道具） 説明：魔力を増幅する。",
+      "装備品：魔道具（魔道具） 説明：魔力を増幅する。",
     );
     expect(buildCocofoliaCharacter(source).data.memo).toContain(
-      "装備品：革鎧（防具） 耐久値：12 説明：軽い鎧。",
+      "装備品：革鎧（防具） 防御力：12 説明：軽い鎧。",
     );
   });
 });
