@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.2.0";
+export const CURRENT_VERSION = "1.3.0";
 export const MAX_UPDATE_NEWS = 5;
 
 export type UpdateNewsItem = {
@@ -10,6 +10,11 @@ export type UpdateNewsItem = {
 export const updateNews: UpdateNewsItem[] = [
   {
     version: CURRENT_VERSION,
+    title: "戦闘補助サイト向けの仕様変更",
+    description: "・受け流しの使用変更\n・盾追加\n・ID追加",
+  },
+  {
+    version: "1.2.0",
     title: "お金と装備品を更新しました",
     description:
       "・お金を統一の数値に変更しました。\n・ココフォリアで直接お金の数値を確認/変更できるようにしました。\n・装備品欄を追加し、武器欄を統合しました。\n・装備品欄から最大6つ装備を選んで装備する形になりました。",
