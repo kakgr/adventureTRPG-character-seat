@@ -555,8 +555,8 @@ function SkillTable({
         key: skill.id,
         category: group.label,
         label: skill.specialty,
-        referenceId: skill.referenceId,
-        showReferenceId: ["weapon", "ranged", "magic"].includes(group.id),
+        referenceId: group.id === "magic" ? skill.referenceId : undefined,
+        showReferenceId: group.id === "magic",
         value: skill.value,
         bonus: data.skills.bonuses[group.id][skill.id] ?? 0,
         editableLabel: true,
@@ -570,8 +570,8 @@ function SkillTable({
               ),
             },
           }),
-        onReferenceIdChange: (referenceId: string) =>
-          update({ ...data, skills: { ...data.skills, [group.id]: data.skills[group.id].map((item) => item.id === skill.id ? { ...item, referenceId: scopedId(referenceId, group.id === "weapon" ? "0" : group.id === "ranged" ? "1" : "2") } : item) } }),
+        onReferenceIdChange: group.id === "magic" ? (referenceId: string) =>
+          update({ ...data, skills: { ...data.skills, magic: data.skills.magic.map((item) => item.id === skill.id ? { ...item, referenceId: scopedId(referenceId, "2") } : item) } }) : undefined,
         onValueChange: (value: number) =>
           updateSkill(data, update, value, skill.value, (nextSkillValue) => ({
             ...data,
@@ -670,7 +670,10 @@ function SkillTable({
       ...data,
       skills: {
         ...data.skills,
-        [id]: [...data.skills[id], { id: skillId, referenceId: "", specialty: "", value: 0 }],
+        [id]: [
+          ...data.skills[id],
+          { id: skillId, ...(id === "magic" ? { referenceId: "" } : {}), specialty: "", value: 0 },
+        ],
         bonuses: { ...data.skills.bonuses, [id]: { ...data.skills.bonuses[id], [skillId]: 0 } },
       },
     });
@@ -742,9 +745,6 @@ function SkillTableBody({ title, rows }: { title: string; rows: SkillTableRow[] 
             <span className="skill-category-chip">{row.category}</span>
           </td>
           <td>
-            {row.showReferenceId ? <input aria-label={`${row.category}技能ID`} inputMode="numeric" value={row.referenceId ?? ""} onChange={(event) => row.onReferenceIdChange?.(event.target.value)} placeholder="5桁ID" maxLength={5} /> : "—"}
-          </td>
-          <td>
             {row.editableLabel ? (
               <input
                 aria-label={`${row.category}技能名`}
@@ -758,6 +758,9 @@ function SkillTableBody({ title, rows }: { title: string; rows: SkillTableRow[] 
                 {row.hint && <small>（{row.hint}）</small>}
               </span>
             )}
+          </td>
+          <td>
+            {row.showReferenceId ? <input aria-label={`${row.category}技能ID`} inputMode="numeric" value={row.referenceId ?? ""} onChange={(event) => row.onReferenceIdChange?.(event.target.value)} placeholder="5桁ID" maxLength={5} /> : "—"}
           </td>
           <td>
             <div className="skill-value-input">
@@ -889,20 +892,16 @@ function EquipmentEditor({
             <option value="shield">盾</option>
             <option value="accessory">アクセサリー</option>
           </select>
-          {(["melee", "gun", "bow"] as EquipmentCategory[]).includes(item.category) && (
+          {(["melee", "gun", "bow", "magicTool"] as EquipmentCategory[]).includes(item.category) && (
             <>
-              <select aria-label="使用技能" value={item.skillReferenceId ?? ""} onChange={(e) => updateEquipment(item.id, { skillReferenceId: e.target.value })}>
-                <option value="">使用技能を選択</option>
-                {(item.category === "melee" ? data.skills.weapon : data.skills.ranged).filter(skill => skill.referenceId).map(skill => <option key={skill.id} value={skill.referenceId}>{skill.specialty}（{skill.referenceId}）</option>)}
-              </select>
-              <input
+              {item.category !== "magicTool" && <><input
                 aria-label="ダメージ"
                 value={item.damage ?? ""}
                 onChange={(e) => updateEquipment(item.id, { damage: e.target.value })}
                 placeholder="ダメージ"
               />
               <label className="equipment-durability"><span>攻撃回数</span><NumericInput aria-label="攻撃回数" min={0} max={999} value={item.attacks ?? 0} onChange={(value) => updateEquipment(item.id, { attacks: value })} /></label>
-              <label className="equipment-durability"><span>MP使用量</span><NumericInput aria-label="MP使用量" min={0} max={999999999} value={item.mpCost ?? 0} onChange={(value) => updateEquipment(item.id, { mpCost: value })} /></label>
+              <label className="equipment-durability"><span>MP使用量</span><NumericInput aria-label="MP使用量" min={0} max={999999999} value={item.mpCost ?? 0} onChange={(value) => updateEquipment(item.id, { mpCost: value })} /></label></>}
             </>
           )}
           {(item.category === "armor" || item.category === "shield") && (
@@ -918,7 +917,7 @@ function EquipmentEditor({
             </label>
           )}
           {item.category === "shield" && <label className="equipment-durability"><span>耐久値</span><NumericInput aria-label="耐久値" min={0} max={999999999} value={item.durability ?? 0} onChange={(value) => updateEquipment(item.id, { durability: value })} /></label>}
-          {item.category !== "armor" && item.category !== "magicTool" && <input aria-label="装備ID" inputMode="numeric" value={item.referenceId ?? ""} onChange={(e) => updateEquipment(item.id, { referenceId: scopedId(e.target.value, ["melee", "gun", "bow"].includes(item.category) ? "3" : item.category === "shield" ? "4" : "5") })} placeholder={(["melee", "gun", "bow"].includes(item.category) ? "3xxxx" : item.category === "shield" ? "4xxxx" : "5xxxx")} maxLength={5} />}
+          {item.category !== "armor" && <input aria-label="装備ID" inputMode="numeric" value={item.referenceId ?? ""} onChange={(e) => updateEquipment(item.id, { referenceId: scopedId(e.target.value, ["melee", "gun", "bow"].includes(item.category) ? "3" : item.category === "magicTool" ? "2" : item.category === "shield" ? "4" : "5") })} placeholder={(["melee", "gun", "bow"].includes(item.category) ? "3xxxx" : item.category === "magicTool" ? "2xxxx" : item.category === "shield" ? "4xxxx" : "5xxxx")} maxLength={5} />}
           <textarea
             aria-label="装備品の説明"
             rows={2}

@@ -211,7 +211,7 @@ export function CharacterDetailPage({ publicView = false }: { publicView?: boole
           コピーに失敗しました。ブラウザの権限を確認してください。
         </StatusMessage>
       )}
-      {battleCopyState === "error" && <StatusMessage tone="error">戦闘卓用データを作成できません。装備中の武器・盾・アクセサリーのIDと使用技能を確認してください。</StatusMessage>}
+      {battleCopyState === "error" && <StatusMessage tone="error">戦闘卓用データを作成できません。装備中の武器・盾・アクセサリーのIDを確認してください。</StatusMessage>}
       {copyState === "copied" && (
         <p className="copy-help">
           ココフォリアの盤面をクリックして貼り付けてください。立ち絵はココフォリア側で設定します。
@@ -423,6 +423,7 @@ function EquipmentDetail({
                   <span>MP使用量 <b>{item.mpCost ?? 0}</b></span>
                 </div>
               )}
+              {item.category === "magicTool" && <div className="detail-weapon-meta"><span>ID <b>{item.referenceId || "未設定"}</b></span></div>}
               {(item.category === "armor" || item.category === "shield") && (
                 <div className="detail-weapon-meta">
                   <span>防御力 <b>{item.defense ?? 0}</b></span>

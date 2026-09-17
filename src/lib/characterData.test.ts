@@ -123,6 +123,31 @@ describe("character data normalization", () => {
     ]);
   });
 
+  it("removes weapon and ranged skill IDs while preserving magic skill IDs", () => {
+    const result = normalizeCharacterData({
+      skills: {
+        weapon: [{ id: "weapon-skill", referenceId: "00001", specialty: "剣", value: 50 }],
+        ranged: [{ id: "ranged-skill", referenceId: "10001", specialty: "弓", value: 50 }],
+        magic: [{ id: "magic-skill", referenceId: "20001", specialty: "魔術", value: 50 }],
+      },
+      equipment: [
+        {
+          id: "weapon-1",
+          name: "剣",
+          category: "melee",
+          referenceId: "30001",
+          skillReferenceId: "00001",
+          description: "",
+        },
+      ],
+    } as never);
+
+    expect(result.skills.weapon[0]).not.toHaveProperty("referenceId");
+    expect(result.skills.ranged[0]).not.toHaveProperty("referenceId");
+    expect(result.skills.magic[0].referenceId).toBe("20001");
+    expect(result.equipment[0]).not.toHaveProperty("skillReferenceId");
+  });
+
   it("converts the legacy currency object for existing characters", () => {
     const result = normalizeCharacterData({
       currency: { platinum: 0, gold: 0, silver: 100, copper: 4 },

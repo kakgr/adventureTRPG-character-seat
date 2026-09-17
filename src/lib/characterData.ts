@@ -6,6 +6,7 @@ import type {
   EquipmentItem,
   EquipmentCategory,
   Skills,
+  SpecializedSkill,
   StatBonuses,
   Stats,
   Weapon,
@@ -80,7 +81,6 @@ const normalizeEquipmentItem = (source: unknown, index: number): EquipmentItem =
     description: typeof value.description === "string" ? value.description : "",
   };
   if (["melee", "gun", "bow"].includes(category)) {
-    item.skillReferenceId = normalizeReferenceId(value.skillReferenceId);
     item.damage = typeof value.damage === "string" ? value.damage : "";
     item.attacks = Math.max(0, Math.round(finiteNumber(value.attacks, 0)));
     item.mpCost = Math.max(0, Math.round(finiteNumber(value.mpCost, 0)));
@@ -118,6 +118,16 @@ const normalizeEquippedEquipmentIds = (
   return [...new Set(ids)].filter((id) => equipmentIds.has(id)).slice(0, 6);
 };
 
+const normalizeSkillEntries = (source: unknown, preserveReferenceId: boolean): SpecializedSkill[] =>
+  Array.isArray(source)
+    ? source.map((value) => {
+        const skill = { ...((value ?? {}) as SpecializedSkill) };
+        if (preserveReferenceId) skill.referenceId = normalizeReferenceId(skill.referenceId);
+        else delete skill.referenceId;
+        return skill;
+      })
+    : [];
+
 export function sortEquipmentByEquipped(
   equipment: EquipmentItem[],
   equippedEquipmentIds: string[],
@@ -147,10 +157,10 @@ const normalizeSkills = (source: Partial<Skills> | undefined): Skills => ({
     magic: normalizeSkillBonusMap(source?.bonuses?.magic),
     custom: normalizeSkillBonusMap(source?.bonuses?.custom),
   },
-  weapon: Array.isArray(source?.weapon) ? source.weapon.map(skill => ({...skill, referenceId: normalizeReferenceId(skill.referenceId)})) : [],
-  ranged: Array.isArray(source?.ranged) ? source.ranged.map(skill => ({...skill, referenceId: normalizeReferenceId(skill.referenceId)})) : [],
-  knowledge: Array.isArray(source?.knowledge) ? source.knowledge.map(skill => ({...skill, referenceId: normalizeReferenceId(skill.referenceId)})) : [],
-  magic: Array.isArray(source?.magic) ? source.magic.map(skill => ({...skill, referenceId: normalizeReferenceId(skill.referenceId)})) : [],
+  weapon: normalizeSkillEntries(source?.weapon, false),
+  ranged: normalizeSkillEntries(source?.ranged, false),
+  knowledge: normalizeSkillEntries(source?.knowledge, true),
+  magic: normalizeSkillEntries(source?.magic, true),
   custom: Array.isArray(source?.custom) ? source.custom.map(skill => ({...skill, referenceId: normalizeReferenceId(skill.referenceId)})) : [],
 });
 

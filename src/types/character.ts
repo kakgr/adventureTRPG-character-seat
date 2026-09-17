@@ -87,7 +87,6 @@ export interface EquipmentItem {
   name: string;
   category: EquipmentCategory;
   description: string;
-  skillReferenceId?: string;
   damage?: string;
   attacks?: number;
   mpCost?: number;
