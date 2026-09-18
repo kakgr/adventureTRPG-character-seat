@@ -29,6 +29,7 @@ describe("戦闘用JSON出力", () => {
       damageBonus: 0,
       speed: 1,
       defense: 12,
+      shields: [],
       skills: [{ name: "錬金術", value: 65 }],
       ids: ["20000", "50001"],
     });
@@ -45,8 +46,9 @@ describe("戦闘用JSON出力", () => {
       { id: "accessory", name: "指輪", category: "accessory", referenceId: "50001", description: "" },
       { id: "armor", name: "鎧", category: "armor", defense: 8, description: "" },
       { id: "armor-2", name: "外套", category: "armor", defense: 5, description: "" },
+      { id: "shield", name: "盾", category: "shield", referenceId: "40001", durability: 7, description: "" },
     ];
-    source.data.equippedEquipmentIds = ["weapon", "armor", "armor-2"];
+    source.data.equippedEquipmentIds = ["weapon", "armor", "armor-2", "shield"];
 
     const result = buildBattleExport(source);
 
@@ -57,6 +59,7 @@ describe("戦闘用JSON出力", () => {
       { name: "交渉術", value: 10 },
     ]);
     expect(result.defense).toBe(13);
-    expect(result.ids).toEqual(["20000", "30001", "50001"]);
+    expect(result.shields).toEqual([{ id: "40001", durability: 7 }]);
+    expect(result.ids).toEqual(["20000", "30001", "50001", "40001"]);
   });
 });

@@ -7,6 +7,11 @@ export type BattleExportSkill = {
   value: number;
 };
 
+export type BattleExportShield = {
+  id: string;
+  durability: number;
+};
+
 export type BattleExport = {
   name: string;
   vitality: number;
@@ -14,6 +19,7 @@ export type BattleExport = {
   damageBonus: number;
   speed: number;
   defense: number;
+  shields: BattleExportShield[];
   skills: BattleExportSkill[];
   ids: string[];
 };
@@ -69,6 +75,19 @@ function buildOwnedIds(character: CharacterRecord): string[] {
   return [...new Set(ids.map(nonEmpty).filter(Boolean))];
 }
 
+function buildEquippedShields(character: CharacterRecord): BattleExportShield[] {
+  const { data } = character;
+  return data.equipment
+    .filter(
+      (item) =>
+        item.category === "shield" && data.equippedEquipmentIds.includes(item.id),
+    )
+    .map((item) => ({
+      id: nonEmpty(item.referenceId),
+      durability: Math.max(0, Math.round(item.durability ?? 0)),
+    }));
+}
+
 export function buildBattleExport(character: CharacterRecord): BattleExport {
   const { data } = character;
   return {
@@ -83,6 +102,7 @@ export function buildBattleExport(character: CharacterRecord): BattleExport {
           item.category === "armor" && data.equippedEquipmentIds.includes(item.id),
       )
       .reduce((total, item) => total + (item.defense ?? 0), 0),
+    shields: buildEquippedShields(character),
     skills: buildPositiveSkills(character),
     ids: buildOwnedIds(character),
   };
