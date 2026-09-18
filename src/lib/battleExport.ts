@@ -1,4 +1,10 @@
-import { calculateDamageBonus, totalSkillValue, totalStatValue } from "./characterRules";
+import {
+  calculateDamageBonus,
+  calculateHp,
+  calculateMp,
+  totalSkillValue,
+  totalStatValue,
+} from "./characterRules";
 import { COMMON_SKILLS } from "../constants/game";
 import type { CharacterRecord, SpecializedSkill } from "../types/character";
 
@@ -92,8 +98,8 @@ export function buildBattleExport(character: CharacterRecord): BattleExport {
   const { data } = character;
   return {
     name: character.name,
-    vitality: totalStatValue(data.stats, data.statBonuses, "vitality"),
-    magic: totalStatValue(data.stats, data.statBonuses, "magic"),
+    vitality: calculateHp(data.stats, data.statBonuses),
+    magic: calculateMp(data.stats, data.statBonuses),
     damageBonus: calculateDamageBonus(data.stats, data.statBonuses),
     speed: totalStatValue(data.stats, data.statBonuses, "speed"),
     defense: data.equipment

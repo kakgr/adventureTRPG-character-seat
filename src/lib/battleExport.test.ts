@@ -24,8 +24,8 @@ describe("戦闘用JSON出力", () => {
 
     expect(result).toEqual({
       name: "錬金術師",
-      vitality: 1,
-      magic: 1,
+      vitality: 3,
+      magic: 3,
       damageBonus: 0,
       speed: 1,
       defense: 12,
