@@ -196,6 +196,14 @@ export const worldGlossaryGenres: WorldGlossaryGenre[] = [
         description:
           "ラース大陸東部の沿岸都市が結成した国。豊かな海の資源と貿易によって栄えている。北部には広い危険域があり、防衛線を構築している。",
       },
+      {
+        id: "yugi-town",
+        term: "ユギの街",
+        category: "人文地名",
+        subcategory: "都市・国家",
+        description:
+          "サダム連合国では珍しい内陸の街。造船・修理を生業として栄えてきた街であり、バルトの街とともに国の物流を支えている。",
+      },
     ],
   },
   {
